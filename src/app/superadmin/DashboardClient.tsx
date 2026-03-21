@@ -53,7 +53,7 @@ export default function DashboardClient({ stats, cities }: { stats: StatData, ci
         <header className="sticky top-0 z-40 w-full bg-surface/80 backdrop-blur-md border-b border-outline-variant/20">
           <div className="flex justify-between items-center px-8 py-4 w-full">
             <div className="flex items-center gap-4">
-              <h2 className="font-headline font-bold text-lg text-on-background">System Overview</h2>
+              <h2 className="font-headline font-bold text-lg text-on-background">DashBoard</h2>
             </div>
             <div className="flex items-center gap-6">
               <button onClick={() => setIsDark(!isDark)} className="text-outline hover:text-on-surface transition-colors">
@@ -127,15 +127,15 @@ export default function DashboardClient({ stats, cities }: { stats: StatData, ci
               <div className="bg-surface-container-lowest p-8 rounded-lg shadow-md border border-outline-variant/20">
                 <h3 className="font-headline font-bold text-lg mb-6 border-b border-outline-variant/10 pb-4 text-on-surface">Quick Actions</h3>
                 <div className="space-y-4">
-                  <button onClick={() => router.push('/superadmin/admins')} className="w-full flex items-center justify-between p-4 bg-primary-container text-on-primary-container rounded-lg font-bold hover:brightness-105 active:scale-[0.98] transition-all shadow-sm">
+                  <button className="w-full flex items-center justify-between p-4 bg-primary-container text-on-primary-container rounded-lg font-bold hover:brightness-105 active:scale-[0.98] transition-all shadow-sm">
                     <span>+ Add Admin</span>
                     <span className="material-symbols-outlined">person_add</span>
                   </button>
-                  <button onClick={() => router.push('/superadmin/cities')} className="w-full flex items-center justify-between p-4 border border-outline-variant text-on-surface rounded-lg font-semibold hover:bg-surface-container transition-colors">
+                  <button className="w-full flex items-center justify-between p-4 border border-outline-variant text-on-surface rounded-lg font-semibold hover:bg-surface-container transition-colors">
                     <span>+ Add City</span>
                     <span className="material-symbols-outlined">add_location_alt</span>
                   </button>
-                  <button onClick={() => router.push('/superadmin/batches')} className="w-full flex items-center justify-between p-4 border border-outline-variant text-on-surface rounded-lg font-semibold hover:bg-surface-container transition-colors">
+                  <button className="w-full flex items-center justify-between p-4 border border-outline-variant text-on-surface rounded-lg font-semibold hover:bg-surface-container transition-colors">
                     <span>+ Add Batch</span>
                     <span className="material-symbols-outlined">group_add</span>
                   </button>

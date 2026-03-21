@@ -417,7 +417,7 @@ export default function AdminsClient({
 
       {/* Modals */}
       {isModalOpen && (
-          <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="fixed inset-0 z-50 bg-surface-dim/60 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
               <div className="bg-surface-container-lowest w-full max-w-2xl rounded-xl shadow-2xl border border-outline-variant/20 overflow-hidden">
                   <div className="p-6 border-b border-outline-variant/10">
                       <h3 className="text-xl font-headline font-bold text-on-surface">
@@ -501,7 +501,7 @@ export default function AdminsClient({
 
       {/* Delete Confirmation Modal */}
       {deleteAdminId && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 bg-surface-dim/60 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
             <div className="bg-surface-container-lowest w-full max-w-sm rounded-xl shadow-2xl border border-outline-variant/20 overflow-hidden text-center p-6 space-y-6">
                 <div className="w-16 h-16 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto">
                     <span className="material-symbols-outlined text-3xl">warning</span>

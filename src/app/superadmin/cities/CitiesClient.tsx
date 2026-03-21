@@ -194,7 +194,7 @@ export default function CitiesClient({ initialCities }: { initialCities: CityDat
 
       {/* Create City Modal (Overlay) */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center px-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center px-4 bg-surface-dim/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-surface-container-lowest max-w-md w-full rounded-xl shadow-2xl border border-outline-variant/20 overflow-hidden">
             <div className="p-6 border-b border-outline-variant/10">
                 <h3 className="text-xl font-headline font-bold text-on-surface flex items-center gap-2">
@@ -232,7 +232,7 @@ export default function CitiesClient({ initialCities }: { initialCities: CityDat
 
       {/* Delete Warning Modal (Overlay) */}
       {deleteCityParams && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center px-4 bg-surface-dim/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-surface-container-low max-w-md w-full rounded-xl shadow-2xl border border-outline-variant/15 p-8 space-y-6">
             
             {errorMsg && <div className="p-3 bg-error/10 text-error rounded-lg text-sm font-semibold border border-error/20">{errorMsg}</div>}
@@ -242,7 +242,7 @@ export default function CitiesClient({ initialCities }: { initialCities: CityDat
               <h3 className="text-2xl font-bold font-headline">Delete City?</h3>
             </div>
             <p className="text-on-surface-variant leading-relaxed text-sm">
-                This action is permanent. Deleting <span className="text-on-surface font-bold font-mono bg-white/5 py-0.5 px-2 rounded">{deleteCityParams.name}</span> will also permanently remove all associated batch data and student records linked to this location.
+                This action is permanent. Deleting <span className="text-on-surface font-bold font-mono bg-surface-container/5 py-0.5 px-2 rounded">{deleteCityParams.name}</span> will also permanently remove all associated batch data and student records linked to this location.
             </p>
             <div className="flex gap-4 pt-4">
               <button disabled={isPending} onClick={() => { setDeleteCityParams(null); setErrorMsg(''); }} className="flex-1 px-6 py-3 rounded-lg bg-surface-container-high text-on-surface font-semibold hover:bg-surface-variant transition-colors disabled:opacity-50">
