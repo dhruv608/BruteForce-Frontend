@@ -4,11 +4,15 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { getAllBatches, createBatch, updateBatch, deleteBatch, Batch } from '@/services/batch.service';
 import { getAllCities, City } from '@/services/city.service';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Modal } from '@/components/Modal';
-import { Select } from '@/components/Select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination } from '@/components/Pagination';
+import { ActionButtons } from '@/components/ActionButtons';
+import { DeleteModal } from '@/components/DeleteModal';
+import { TableSkeleton } from '@/components/TableSkeleton';
 import { Search, Layers, Trash2, Edit, MapPin, Calendar } from 'lucide-react';
 
 export default function BatchesPage() {
@@ -23,7 +27,7 @@ export default function BatchesPage() {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 10;
+  const [limit, setLimit] = useState(5);
 
   // Modals
   const [isModalOpen, setModalOpen] = useState(false);
@@ -125,7 +129,7 @@ export default function BatchesPage() {
 
   const paginatedBatches = useMemo(() => {
     return filtered.slice((currentPage - 1) * limit, currentPage * limit);
-  }, [filtered, currentPage]);
+  }, [filtered, currentPage, limit]);
 
   const getCityName = (id: number) => cities.find(c => c.id === id)?.city_name || 'Unknown';
 
@@ -150,19 +154,39 @@ export default function BatchesPage() {
           </div>
           <div className="flex items-center gap-3">
             <Select 
-              value={filterCity} 
-              onChange={v => { setFilterCity(String(v)); setCurrentPage(1); }}
-              options={[{ label: 'All Cities', value: '' }, ...cities.map(c => ({ label: c.city_name, value: String(c.id) }))]}
-              className="w-[160px]"
-              icon={<MapPin className="w-4 h-4" />}
-            />
+              value={filterCity || "all"} 
+              onValueChange={v => { setFilterCity(v === 'all' ? '' : v); setCurrentPage(1); }}
+            >
+              <SelectTrigger className="w-full sm:max-w-[150px] bg-background">
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-muted-foreground" />
+                  <SelectValue placeholder="All Cities" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Cities</SelectItem>
+                {cities.map(c => (
+                  <SelectItem key={c.id} value={String(c.id)}>{c.city_name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select 
-              value={filterYear} 
-              onChange={v => { setFilterYear(String(v)); setCurrentPage(1); }}
-              options={[{ label: 'All Years', value: '' }, ...uniqueYears.map(y => ({ label: String(y), value: String(y) }))]}
-              className="w-[140px]"
-              icon={<Calendar className="w-4 h-4" />}
-            />
+              value={filterYear || "all"} 
+              onValueChange={v => { setFilterYear(v === 'all' ? '' : v); setCurrentPage(1); }}
+            >
+              <SelectTrigger className="w-[140px] bg-background">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <SelectValue placeholder="All Years" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Years</SelectItem>
+                {uniqueYears.map(y => (
+                  <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           {(filterCity || filterYear || search) && (
             <button onClick={() => {setFilterCity(''); setFilterYear(''); setSearch('');}} className="text-xs text-muted-foreground hover:text-foreground ml-2 underline underline-offset-4">Clear</button>
@@ -176,13 +200,6 @@ export default function BatchesPage() {
       </div>
 
       <div className="bg-card border rounded-xl overflow-hidden shadow-sm animate-in fade-in duration-300">
-        <div className="flex items-center justify-between px-6 py-4 border-b bg-muted/30">
-          <h2 className="font-semibold">Batches</h2>
-          <span className="text-xs font-medium text-muted-foreground px-2 py-1 bg-background border rounded-md">
-            {filtered.length} found
-          </span>
-        </div>
-        
         <Table>
           <TableHeader>
             <TableRow>
@@ -195,9 +212,20 @@ export default function BatchesPage() {
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground animate-pulse">Loading batches...</TableCell>
-              </TableRow>
+              <TableSkeleton row={
+                <TableRow>
+                  <TableCell><Skeleton className="h-5 w-[150px]" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-[60px] rounded-full" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-[100px]" /></TableCell>
+                  <TableCell className="text-center"><Skeleton className="h-5 w-[30px] mx-auto" /></TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Skeleton className="h-8 w-8 rounded-md" />
+                      <Skeleton className="h-8 w-8 rounded-md" />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              } />
             ) : filtered.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">No matches found.</TableCell>
@@ -217,27 +245,26 @@ export default function BatchesPage() {
                   <TableCell className="text-center text-muted-foreground font-mono">
                     {batch._count?.students || 0}
                   </TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(batch)}>
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => { setTargetBatch(batch); setDelOpen(true); }} className="text-destructive hover:bg-destructive/10 hover:text-destructive">
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                  <TableCell className="text-right flex justify-end gap-1">
+                    <ActionButtons 
+                      onEdit={() => openEdit(batch)} 
+                      onDelete={() => { setTargetBatch(batch); setDelOpen(true); }} 
+                    />
                   </TableCell>
                 </TableRow>
               ))
             )}
           </TableBody>
         </Table>
-        {!loading && filtered.length > 0 && (
-          <Pagination 
-            currentPage={currentPage} 
-            totalItems={filtered.length} 
-            limit={limit} 
-            onPageChange={setCurrentPage} 
-          />
-        )}
+        <Pagination 
+          currentPage={currentPage} 
+          totalItems={filtered.length} 
+          limit={limit} 
+          onPageChange={setCurrentPage}
+          onLimitChange={setLimit}
+          showLimitSelector={true}
+          loading={loading}
+        />
       </div>
 
       <Modal 
@@ -261,21 +288,40 @@ export default function BatchesPage() {
             <div className="space-y-2">
               <label className="text-sm font-medium leading-none">Year *</label>
               <Select 
-                value={formData.year}
-                onChange={v => setFormData({...formData, year: Number(v)})}
-                options={[new Date().getFullYear()-1, new Date().getFullYear(), new Date().getFullYear()+1, new Date().getFullYear()+2].map(y => ({ label: String(y), value: y }))}
+                value={String(formData.year)}
+                onValueChange={v => setFormData({...formData, year: Number(v)})}
                 disabled={submitting}
-              />
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Year" />
+                </SelectTrigger>
+                <SelectContent>
+                  {uniqueYears.length > 0 ? (
+                    uniqueYears.map(y => (
+                      <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value={String(new Date().getFullYear())}>{new Date().getFullYear()}</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium leading-none">City *</label>
               <Select 
-                value={formData.city_id}
-                onChange={v => setFormData({...formData, city_id: String(v)})}
-                options={cities.map(c => ({ label: c.city_name, value: String(c.id) }))}
-                placeholder="Select City"
+                value={formData.city_id || ""}
+                onValueChange={v => setFormData({...formData, city_id: v})}
                 disabled={submitting}
-              />
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select City" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cities.map(c => (
+                    <SelectItem key={c.id} value={String(c.id)}>{c.city_name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="flex items-center justify-end gap-2 pt-4 border-t mt-4">
@@ -287,18 +333,15 @@ export default function BatchesPage() {
         </div>
       </Modal>
 
-      <Modal isOpen={isDelOpen} onClose={() => setDelOpen(false)} title="Delete Batch?" subtitle="This action cannot be undone." icon={<Trash2 className="text-destructive w-6 h-6" />}>
-        <div className="space-y-4">
-          <p className="text-sm font-medium text-foreground">Are you sure you want to delete <span className="text-destructive font-bold">{targetBatch?.batch_name}</span>?</p>
-          <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm p-3 rounded-md mt-2">
-            ⚠️ Deleting a batch will also delete all associated students and classes.
-          </div>
-          <div className="flex items-center justify-end gap-2 pt-4 border-t mt-6">
-            <Button variant="outline" onClick={() => setDelOpen(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={submitting}>Delete Batch</Button>
-          </div>
-        </div>
-      </Modal>
+      <DeleteModal
+        isOpen={isDelOpen}
+        onClose={() => setDelOpen(false)}
+        onConfirm={handleDelete}
+        submitting={submitting}
+        title="Delete Batch"
+        itemName={targetBatch?.batch_name}
+        warningText="Deleting a batch will also delete all associated students and classes."
+      />
 
     </div>
   );

@@ -6,6 +6,7 @@ import { getStats } from '@/services/superadmin.service';
 import { getAllCities, City } from '@/services/city.service';
 import { getAllBatches, Batch } from '@/services/batch.service';
 import { Building2, Layers, Users } from 'lucide-react';
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Stats {
   totalCities: number;
@@ -56,8 +57,47 @@ export default function SuperAdminDashboard() {
 
   if (loading) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
-        <div className="animate-pulse w-8 h-8 rounded-full border-4 border-primary/30 border-t-primary animate-spin" />
+      <div className="space-y-8 pb-10">
+        <div className="grid gap-4 md:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-card border rounded-xl p-6">
+              <div className="flex items-center justify-between space-y-0 pb-2">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-4 w-4 rounded" />
+              </div>
+              <Skeleton className="h-8 w-16" />
+            </div>
+          ))}
+        </div>
+        
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 items-start">
+          <div className="lg:col-span-2 bg-card border rounded-xl p-6">
+            <div className="flex items-center justify-between pb-6">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+            <div className="space-y-6">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+                  <Skeleton className="h-2 w-full" />
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="bg-card border rounded-xl p-6">
+            <Skeleton className="h-4 w-24 mb-6" />
+            <div className="flex flex-col gap-3">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-9 w-full" />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

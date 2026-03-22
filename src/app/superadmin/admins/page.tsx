@@ -1,21 +1,26 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { getAllAdmins, createAdmin, updateAdmin, deleteAdmin, Admin } from '@/services/admin.service';
+import { getAllAdmins, createAdmin, updateAdmin, deleteAdmin, Admin, getAdminRoles } from '@/services/admin.service';
 import { getAllCities, City } from '@/services/city.service';
 import { getAllBatches, Batch } from '@/services/batch.service';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Modal } from '@/components/Modal';
-import { Select } from '@/components/Select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination } from '@/components/Pagination';
+import { ActionButtons } from '@/components/ActionButtons';
+import { DeleteModal } from '@/components/DeleteModal';
+import { TableSkeleton } from '@/components/TableSkeleton';
+import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Users, Trash2, Edit, Filter } from 'lucide-react';
 
 export default function AdminsPage() {
   const [admins, setAdmins] = useState<Admin[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [batches, setBatches] = useState<Batch[]>([]);
+  const [roles, setRoles] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   
   // Filters
@@ -24,7 +29,7 @@ export default function AdminsPage() {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 10;
+  const [limit, setLimit] = useState(5);
 
   // Modals
   const [isModalOpen, setModalOpen] = useState(false);
@@ -44,14 +49,16 @@ export default function AdminsPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [adminsRes, citiesRes, batchesRes] = await Promise.all([
+      const [adminsRes, citiesRes, batchesRes, rolesRes] = await Promise.all([
         getAllAdmins().catch(()=>[]),
         getAllCities().catch(()=>[]),
-        getAllBatches().catch(()=>[])
+        getAllBatches().catch(()=>[]),
+        getAdminRoles().catch(()=>[])
       ]);
       setAdmins(Array.isArray(adminsRes) ? adminsRes : []);
       setCities(Array.isArray(citiesRes) ? citiesRes : []);
       setBatches(Array.isArray(batchesRes) ? batchesRes : []);
+      setRoles(Array.isArray(rolesRes) ? rolesRes : []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -84,14 +91,26 @@ export default function AdminsPage() {
       batch_id: admin.batch_id ? String(admin.batch_id) : '' 
     });
     
-    // Auto-select city and year if possible based on batch_id
-    if (admin.batch_id) {
+    // Auto-select city and year based on admin's batch information
+    if (admin.batch) {
+      // Use the nested batch object if available
+      setSelectedCity(String(admin.batch.city_id));
+      setSelectedYear(String(admin.batch.year));
+      setFormData(prev => ({ ...prev, batch_id: String(admin.batch!.id) }));
+    } else if (admin.batch_id) {
+      // Fallback to finding batch in batches array
       const b = batches.find(b => b.id === admin.batch_id);
       if (b) {
         setSelectedCity(String(b.city_id));
         setSelectedYear(String(b.year));
+        setFormData(prev => ({ ...prev, batch_id: String(admin.batch_id) }));
+      } else {
+        // If batch not found in local array, reset dropdowns
+        setSelectedCity('');
+        setSelectedYear('');
       }
     } else {
+      // No batch assigned
       setSelectedCity('');
       setSelectedYear('');
     }
@@ -151,7 +170,7 @@ export default function AdminsPage() {
 
   const paginatedAdmins = useMemo(() => {
     return filtered.slice((currentPage - 1) * limit, currentPage * limit);
-  }, [filtered, currentPage]);
+  }, [filtered, currentPage, limit]);
 
   // Derived arrays for dynamic dropdowns
   const availableYears = useMemo(() => {
@@ -190,18 +209,22 @@ export default function AdminsPage() {
             />
           </div>
           <Select 
-            value={filterRole} 
-            onChange={v => { setFilterRole(String(v)); setCurrentPage(1); }}
-            options={[
-              { label: 'All Roles', value: '' },
-              { label: 'SUPERADMIN', value: 'SUPERADMIN' },
-              { label: 'ADMIN', value: 'ADMIN' },
-              { label: 'TEACHER', value: 'TEACHER' },
-              { label: 'INTERN', value: 'INTERN' },
-            ]}
-            className="w-full sm:max-w-[150px]"
-            icon={<Filter className="w-4 h-4" />}
-          />
+            value={filterRole || "all"} 
+            onValueChange={v => { setFilterRole(v === 'all' ? '' : v); setCurrentPage(1); }}
+          >
+            <SelectTrigger className="w-full sm:max-w-[150px] bg-background">
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4 text-muted-foreground" />
+                <SelectValue placeholder="All Roles" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Roles</SelectItem>
+              {roles.filter(r => r !== 'SUPERADMIN').map(r => (
+                <SelectItem key={r} value={r}>{r}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {(filterRole || search) && (
              <button onClick={() => {setFilterRole(''); setSearch('');}} className="text-xs text-muted-foreground hover:text-foreground ml-2 underline underline-offset-4">Clear</button>
           )}
@@ -214,31 +237,37 @@ export default function AdminsPage() {
       </div>
 
       <div className="bg-card border rounded-xl overflow-hidden shadow-sm animate-in fade-in duration-300">
-        <div className="flex items-center justify-between px-6 py-4 border-b bg-muted/30">
-          <h2 className="font-semibold">Admins</h2>
-          <span className="text-xs font-medium text-muted-foreground px-2 py-1 bg-background border rounded-md">
-            {filtered.length} found
-          </span>
-        </div>
-        
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Admin Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
-              <TableHead>City &amp; Batch</TableHead>
+              <TableHead>City</TableHead>
+              <TableHead>Batch</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground animate-pulse">Loading admins...</TableCell>
-              </TableRow>
+              <TableSkeleton row={
+                <TableRow>
+                  <TableCell><Skeleton className="h-5 w-[160px]" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-[180px]" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-[80px] rounded" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Skeleton className="h-8 w-8 rounded-md" />
+                      <Skeleton className="h-8 w-8 rounded-md" />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              } />
             ) : filtered.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">No matches found.</TableCell>
+                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">No matches found.</TableCell>
               </TableRow>
             ) : (
               paginatedAdmins.map((admin) => {
@@ -247,8 +276,8 @@ export default function AdminsPage() {
                 else if (admin.role === 'INTERN') badgeClass = "bg-chart-5/20 text-chart-5 border-chart-5/40";
                 else if (admin.role === 'SUPERADMIN') badgeClass = "bg-destructive/10 text-destructive border-destructive/20";
 
-                const adminBatch = batches.find(b => b.id === admin.batch_id);
-                const adminCity = cities.find(c => c.id === adminBatch?.city_id);
+                const adminBatch = admin.batch;
+                const adminCity = admin.city;
 
                 return (
                   <TableRow key={admin.id}>
@@ -264,16 +293,16 @@ export default function AdminsPage() {
                       </span>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
-                      {adminCity ? `${adminCity.city_name} — ` : ''} 
-                      {adminBatch ? adminBatch.batch_name : 'No batch'}
+                      {admin.role === 'SUPERADMIN' ? <span className="opacity-50">—</span> : (adminCity?.city_name || <span className="opacity-50">Unassigned</span>)}
                     </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="icon" onClick={() => openEdit(admin)}>
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => { setTargetAdmin(admin); setDelOpen(true); }} className="text-destructive hover:bg-destructive/10 hover:text-destructive">
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                    <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                      {admin.role === 'SUPERADMIN' ? <span className="opacity-50">—</span> : (adminBatch?.batch_name || <span className="opacity-50">Unassigned</span>)}
+                    </TableCell>
+                    <TableCell className="text-right flex justify-end gap-1">
+                      <ActionButtons 
+                        onEdit={() => openEdit(admin)} 
+                        onDelete={() => { setTargetAdmin(admin); setDelOpen(true); }} 
+                      />
                     </TableCell>
                   </TableRow>
                 )
@@ -281,14 +310,15 @@ export default function AdminsPage() {
             )}
           </TableBody>
         </Table>
-        {!loading && filtered.length > 0 && (
-          <Pagination 
-            currentPage={currentPage} 
-            totalItems={filtered.length} 
-            limit={limit} 
-            onPageChange={setCurrentPage} 
-          />
-        )}
+        <Pagination 
+          currentPage={currentPage} 
+          totalItems={filtered.length} 
+          limit={limit} 
+          onPageChange={setCurrentPage}
+          onLimitChange={setLimit}
+          showLimitSelector={true}
+          loading={loading}
+        />
       </div>
 
       <Modal 
@@ -333,16 +363,19 @@ export default function AdminsPage() {
             <div className="space-y-2">
               <label className="text-sm font-medium leading-none">Role *</label>
               <Select 
-                value={formData.role}
-                onChange={v => setFormData({...formData, role: String(v)})}
-                options={[
-                  { label: 'TEACHER', value: 'TEACHER' },
-                  { label: 'INTERN', value: 'INTERN' },
-                  { label: 'ADMIN', value: 'ADMIN' },
-                  { label: 'SUPERADMIN', value: 'SUPERADMIN' }
-                ]}
+                value={formData.role || "TEACHER"}
+                onValueChange={v => setFormData({...formData, role: v})}
                 disabled={submitting}
-              />
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {roles.filter(r => r !== 'SUPERADMIN').map(r => (
+                    <SelectItem key={r} value={r}>{r}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           
@@ -352,42 +385,64 @@ export default function AdminsPage() {
               <div className="space-y-2">
                 <label className="text-xs font-medium leading-none text-muted-foreground">City Filter (Optional)</label>
                 <Select 
-                  value={selectedCity}
-                  onChange={(v) => {
-                    setSelectedCity(String(v));
+                  value={selectedCity || "any"}
+                  onValueChange={(v) => {
+                    setSelectedCity(v === 'any' ? '' : v);
                     setSelectedYear(''); // reset dependencies
                     setFormData({...formData, batch_id: ''});
                   }}
-                  options={[{ label: 'Any City', value: '' }, ...cities.map(c => ({ label: c.city_name, value: String(c.id) }))]}
-                  className="w-full"
                   disabled={submitting}
-                />
+                >
+                  <SelectTrigger className="w-full bg-background">
+                    <SelectValue placeholder="Any City" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any City</SelectItem>
+                    {cities.map(c => (
+                      <SelectItem key={c.id} value={String(c.id)}>{c.city_name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-medium leading-none text-muted-foreground">Year Filter (Optional)</label>
                 <Select 
-                  value={selectedYear}
-                  onChange={(v) => {
-                    setSelectedYear(String(v));
+                  value={selectedYear || "any"}
+                  onValueChange={(v) => {
+                    setSelectedYear(v === 'any' ? '' : v);
                     setFormData({...formData, batch_id: ''});
                   }}
-                  options={[{ label: 'Any Year', value: '' }, ...availableYears.map(y => ({ label: String(y), value: String(y) }))]}
-                  className="w-full"
-                  disabled={submitting || !selectedCity || availableYears.length === 0}
-                />
+                  disabled={submitting || (!selectedCity && !selectedYear)}
+                >
+                  <SelectTrigger className="w-full bg-background">
+                    <SelectValue placeholder="Any Year" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any Year</SelectItem>
+                    {availableYears.map(y => (
+                      <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium leading-none">Batch Assignment</label>
               <Select 
-                value={formData.batch_id}
-                onChange={v => setFormData({...formData, batch_id: String(v)})}
-                options={[
-                  { label: availableBatches.length === 0 ? "No batches match filters" : "Select Batch (Optional)", value: '' },
-                  ...availableBatches.map(b => ({ label: `${b.batch_name} (${b.year})`, value: String(b.id) }))
-                ]}
-                disabled={submitting || availableBatches.length === 0}
-              />
+                value={formData.batch_id || "none"}
+                onValueChange={v => setFormData({...formData, batch_id: v === 'none' ? '' : v})}
+                disabled={submitting || (!selectedCity && !selectedYear && !formData.batch_id)}
+              >
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder={availableBatches.length === 0 ? "No batches match filters" : "Select Batch (Optional)"} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">{availableBatches.length === 0 ? "No batches match filters" : "Select Batch (Optional)"}</SelectItem>
+                  {availableBatches.map(b => (
+                    <SelectItem key={b.id} value={String(b.id)}>{b.batch_name} ({b.year})</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -403,18 +458,15 @@ export default function AdminsPage() {
         </div>
       </Modal>
 
-      <Modal isOpen={isDelOpen} onClose={() => setDelOpen(false)} title="Delete Admin?" subtitle="This action cannot be undone." icon={<Trash2 className="text-destructive w-6 h-6" />}>
-        <div className="space-y-4">
-          <p className="text-sm font-medium text-foreground">Are you sure you want to delete <span className="text-destructive font-bold">{targetAdmin?.name}</span>?</p>
-          <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm p-3 rounded-md mt-2">
-            ⚠️ The admin will lose access immediately to all system platforms.
-          </div>
-          <div className="flex items-center justify-end gap-2 pt-4 border-t mt-4">
-            <Button variant="outline" onClick={() => setDelOpen(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={submitting}>Delete Admin</Button>
-          </div>
-        </div>
-      </Modal>
+      <DeleteModal
+        isOpen={isDelOpen}
+        onClose={() => setDelOpen(false)}
+        onConfirm={handleDelete}
+        submitting={submitting}
+        title="Delete Admin"
+        itemName={targetAdmin?.name}
+        warningText="The admin will lose access immediately to all system platforms."
+      />
 
     </div>
   );

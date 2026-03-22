@@ -7,15 +7,29 @@ export interface Admin {
   email: string;
   role: 'SUPERADMIN' | 'ADMIN' | 'TEACHER' | 'INTERN';
   batch_id?: number;
-  batch?: Batch;
-  createdAt?: string;
-  updatedAt?: string;
+  city?: {
+    id: number;
+    city_name: string;
+  } | null;
+  batch?: {
+    id: number;
+    batch_name: string;
+    year: number;
+    city_id: number;
+  } | null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export const getAllAdmins = async (role?: string): Promise<Admin[]> => {
   const params = role ? { role } : {};
   const response = await api.get('/api/superadmin/admins', { params });
   return response.data.data; // Backend wraps in { success, data }
+};
+
+export const getAdminRoles = async (): Promise<string[]> => {
+  const response = await api.get('/api/admin/roles');
+  return response.data.data;
 };
 
 export const createAdmin = async (data: any) => {

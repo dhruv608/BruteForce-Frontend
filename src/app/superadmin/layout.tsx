@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { LayoutDashboard, Users, Building2, Layers, LogOut, ChevronRight } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 
 export default function SuperAdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -41,16 +42,6 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
     { label: 'Batches', href: '/superadmin/batches', icon: Layers },
   ];
 
-  const getPageTitle = () => {
-    if (pathname === '/superadmin') return { title: 'Dashboard', sub: 'System Overview' };
-    if (pathname.includes('/admins')) return { title: 'Admin Management', sub: 'Manage all administrators' };
-    if (pathname.includes('/cities')) return { title: 'City Management', sub: 'Manage all cities' };
-    if (pathname.includes('/batches')) return { title: 'Batch Management', sub: 'Manage all batches' };
-    return { title: '', sub: '' };
-  };
-
-  const { title, sub } = getPageTitle();
-
   if (pathname === '/superadmin/login') {
     return <>{children}</>;
   }
@@ -63,7 +54,6 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
       {/* Sidebar - mapped exactly from theme */}
       <aside className="w-[240px] flex-shrink-0 bg-sidebar border-r border-border flex flex-col z-20 shadow-sm relative animate-in slide-in-from-left duration-500">
         <div className="p-6 border-b border-border/50">
-          <div className="text-[10px] uppercase tracking-[0.15em] text-primary font-mono mb-1.5 font-bold">SuperAdmin</div>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center p-1.5">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-full h-full text-primary-foreground"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -83,41 +73,25 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
             const isActive = pathname === item.href;
             const Icon = item.icon;
             
-            // For visual section break
-            if (idx === 1) {
-              return (
-                <React.Fragment key={item.href}>
+            return (
+              <React.Fragment key={item.href}>
+                {idx === 1 && (
                   <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono px-3 pt-5 pb-2">
                     Management
                   </div>
-                  <Link 
-                    href={item.href}
-                    className={`group flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive 
-                        ? 'text-primary bg-muted/60 font-semibold' 
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
-                    }`}
-                  >
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
-                    {item.label}
-                  </Link>
-                </React.Fragment>
-              );
-            }
-
-            return (
-              <Link 
-                key={item.href}
-                href={item.href}
-                className={`group flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive 
-                    ? 'text-primary bg-muted/60 font-semibold' 
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
-                }`}
-              >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
-                {item.label}
-              </Link>
+                )}
+                <Link 
+                  href={item.href}
+                  className={`group flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive 
+                      ? 'text-primary bg-muted/60 font-semibold' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
+                  {item.label}
+                </Link>
+              </React.Fragment>
             );
           })}
         </nav>
@@ -144,9 +118,8 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
         
         {/* Topbar */}
         <header className="h-14 bg-card/80 backdrop-blur border-b flex items-center justify-between px-6 shrink-0 z-10 w-full">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-foreground transition-all">{title}</h1>
-            <p className="text-xs font-mono text-muted-foreground mt-0.5">{sub}</p>
+          <div className="flex items-center gap-3">
+            <Breadcrumb />
           </div>
           <div className="flex items-center gap-4">
             <ThemeToggle />

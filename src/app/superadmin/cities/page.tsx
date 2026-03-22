@@ -1,14 +1,18 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { getAllCities, createCity, deleteCity, City } from '@/services/city.service';
+import { getAllCities, createCity, deleteCity, updateCity, City } from '@/services/city.service';
 import { getAllBatches, Batch } from '@/services/batch.service';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Modal } from '@/components/Modal';
 import { Pagination } from '@/components/Pagination';
-import { Search, Building2, Trash2 } from 'lucide-react';
+import { ActionButtons } from '@/components/ActionButtons';
+import { DeleteModal } from '@/components/DeleteModal';
+import { TableSkeleton } from '@/components/TableSkeleton';
+import { Skeleton } from "@/components/ui/skeleton";
+import { Search, Building2, Trash2, Edit } from 'lucide-react';
 
 export default function CitiesPage() {
   const [cities, setCities] = useState<City[]>([]);
@@ -18,15 +22,17 @@ export default function CitiesPage() {
   
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 10;
+  const [limit, setLimit] = useState(5);
   
   // Modals
   const [isCreateOpen, setCreateOpen] = useState(false);
+  const [isEditOpen, setEditOpen] = useState(false);
   const [isDelOpen, setDelOpen] = useState(false);
   const [targetCity, setTargetCity] = useState<City | null>(null);
 
   // Forms
   const [cityName, setCityName] = useState('');
+  const [editCityName, setEditCityName] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const fetchData = async () => {
@@ -57,6 +63,28 @@ export default function CitiesPage() {
       fetchData();
     } catch (err) {
       alert("Failed to create city");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const openEdit = (city: City) => {
+    setTargetCity(city);
+    setEditCityName(city.city_name);
+    setEditOpen(true);
+  };
+
+  const handleEdit = async () => {
+    if (!targetCity || !editCityName) return;
+    setSubmitting(true);
+    try {
+      await updateCity(targetCity.id, { city_name: editCityName });
+      setEditOpen(false);
+      setTargetCity(null);
+      setEditCityName('');
+      fetchData();
+    } catch (err) {
+      alert("Failed to update city");
     } finally {
       setSubmitting(false);
     }
@@ -105,13 +133,6 @@ export default function CitiesPage() {
       </div>
 
       <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border/50 bg-muted/20">
-          <h2 className="text-sm font-semibold text-foreground">Cities</h2>
-          <span className="text-[11px] font-mono font-medium tracking-wide bg-background border border-border px-2.5 py-1 rounded-full text-muted-foreground">
-            {filteredCities.length} total
-          </span>
-        </div>
-        
         <Table>
           <TableHeader>
             <TableRow>
@@ -123,9 +144,18 @@ export default function CitiesPage() {
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center text-muted-foreground animate-pulse">Loading cities...</TableCell>
-              </TableRow>
+              <TableSkeleton row={
+                <TableRow>
+                  <TableCell><Skeleton className="h-5 w-[120px]" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-[90px] rounded-full" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-[90px] rounded-full" /></TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end">
+                      <Skeleton className="h-8 w-8 rounded-md" />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              } />
             ) : filteredCities.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">No cities found.</TableCell>
@@ -149,15 +179,11 @@ export default function CitiesPage() {
                         {studentsCount} students
                       </span>
                     </TableCell>
-                    <TableCell className="text-right">
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        onClick={() => { setTargetCity(city); setDelOpen(true); }}
-                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                      >
-                        <Trash2 className="w-4 h-4 cursor-pointer" />
-                      </Button>
+                    <TableCell className="text-right flex justify-end">
+                      <ActionButtons 
+                        onEdit={() => openEdit(city)} 
+                        onDelete={() => { setTargetCity(city); setDelOpen(true); }} 
+                      />
                     </TableCell>
                   </TableRow>
                 )
@@ -165,17 +191,18 @@ export default function CitiesPage() {
             )}
           </TableBody>
         </Table>
-        {!loading && filteredCities.length > 0 && (
-          <Pagination 
-            currentPage={currentPage} 
-            totalItems={filteredCities.length} 
-            limit={limit} 
-            onPageChange={setCurrentPage} 
-          />
-        )}
+        <Pagination 
+          currentPage={currentPage} 
+          totalItems={filteredCities.length} 
+          limit={limit} 
+          onPageChange={setCurrentPage}
+          onLimitChange={setLimit}
+          showLimitSelector={true}
+          loading={loading}
+        />
       </div>
 
-      {/* Modals */}
+      {/* Create Modal */}
       <Modal isOpen={isCreateOpen} onClose={() => setCreateOpen(false)} title="Create New City" subtitle="City will be available for batch assignment immediately." icon={<Building2 className="text-primary w-8 h-8" />}>
         <div className="space-y-4">
           <div className="space-y-2">
@@ -194,18 +221,40 @@ export default function CitiesPage() {
         </div>
       </Modal>
 
-      <Modal isOpen={isDelOpen} onClose={() => setDelOpen(false)} title="Delete City?" subtitle="This action cannot be undone." icon={<Trash2 className="text-destructive w-6 h-6" />}>
+      {/* Edit Modal */}
+      <Modal 
+        isOpen={isEditOpen} 
+        onClose={() => setEditOpen(false)} 
+        title="Edit City" 
+        subtitle="Update city name. This will reflect across all associated batches." 
+        icon={<Building2 className="text-primary w-8 h-8" />}
+      >
         <div className="space-y-4">
-          <p className="text-sm text-foreground">Are you sure you want to delete <span className="text-destructive font-medium">{targetCity?.city_name}</span>?</p>
-          <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm p-3 rounded-md">
-            ⚠️ Deleting a city will fail if there are active associated batches attached to it.
+          <div className="space-y-2">
+            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">City Name *</label>
+            <Input 
+              placeholder="e.g. Hyderabad"
+              value={editCityName}
+              onChange={(e) => setEditCityName(e.target.value)}
+              disabled={submitting}
+            />
           </div>
           <div className="flex items-center justify-end gap-2 pt-4 border-t mt-4">
-            <Button variant="outline" onClick={() => setDelOpen(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={submitting}>Delete City</Button>
+            <Button variant="outline" onClick={() => setEditOpen(false)}>Cancel</Button>
+            <Button onClick={handleEdit} disabled={submitting || !editCityName}>Update City</Button>
           </div>
         </div>
       </Modal>
+
+      <DeleteModal
+        isOpen={isDelOpen}
+        onClose={() => setDelOpen(false)}
+        onConfirm={handleDelete}
+        submitting={submitting}
+        title="Delete City"
+        itemName={targetCity?.city_name}
+        warningText="Deleting a city will fail if there are active associated batches attached to it."
+      />
 
     </div>
   );

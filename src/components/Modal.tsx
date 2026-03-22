@@ -14,21 +14,28 @@ interface ModalProps {
   subtitle?: string;
   children: React.ReactNode;
   icon?: React.ReactNode;
+  variant?: 'default' | 'danger';
 }
 
-export function Modal({ isOpen, onClose, title, subtitle, children, icon }: ModalProps) {
+export function Modal({ isOpen, onClose, title, subtitle, children, icon, variant = 'default' }: ModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <div className="flex flex-col gap-2">
-            {icon && <div className="text-primary">{icon}</div>}
-            <DialogTitle className="text-xl">{title}</DialogTitle>
-            {subtitle && <DialogDescription>{subtitle}</DialogDescription>}
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden border-border/40 shadow-2xl rounded-3xl">
+        <div className="px-6 pt-8 pb-6 flex flex-col gap-5 text-center sm:text-left">
+          <DialogHeader className="flex flex-col sm:flex-row sm:items-start gap-4 space-y-0">
+            {icon && (
+              <div className={`shrink-0 flex items-center justify-center w-12 h-12 rounded-full ring-8 ${variant === 'danger' ? 'bg-red-500/10 text-red-600 ring-red-500/5' : 'bg-primary/10 text-primary ring-primary/5 mx-auto sm:mx-0'}`}>
+                {icon}
+              </div>
+            )}
+            <div className={`flex flex-col gap-1.5 ${!icon ? 'w-full' : ''} ${variant === 'danger' ? 'sm:text-left text-center' : 'text-center sm:text-left'}`}>
+              <DialogTitle className="text-xl font-bold tracking-tight">{title}</DialogTitle>
+              {subtitle && <DialogDescription className="text-sm text-muted-foreground">{subtitle}</DialogDescription>}
+            </div>
+          </DialogHeader>
+          <div className="w-full">
+            {children}
           </div>
-        </DialogHeader>
-        <div className="py-2">
-          {children}
         </div>
       </DialogContent>
     </Dialog>
