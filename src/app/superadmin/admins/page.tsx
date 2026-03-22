@@ -288,7 +288,7 @@ export default function AdminsPage() {
                       {admin.email}
                     </TableCell>
                     <TableCell>
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium border ${badgeClass}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded    text-[10px] font-mono font-medium border ${badgeClass}`}>
                         {admin.role}
                       </span>
                     </TableCell>
