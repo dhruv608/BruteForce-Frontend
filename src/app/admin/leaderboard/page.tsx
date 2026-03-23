@@ -9,11 +9,11 @@ import { Trophy, Clock } from 'lucide-react';
 import PodiumShimmer from '@/components/shimmers/PodiumShimmer';
 import StatsShimmer from '@/components/shimmers/StatsShimmer';
 import TableShimmer from '@/components/shimmers/TableShimmer';
-import { PodiumSection } from './components/PodiumSection';
-import { StatsSection } from './components/StatsSection';
-import { LeaderboardTable } from './components/LeaderboardTable';
-import { FilterBar } from './components/FilterBar';
-import { EvaluationModal } from './components/EvaluationModal';
+import { PodiumSection } from '../../../components/admin/components/PodiumSection';
+import { StatsSection } from '../../../components/admin/components/StatsSection';
+import { LeaderboardTable } from '../../../components/admin/components/LeaderboardTable';
+import { FilterBar } from '../../../components/admin/components/FilterBar';
+import { EvaluationModal } from '../../../components/admin/components/EvaluationModal';
 
 // Hook for Debounce
 function useDebounce<T>(value: T, delay: number): T {
