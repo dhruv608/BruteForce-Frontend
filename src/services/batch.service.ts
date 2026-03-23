@@ -15,13 +15,15 @@ export interface Batch {
   updatedAt?: string;
 }
 
+
 export const getAllBatches = async (city?: string, year?: number): Promise<Batch[]> => {
   const params: any = {};
   if (city) params.city = city;
   if (year) params.year = year;
   
-  const response = await api.get('/api/superadmin/batches', { params });
-  return response.data; // Backend returns array directly
+  // Use admin endpoint - works for all admin roles including superadmin
+  const response = await api.get('/api/admin/batches', { params });
+  return response.data;
 };
 
 export const createBatch = async (data: { batch_name: string; year: number; city_id: number }) => {

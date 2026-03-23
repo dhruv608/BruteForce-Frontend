@@ -68,7 +68,7 @@ export function LeaderboardTable({
                       <TableCell>
                           <div className="flex flex-row items-center gap-3">
                             <div className={`w-10 h-10 rounded-full overflow-hidden border ${Number(rankValue) === 1 ? 'border-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.5)]' : 'border-border'} shadow-sm group-hover:border-primary/50 transition-colors`}>
-                                <img src={entry.profile_photo || `https://api.dicebear.com/7.x/initials/svg?seed=${entry.username}&backgroundColor=1e293b&textColor=f8fafc`} alt={entry.name} className="w-full h-full object-cover" />
+                                <img src={entry.profile_image_url || `https://api.dicebear.com/7.x/initials/svg?seed=${entry.username}&backgroundColor=1e293b&textColor=f8fafc`} alt={entry.name} className="w-full h-full object-cover" />
                             </div>
                             <div className="flex flex-col">
                                 <Link href={`/admin/students/${entry.username}`} className="font-semibold text-foreground hover:text-primary transition-colors">

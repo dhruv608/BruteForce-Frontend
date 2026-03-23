@@ -2,6 +2,8 @@
 import React, { useMemo } from 'react';
 
 const PodiumItem = ({ student, rank, color, glow, height, isCenter, borderCol }: any) => {
+
+  
   return (
     <div className="flex flex-col items-center group cursor-pointer transition-transform duration-500 hover:-translate-y-6 z-10 w-28 md:w-36">
       {/* Crown for rank 1 */}
@@ -10,7 +12,8 @@ const PodiumItem = ({ student, rank, color, glow, height, isCenter, borderCol }:
       {/* Profile Photo */}
       <div className={`relative rounded-full p-1 bg-gradient-to-tr from-card to-muted ${glow} transition-all duration-500 group-hover:scale-110 mb-[-24px] z-20`} >
         <div className={`w-20 h-20 ${isCenter ? 'md:w-32 md:h-32' : 'md:w-24 md:h-24'} rounded-full overflow-hidden border-4 border-background ${borderCol} shadow-inner`}>
-          <img src={student.profile_photo || `https://api.dicebear.com/7.x/initials/svg?seed=${student.username}&backgroundColor=1e293b&textColor=f8fafc`} alt={student.name} className="w-full h-full object-cover" />
+          <img src={student.profile_image_url || `https://api.dicebear.com/7.x/initials/svg?seed=${student.username}&backgroundColor=1e293b&textColor=f8fafc`} alt={student.name} className="w-full h-full object-cover" />
+          
         </div>
         <div className={`absolute -bottom-3 left-1/2 -translate-x-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-black text-sm md:text-base ${color} border-2 border-background shadow-md`}>
           {rank}

@@ -6,7 +6,6 @@ import { useAdminStore } from '@/store/adminStore';
 import { getAdminLeaderboard, getAdminCities, getAvailableYears } from '@/services/admin.service';
 import { getAllBatches } from '@/services/batch.service';
 import { Trophy, Clock } from 'lucide-react';
-
 import ShimmerEffect from '@/components/ShimmerEffect';
 import { PodiumSection } from './components/PodiumSection';
 import { StatsSection } from './components/StatsSection';
@@ -28,16 +27,12 @@ export default function AdminLeaderboardPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { selectedCity, selectedBatch, isLoadingContext } = useAdminStore();
-
   const [leaderboard, setLeaderboard] = useState<any[]>([]); 
   const [podiumData, setPodiumData] = useState<any[]>([]);   
-  
   const [loading, setLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
-  
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
-
   // Query & Filters
   const [lSearch, setLSearch] = useState(searchParams.get('search') || '');
   const debouncedSearch = useDebounce(lSearch, 400); 
@@ -46,7 +41,7 @@ export default function AdminLeaderboardPage() {
   const [limit, setLimit] = useState(Number(searchParams.get('limit')) || 5);
   
   const [lType, setLType] = useState('all'); 
-  const [lCity, setLCity] = useState<string>(''); 
+  const [lCity, setLCity] = useState<string>('all'); 
   const [lYear, setLYear] = useState<number>(0); 
   
   const [isInit, setIsInit] = useState(false);
@@ -84,9 +79,9 @@ export default function AdminLeaderboardPage() {
       const globalYears = new Set<number>();
       
       res.forEach((item: any) => {
-        const city = item.city_name?.toLowerCase();
+        const city = item.city?.city_name?.toLowerCase();
         const year = item.year || item.batch_year;
-
+        
         if (city && year) {
           if (!map[city]) {
             map[city] = new Set();
