@@ -34,7 +34,7 @@ api.interceptors.response.use(
     // If 401 and we haven't already tried to refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Don't refresh on login failures
-      if (originalRequest.url?.includes('/auth/admin/login') || originalRequest.url?.includes('/auth/student/login')) {
+      if (originalRequest.url?.includes('/auth/admin/login') || originalRequest.url?.includes('/auth/student/login') || originalRequest.url?.includes('/auth/google-login')|| originalRequest.url?.includes('/api/students/profile')) {
         return Promise.reject(error);
       }
 
@@ -68,12 +68,19 @@ api.interceptors.response.use(
 
           // Redirect to appropriate login page based on current path
           const currentPath = window.location.pathname;
+
           if (currentPath.startsWith('/admin/')) {
             window.location.href = '/admin/login';
-          } else if (currentPath === '/') {
-            window.location.href = '/';
-          } else {
+          }
+          else if (currentPath.startsWith('/superadmin/')) {
             window.location.href = '/superadmin/login';
+          }
+          else if (currentPath === '/login' || currentPath.startsWith('/student/')) {
+            window.location.href = '/login';
+          }
+          else {
+            // Default fallback to student login
+            window.location.href = '/login';
           }
         }
         return Promise.reject(refreshError);
