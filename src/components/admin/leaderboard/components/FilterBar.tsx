@@ -25,6 +25,8 @@ export function FilterBar({
             onChange={(e) => { setLSearch(e.target.value); }}
             className="pl-9 h-9 bg-background focus-visible:ring-1 transition-all hover:bg-muted/50"
         />
+
+        
       </div>
       
       {mode !== 'student' && (
@@ -33,7 +35,7 @@ export function FilterBar({
               value={lType} 
               onChange={(v: any) => { setLType(v); }}
               options={typeOptionsObj}
-              className="w-[140px] h-9 text-sm"
+              className=" w-[140px] h-9 text-sm"
               icon={<TrendingUp className="w-3.5 h-3.5" />}
               placeholder="Timeframe"
           />

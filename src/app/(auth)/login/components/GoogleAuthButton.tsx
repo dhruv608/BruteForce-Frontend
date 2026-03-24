@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Script from 'next/script';
 import { useRouter } from 'next/navigation';
 import { studentAuthService } from '@/services/student/auth.service';
-import { Button } from '../../shared/components/Button';
 import { useLocalStorage } from '../../shared/hooks/useLocalStorage';
 
 export function GoogleAuthButton() {
@@ -12,13 +11,12 @@ export function GoogleAuthButton() {
   const [error, setError] = useState('');
   const [, setOnboardingUser] = useLocalStorage('onboardingUser', null);
 
+  // set onboarding if user doesn't have any platform IDs or username
   const processPostLogin = (u: any) => {
     if ( !u.leetcode_id || !u.gfg_id || !u.username) {
-      setOnboardingUser(u);
-      router.push('/');
-    } else {
-      router.push('/');
+      setOnboardingUser(u); 
     }
+    router.push('/');
   };
 
   const handleGoogleCallback = async (idToken: string) => {
@@ -51,6 +49,8 @@ export function GoogleAuthButton() {
     setError('');
     if (typeof window !== 'undefined' && (window as any).google) {
       const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
+      console.log('Client ID:', clientId);
+      console.log('Current origin:', window.location.origin);
       if (!clientId) {
         setError('Google Client ID is missing. Check your environment variables.');
         return;

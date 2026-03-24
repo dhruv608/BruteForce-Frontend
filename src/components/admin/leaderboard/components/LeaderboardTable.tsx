@@ -48,7 +48,7 @@ export function LeaderboardTable({
     };
     fetchTable();
   }, [page, limit, lCity, lType, lYear, debouncedSearch]);
-
+console.log("LeaderboardTable - leaderboard:", leaderboard);
   return (
     <>
       {loading ? (

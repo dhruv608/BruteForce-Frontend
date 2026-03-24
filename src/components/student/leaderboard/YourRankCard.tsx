@@ -4,7 +4,6 @@ import { Flame } from 'lucide-react';
 
 export function YourRankCard({ yourRank }: { yourRank: any }) {
   if (!yourRank) return null;
-
   return (
     <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
