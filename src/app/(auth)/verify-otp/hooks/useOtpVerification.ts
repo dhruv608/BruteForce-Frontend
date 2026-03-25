@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useToast } from '../../shared/hooks/useToast';
 
@@ -11,10 +11,18 @@ export function useOtpVerification() {
   const [fpOtpArray, setFpOtpArray] = useState<string[]>(Array(6).fill(''));
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const firstOtpInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!emailParam) router.push('/forgot-password');
   }, [emailParam, router]);
+
+  // Auto-focus first OTP input on mount
+  useEffect(() => {
+    setTimeout(() => {
+      firstOtpInputRef.current?.focus();
+    }, 100);
+  }, []);
 
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) value = value[value.length - 1]; // ensure 1 digit
@@ -43,5 +51,5 @@ export function useOtpVerification() {
     router.push(`/reset-password?email=${encodeURIComponent(emailParam || '')}&otp=${otpJoined}`);
   };
 
-  return { email: emailParam, fpOtpArray, error, loading, handleOtpChange, handleOtpKeyDown, handleVerifyOtpLocal, router };
+  return { email: emailParam, fpOtpArray, error, loading, handleOtpChange, handleOtpKeyDown, handleVerifyOtpLocal, router, firstOtpInputRef };
 }

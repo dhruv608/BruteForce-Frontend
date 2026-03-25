@@ -1,14 +1,14 @@
 "use client";
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Button } from '../../shared/components/Button';
 import { Input } from '../../shared/components/Input';
 import { useResetPassword } from '../hooks/useResetPassword';
 import { PasswordStrength } from './PasswordStrength';
 import { BackButton } from './BackButton';
-
+import { Eye, EyeOff } from "lucide-react";
 function ResetPasswordFormContent() {
   const { fpNewPassword, setFpNewPassword, fpConfirmPassword, setFpConfirmPassword, error, loading, handleResetPassword } = useResetPassword();
-
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <>
       <div className="text-center mb-8">
@@ -38,20 +38,34 @@ function ResetPasswordFormContent() {
             className="h-11 bg-muted/40"
             required
           />
-          <PasswordStrength password={fpNewPassword} />
+          {/* <PasswordStrength password={fpNewPassword} /> */}
         </div>
         <div className="space-y-1.5">
-          <label className="text-[12px] font-semibold text-foreground tracking-wide">Confirm Password</label>
-          <Input
-            type="password"
-            placeholder="••••••••"
-            value={fpConfirmPassword}
-            onChange={e => setFpConfirmPassword(e.target.value)}
-            disabled={loading}
-            className="h-11 bg-muted/40"
-            required
-          />
+          <label className="text-[12px] font-semibold text-foreground tracking-wide">
+            Confirm Password
+          </label>
+
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter Password"
+              value={fpConfirmPassword}
+              onChange={(e) => setFpConfirmPassword(e.target.value)}
+              disabled={loading}
+              className="h-11 bg-muted/40 pr-10"
+              required
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition active:scale-90"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
+
         <div className="flex gap-3 mt-4">
           <BackButton disabled={loading} />
           <Button
@@ -68,9 +82,9 @@ function ResetPasswordFormContent() {
 }
 
 export function ResetPasswordForm() {
-    return (
-        <Suspense fallback={<div className="text-center p-4">Loading...</div>}>
-            <ResetPasswordFormContent />
-        </Suspense>
-    );
+  return (
+    <Suspense fallback={<div className="text-center p-4">Loading...</div>}>
+      <ResetPasswordFormContent />
+    </Suspense>
+  );
 }

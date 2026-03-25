@@ -45,7 +45,14 @@ export const studentAuthService = {
   },
 
   resetPassword: async (data: any) => {
-    const res = await api.post('/api/auth/reset-password', data);
-    return res.data;
+    console.log('🚀 Auth Service: resetPassword called with:', { ...data, newPassword: '[HIDDEN]' });
+    try {
+      const res = await api.post('/api/auth/reset-password', data);
+      console.log('✅ Auth Service: API call successful', res.status, res.data);
+      return res.data;
+    } catch (error: any) {
+      console.log('❌ Auth Service: API call failed', error.response?.status, error.response?.data);
+      throw error;
+    }
   }
 };

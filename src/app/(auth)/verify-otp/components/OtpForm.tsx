@@ -5,7 +5,7 @@ import { Input } from '../../shared/components/Input';
 import { useOtpVerification } from '../hooks/useOtpVerification';
 
 function OtpFormContent() {
-  const { fpOtpArray, error, loading, handleOtpChange, handleOtpKeyDown, handleVerifyOtpLocal, router } = useOtpVerification();
+  const { fpOtpArray, error, loading, handleOtpChange, handleOtpKeyDown, handleVerifyOtpLocal, router, firstOtpInputRef } = useOtpVerification();
 
   return (
     <>
@@ -29,13 +29,14 @@ function OtpFormContent() {
             {fpOtpArray.map((digit, idx) => (
               <Input
                 key={idx}
+                ref={idx === 0 ? firstOtpInputRef : undefined}
                 id={`otp-input-${idx}`}
                 type="text"
                 value={digit}
                 onChange={e => handleOtpChange(idx, e.target.value)}
                 onKeyDown={e => handleOtpKeyDown(idx, e)}
                 disabled={loading}
-                className="h-12 w-12 bg-muted/40 text-center text-xl font-mono p-0"
+                className="h-12 w-12 bg-muted/40 text-center text-xl font-mono p-0 rounded-md border-2 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 maxLength={1}
                 required
               />

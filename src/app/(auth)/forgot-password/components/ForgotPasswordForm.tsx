@@ -11,7 +11,7 @@ export function ForgotPasswordForm() {
     <>
       <div className="text-center mb-8">
         <h1 className="font-serif italic text-3xl font-bold bg-gradient-to-br from-primary to-amber-600 bg-clip-text text-transparent mb-2">
-          Reset Password
+          Forget Password
         </h1>
         <p className="text-[13px] text-muted-foreground font-medium">
           Enter your email to receive an OTP.
