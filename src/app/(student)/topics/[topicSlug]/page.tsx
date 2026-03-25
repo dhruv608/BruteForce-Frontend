@@ -10,7 +10,7 @@ import Link from 'next/link';
 export default function TopicDetailsPage() {
   const { topicSlug } = useParams() as { topicSlug: string };
   const router = useRouter();
-  
+
   const [topic, setTopic] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -39,15 +39,15 @@ export default function TopicDetailsPage() {
 
   if (!topic) return null;
 
-  const progress = (topic.overallProgress?.totalQuestions || 0) === 0 
-    ? 0 
+  const progress = (topic.overallProgress?.totalQuestions || 0) === 0
+    ? 0
     : (topic.overallProgress.solvedQuestions / topic.overallProgress.totalQuestions) * 100;
 
   return (
     <div className="flex flex-col mx-auto max-w-[1100px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
-      
+
       {/* Back nav */}
-      <Link 
+      <Link
         href="/topics"
         className="text-[13px] font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 mb-6 w-fit"
       >
@@ -56,16 +56,25 @@ export default function TopicDetailsPage() {
 
       {/* Header Card */}
       <div className="bg-card border border-border/80 rounded-[24px] overflow-hidden shadow-sm mb-10 flex flex-col md:flex-row relative">
-        <div className="md:w-1/3 h-[180px] md:h-auto relative bg-muted">
+        <div className="md:w-1/3 h-[180px] md:h-auto relative bg-gradient-to-br from-primary/20 via-primary/10 to-background border-r border-border/80">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
-            src={topic.photo_url || "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&q=75"} 
-            alt={topic.topic_name}
-            className="w-full h-full object-cover"
-          />
+          {topic.photo_url ? (
+            <img
+              src={topic.photo_url}
+              alt={topic.topic_name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-primary/30 rounded-full" />
+              </div>
+            </div>
+          )}
+
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:hidden" />
         </div>
-        
+
         <div className="p-6 sm:p-8 flex-1 flex flex-col justify-center">
           <h1 className="font-serif italic text-3xl font-bold text-foreground mb-3">
             {topic.topic_name}
@@ -108,18 +117,17 @@ export default function TopicDetailsPage() {
         <div className="flex flex-col gap-3">
           {topic.classes?.length > 0 ? (
             topic.classes.map((cls: any, idx: number) => (
-              <div 
-                key={cls.slug} 
+              <div
+                key={cls.slug}
                 className="animate-in fade-in slide-in-from-bottom-2"
                 style={{ animationDelay: `${idx * 40}ms`, animationFillMode: 'both' }}
               >
-                <ClassCard 
+                <ClassCard
                   topicSlug={topic.slug}
                   classSlug={cls.slug}
                   index={idx}
                   classNameTitle={cls.class_name}
-                  duration={cls.duration_minutes}
-                  date={cls.class_date}
+                  date={cls.classDate}
                   totalQuestions={cls.totalQuestions || 0}
                   solvedQuestions={cls.solvedQuestions || 0}
                   pdfUrl={cls.pdf_url}

@@ -59,7 +59,7 @@ api.interceptors.response.use(
 
       try {
         const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/refresh-token`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh-token`,
           {},
           { withCredentials: true }
         );
@@ -73,29 +73,42 @@ api.interceptors.response.use(
           return api(originalRequest);
         }
       } catch (refreshError) {
-        // Refresh failed, clear data and redirect to appropriate login
+        // Refresh failed - handle silently without console errors
+        // This can happen when tokens are invalid/expired, which is normal
+        
         if (typeof window !== 'undefined') {
           localStorage.removeItem('accessToken');
           document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
 
-          // Redirect to appropriate login page based on current path
+          // Only redirect if we're not on a public page or leaderboard
           const currentPath = window.location.pathname;
+          const isPublicPage = currentPath.startsWith('/profile/') && 
+                              currentPath !== '/profile' && 
+                              currentPath.split('/').length === 3;
+          const isLeaderboard = currentPath === '/leaderboard';
 
-          if (currentPath.startsWith('/admin/')) {
-            window.location.href = '/admin/login';
-          }
-          else if (currentPath.startsWith('/superadmin/')) {
-            window.location.href = '/superadmin/login';
-          }
-          else if (currentPath === '/login' || currentPath.startsWith('/student/')) {
-            window.location.href = '/login';
-          }
-          else {
-            // Default fallback to student login
-            window.location.href = '/login';
+          if (!isPublicPage && !isLeaderboard) {
+            // Redirect to appropriate login page based on current path
+            if (currentPath.startsWith('/admin/')) {
+              window.location.href = '/admin/login';
+            }
+            else if (currentPath.startsWith('/superadmin/')) {
+              window.location.href = '/superadmin/login';
+            }
+            else if (currentPath === '/login' || currentPath.startsWith('/student/')) {
+              window.location.href = '/login';
+            }
+            else {
+              // Default fallback to student login
+              window.location.href = '/login';
+            }
           }
         }
-        return Promise.reject(refreshError);
+        
+        // Create a silent error that won't be logged
+        const silentError = new Error('Token refresh failed');
+        (silentError as any).silent = true;
+        return Promise.reject(silentError);
       }
     }
 

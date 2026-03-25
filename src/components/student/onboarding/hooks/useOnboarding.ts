@@ -38,7 +38,7 @@ export function useOnboarding() {
         github: data.github,
         username: data.username
       };
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/students/me`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/me`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
         body: JSON.stringify(payload)

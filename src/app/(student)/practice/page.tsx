@@ -27,20 +27,54 @@ export default function PracticePage() {
     type: searchParams.get('type') || '',
     solved: searchParams.get('solved') || '',
     page: Number(searchParams.get('page')) || 1,
-    limit: 15
+    limit: 10
   });
 
   const [questions, setQuestions] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [filterOptions, setFilterOptions] = useState<{
+    topics: any[];
+    levels: string[];
+    platforms: string[];
+    types: string[];
+  }>({
+    topics: [],
+    levels: [],
+    platforms: [],
+    types: []
+  });
+
+  // Check if any filters are active (excluding page and limit)
+  const hasActiveFilters = !!(filters.search || filters.topic || filters.level || filters.platform || filters.type || filters.solved);
 
   // Sync state to URL and fetch
   const fetchQuestions = useCallback(async () => {
     setLoading(true);
     try {
       const data = await studentPracticeService.getQuestions(filters);
+      console.log('Practice API Response:', data); // Debug log
       setQuestions(data.questions || []);
-      setTotalPages(data.totalPages || 1);
+      
+      // Extract total items from backend response structure
+      const totalItemsCount = data.pagination?.totalQuestions || data.totalItems || data.totalCount || 0;
+      const totalPagesCount = data.pagination?.totalPages || data.totalPages || 1;
+      
+      console.log('Pagination Data:', { totalItemsCount, totalPagesCount }); // Debug log
+      
+      setTotalPages(totalPagesCount);
+      setTotalItems(totalItemsCount);
+      
+      // Set filter options from API response
+      if (data.filters) {
+        setFilterOptions({
+          topics: data.filters.topics || [],
+          levels: data.filters.levels || [],
+          platforms: data.filters.platforms || [],
+          types: data.filters.types || []
+        });
+      }
 
       // Update URL safely
       const params = new URLSearchParams();
@@ -65,11 +99,16 @@ export default function PracticePage() {
   }, [filters, fetchQuestions]);
 
   const handleFilterChange = (key: keyof PracticeFilters, value: any) => {
-    setFilters(prev => ({ ...prev, [key]: value, page: 1 })); // Reset to page 1 on new filter
+    setFilters(prev => ({ 
+      ...prev, 
+      [key]: value,
+      // Reset to page 1 only when changing filters other than page
+      ...(key !== 'page' ? { page: 1 } : {})
+    }));
   };
 
   const clearFilters = () => {
-    setFilters({ search: '', topic: '', level: '', platform: '', type: '', solved: '', page: 1, limit: 15 });
+    setFilters({ search: '', topic: '', level: '', platform: '', type: '', solved: '', page: 1, limit: 10 });
   };
 
   // Extract unique topics from the current list (Ideally this comes from a dedicated endpoint in a real app)
@@ -88,72 +127,102 @@ export default function PracticePage() {
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-card border border-border p-4 rounded-2xl mb-6 shadow-sm flex flex-col gap-4">
+      <div className="bg-gradient-to-br from-card to-card/80 border border-border/60 p-6 rounded-2xl mb-6 shadow-lg backdrop-blur-sm">
         
         {/* Search */}
-        <div className="flex bg-secondary/30 border border-border rounded-xl p-1 shrink-0 overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 transition-all items-center">
-          <Search className="w-4 h-4 text-muted-foreground ml-3 mr-2" />
-          <input 
-            type="text" 
-            placeholder="Search questions by name..." 
-            className="flex-1 bg-transparent border-none text-[13.5px] outline-none px-2 py-2"
-            value={filters.search}
-            onChange={(e) => handleFilterChange('search', e.target.value)}
-          />
+        <div className="relative mb-4">
+          <div className="flex bg-background/80 border border-border/60 rounded-xl p-1 overflow-hidden focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary/40 transition-all shadow-sm">
+            <Search className="w-4 h-4 text-muted-foreground/70 ml-4 mr-3 flex-shrink-0" />
+            <input 
+              type="text" 
+              placeholder="Search questions by name or topic..." 
+              className="flex-1 bg-transparent border-none text-[14px] outline-none px-2 py-3 placeholder:text-muted-foreground/50"
+              value={filters.search}
+              onChange={(e) => handleFilterChange('search', e.target.value)}
+            />
+          </div>
         </div>
 
         {/* Dropdowns */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          {/* Topic Filter */}
+          <Select 
+            value={filters.topic || "ALL"} 
+            onValueChange={(val) => handleFilterChange('topic', val === "ALL" ? "" : val)}
+          >
+            <SelectTrigger className="bg-background/80 border-border/60 hover:bg-background/90 hover:border-primary/40 focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all text-[13px] h-10 shadow-sm">
+              <SelectValue placeholder="All Topics" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All Topics</SelectItem>
+              {filterOptions.topics.map((topic: any) => (
+                <SelectItem key={topic.id} value={topic.slug}>
+                  {topic.topic_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Level Filter */}
           <Select 
             value={filters.level || "ALL"} 
             onValueChange={(val) => handleFilterChange('level', val === "ALL" ? "" : val)}
           >
-            <SelectTrigger className="bg-secondary/30 border-border rounded-lg text-[12.5px]">
+            <SelectTrigger className="bg-background/80 border-border/60 hover:bg-background/90 hover:border-primary/40 focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all text-[13px] h-10 shadow-sm">
               <SelectValue placeholder="All Levels" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">All Levels</SelectItem>
-              <SelectItem value="EASY">Easy</SelectItem>
-              <SelectItem value="MEDIUM">Medium</SelectItem>
-              <SelectItem value="HARD">Hard</SelectItem>
+              {filterOptions.levels.map((level: string) => (
+                <SelectItem key={level} value={level}>
+                  {level.charAt(0) + level.slice(1).toLowerCase()}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
+          {/* Platform Filter */}
           <Select 
             value={filters.platform || "ALL"} 
             onValueChange={(val) => handleFilterChange('platform', val === "ALL" ? "" : val)}
           >
-            <SelectTrigger className="bg-secondary/30 border-border rounded-lg text-[12.5px]">
+            <SelectTrigger className="bg-background/80 border-border/60 hover:bg-background/90 hover:border-primary/40 focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all text-[13px] h-10 shadow-sm">
               <SelectValue placeholder="All Platforms" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">All Platforms</SelectItem>
-              <SelectItem value="LEETCODE">LeetCode</SelectItem>
-              <SelectItem value="GFG">GFG</SelectItem>
-              <SelectItem value="INTERVIEWBIT">InterviewBit</SelectItem>
-              <SelectItem value="OTHER">Other</SelectItem>
+              {filterOptions.platforms.map((platform: string) => (
+                <SelectItem key={platform} value={platform}>
+                  {platform.charAt(0) + platform.slice(1).toLowerCase()}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
+          {/* Type Filter */}
           <Select 
             value={filters.type || "ALL"} 
             onValueChange={(val) => handleFilterChange('type', val === "ALL" ? "" : val)}
           >
-            <SelectTrigger className="bg-secondary/30 border-border rounded-lg text-[12.5px]">
+            <SelectTrigger className="bg-background/80 border-border/60 hover:bg-background/90 hover:border-primary/40 focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all text-[13px] h-10 shadow-sm">
               <SelectValue placeholder="All Types" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">All Types</SelectItem>
-              <SelectItem value="CLASSWORK">Classwork</SelectItem>
-              <SelectItem value="HOMEWORK">Homework</SelectItem>
+              {filterOptions.types.map((type: string) => (
+                <SelectItem key={type} value={type}>
+                  {type.charAt(0) + type.slice(1).toLowerCase()}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
+          {/* Solved Status Filter */}
           <Select 
             value={filters.solved || "ALL"} 
             onValueChange={(val) => handleFilterChange('solved', val === "ALL" ? "" : val)}
           >
-            <SelectTrigger className="bg-secondary/30 border-border rounded-lg text-[12.5px]">
+            <SelectTrigger className="bg-background/80 border-border/60 hover:bg-background/90 hover:border-primary/40 focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all text-[13px] h-10 shadow-sm">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent>
@@ -163,12 +232,14 @@ export default function PracticePage() {
             </SelectContent>
           </Select>
 
+          {hasActiveFilters && (
           <button 
             onClick={clearFilters}
-            className="border-2 border-border/50 text-muted-foreground rounded-lg px-3 py-2 text-[12.5px] font-medium hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-colors"
+            className="bg-gradient-to-r from-red-500/10 to-red-600/10 hover:from-red-500/20 hover:to-red-600/20 border border-red-500/30 hover:border-red-500/50 text-red-600 dark:text-red-400 rounded-lg px-4 py-2.5 text-[12.5px] font-semibold transition-all duration-200 shadow-sm hover:shadow-md hover:scale-[1.02]"
           >
             Clear Filters
           </button>
+        )}
         </div>
       </div>
 
@@ -204,13 +275,15 @@ export default function PracticePage() {
       </div>
 
       {/* Pagination */}
-      {!loading && totalPages > 1 && (
+      {!loading && questions.length > 0 && (
         <div className="mt-8">
           <Pagination 
             currentPage={filters.page || 1}
-            totalItems={totalPages * (filters.limit || 15)} // Approximated totalItems since DB provides totalPages natively
-            limit={filters.limit || 15}
+            totalItems={totalItems}
+            limit={filters.limit || 10}
             onPageChange={(page) => handleFilterChange('page', page)}
+            onLimitChange={(limit) => handleFilterChange('limit', limit)}
+            showLimitSelector={true}
           />
         </div>
       )}

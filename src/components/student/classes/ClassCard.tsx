@@ -57,23 +57,28 @@ export const ClassCard: React.FC<ClassCardProps> = ({
           )}
         </div>
         
-        <div className="flex flex-wrap items-center gap-4 text-[12.5px] font-medium text-muted-foreground mb-5">
+        <div className="flex items-center justify-between mb-5">
           {date && (
-            <div className="flex items-center gap-1.5 bg-background border border-border/50 px-2 py-1 rounded-md">
+            <div className="flex items-center gap-1.5 text-[12.5px] font-medium text-muted-foreground">
               <Clock className="w-3.5 h-3.5" />
-              <span>{new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric'})}</span>
+              <span>{new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
             </div>
           )}
-          {duration && (
-            <div className="flex items-center gap-1.5 bg-background border border-border/50 px-2 py-1 rounded-md">
-              <PlayCircle className="w-3.5 h-3.5" />
-              <span>{duration} min</span>
-            </div>
-          )}
-          {pdfUrl && (
-            <div className="flex items-center gap-1.5 text-primary bg-primary/10 border border-primary/20 px-2 py-1 rounded-md">
-              <FileText className="w-3.5 h-3.5" />
-              <span>Notes Available</span>
+          {pdfUrl ? (
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+              }}
+              className="flex items-center gap-2 text-primary bg-primary/10 hover:bg-primary/20 border border-primary/20 hover:border-primary/30 px-3 py-2 rounded-lg text-[12.5px] font-semibold transition-all duration-200"
+            >
+              <FileText className="w-4 h-4" />
+              View Notes
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 text-muted-foreground bg-muted/50 border border-border/50 px-3 py-2 rounded-lg text-[12.5px] font-medium">
+              <FileText className="w-4 h-4" />
+              No notes available
             </div>
           )}
         </div>

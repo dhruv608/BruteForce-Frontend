@@ -11,7 +11,6 @@ export const studentProfileService = {
       const res = await api.get(`/api/students/profile/${username}`);
       return res.data;
     } catch (error: any) {
-      console.error('Profile fetch error:', error);
       // If network error or server not available, throw a more descriptive error
       if (error.code === 'NETWORK_ERROR' || error.message === 'Network Error') {
         throw new Error('Unable to connect to server. Please check if backend is running.');
@@ -40,7 +39,6 @@ export const studentProfileService = {
       
       return res.data;
     } catch (error: any) {
-      console.error('Profile image upload error:', error);
       throw error;
     }
   },
@@ -54,17 +52,13 @@ export const studentProfileService = {
       
       return res.data;
     } catch (error: any) {
-      console.error('Profile image delete error:', error);
       throw error;
     }
   },
 
   updateProfileDetails: async (data: any) => {
     // Use the new PUT /api/students/me endpoint for updating current student profile
-    const res = await api.put('/api/students/me', data);
-
-
-    
+    const res = await api.put('/api/students/me', data);    
     return res.data;
   }
 };

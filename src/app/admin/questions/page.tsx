@@ -73,7 +73,7 @@ function BadgeByType({ type }: { type: string }) {
   const variant = type === 'HOMEWORK' ? 'default' : 'secondary';
   return <Badge variant={variant}>{type.toLowerCase()}</Badge>;
 }
-
+// console.log(process.env.NEXT_PUBLIC_MY_LINK);
 function PlatformIcon({ platform }: { platform: string }) {
   const Icon = platform === 'LEETCODE' ? Code :
     platform === 'GFG' ? BookOpen :
