@@ -1,4 +1,5 @@
 import api from '../lib/api';
+import { isAdminToken, clearAuthTokens } from '../lib/auth-utils';
 import { Batch } from './batch.service';
 
 export interface Admin {
@@ -22,6 +23,14 @@ export interface Admin {
 }
 
 export const getAllAdmins = async (role?: string): Promise<Admin[]> => {
+  // Check if we have an admin token before making the request
+  if (!isAdminToken()) {
+    clearAuthTokens(); // Clear invalid tokens
+    const error = new Error('Access denied. Admins only.');
+    (error as any).response = { status: 403, data: { error: 'Access denied. Admins only.' } };
+    throw error;
+  }
+
   const params = role ? { role } : {};
   const response = await api.get('/api/superadmin/admins', { params });
   return response.data.data; // Backend wraps in { success, data }
@@ -52,6 +61,14 @@ export const deleteAdmin = async (id: number) => {
 // ==========================================
 
 export const getCurrentAdmin = async () => {
+  // Check if we have an admin token before making the request
+  if (!isAdminToken()) {
+    clearAuthTokens(); // Clear invalid tokens
+    const error = new Error('Access denied. Admins only.');
+    (error as any).response = { status: 403, data: { error: 'Access denied. Admins only.' } };
+    throw error;
+  }
+
   const response = await api.get('/api/admin/me');
   return response.data;
 };

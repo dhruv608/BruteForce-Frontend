@@ -1,7 +1,16 @@
 import api from '@/lib/api';
+import { isStudentToken, clearAuthTokens } from '@/lib/auth-utils';
 
 export const studentAuthService = {
   getCurrentStudent: async () => {
+    // Check if we have a student token before making the request
+    if (!isStudentToken()) {
+      clearAuthTokens(); // Clear invalid tokens
+      const error = new Error('Access denied. Students only.');
+      (error as any).response = { status: 403, data: { error: 'Access denied. Students only.' } };
+      throw error;
+    }
+
     try {
       const response = await api.get('/api/students/me');
       console.log("Raw API response:", response);

@@ -7,6 +7,7 @@ import { LayoutDashboard, Users, Building2, Layers, LogOut } from 'lucide-react'
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { getCurrentSuperAdmin } from '@/services/superadmin.service';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { isAdminToken, clearAuthTokens } from '@/lib/auth-utils';
 
 export default function SuperAdminLayout({ children }: { children: React.ReactNode }) {
 
@@ -17,6 +18,14 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
   React.useEffect(() => {
     const loadUser = async () => {
       if (pathname === '/superadmin/login') return;
+
+      // Check if we have an admin token before making any API calls
+      if (!isAdminToken()) {
+        console.log('No admin token found, clearing invalid tokens and redirecting to login');
+        clearAuthTokens(); // Clear any invalid tokens (like student tokens)
+        window.location.href = '/superadmin/login';
+        return;
+      }
       
       try {
         const userData = await getCurrentSuperAdmin();

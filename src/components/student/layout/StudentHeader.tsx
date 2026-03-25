@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { studentAuthService } from '@/services/student/auth.service';
+import { isStudentToken } from '@/lib/auth-utils';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { 
   DropdownMenu, 
@@ -25,14 +26,61 @@ export default function StudentHeader() {
       return;
     }
 
+    // Check if we have a student token before making API calls
+    if (!isStudentToken()) {
+      return; // Don't make API calls if not a student token
+    }
+
     const fetchProfile = async () => {
       try {
-        const data = await studentAuthService.getCurrentStudent();
+        // Add timeout to prevent hanging
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Profile fetch timeout')), 5000); // 5 second timeout
+        });
+        
+        const profilePromise = studentAuthService.getCurrentStudent();
+        const data = await Promise.race([profilePromise, timeoutPromise]) as any;
+        
         // /me endpoint returns clean data directly
         setProfile(data);
-        console.log("Student Header Profile Data:", data);
-      } catch (e) {
-        console.error("Failed to fetch student profile", e);
+      } catch (e: any) {
+        console.log("Failed to fetch student profile:", e?.response?.status || e.message);
+        
+        // Fallback: Try to get user info from token if API fails
+        try {
+          const token = localStorage.getItem('accessToken') || 
+                        document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
+          
+          if (token) {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(
+              atob(base64)
+                .split('')
+                .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                .join('')
+            );
+            const decoded = JSON.parse(jsonPayload);
+            
+            // Create a minimal profile from token data
+            const tokenProfile = {
+              data: {
+                name: decoded.email?.split('@')[0] || 'User',
+                username: decoded.email?.split('@')[0] || 'user',
+                email: decoded.email,
+                profileImageUrl: null
+              }
+            };
+            
+            setProfile(tokenProfile);
+            return;
+          }
+        } catch (tokenError) {
+          console.log("Token parsing failed:", tokenError);
+        }
+        
+        // If both API and token fail, set profile to null
+        setProfile(null);
       }
     };
     
@@ -41,7 +89,7 @@ export default function StudentHeader() {
     // Listen for custom event to refetch when onboarding completes
     window.addEventListener('profileUpdated', fetchProfile);
     return () => window.removeEventListener('profileUpdated', fetchProfile);
-  }, []);
+  }, [pathname]);
 
   const navLinks = [
     { name: 'Home', path: '/', icon: Home },
@@ -69,21 +117,6 @@ export default function StudentHeader() {
   
   const isUserOnboarded = isProfileLoaded ? Boolean(username && leetcode && gfg) : true;
 
-  // Debug logging
-  console.log('StudentHeader Debug:', {
-    profile,
-    isProfileLoaded,
-    username,
-    leetcode,
-    gfg,
-    isUserOnboarded,
-    'Full profile object': profile,
-    'Profile keys': Object.keys(profile || {}),
-    'Profile data': profile?.data,
-    'Profile username': profile?.data?.username,
-    'Profile leetcode': profile?.data?.leetcode,
-    'Profile gfg': profile?.data?.gfg
-  });
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border h-[64px] flex items-center px-6 lg:px-10 gap-5 shadow-sm transition-all">
@@ -100,16 +133,6 @@ export default function StudentHeader() {
           const Icon = link.icon;
           const isLocked = isProfileLoaded && !isUserOnboarded;
           
-          // Debug logging
-          console.log('Link Debug:', {
-            link: link.name,
-            isLocked,
-            isProfileLoaded,
-            isUserOnboarded,
-            username,
-            leetcode,
-            gfg
-          });
           
           return (
             <Link 
@@ -159,30 +182,30 @@ export default function StudentHeader() {
           }
           
           // If authenticated and profile is loaded, show user dropdown
-          if (isAuthenticated && isProfileLoaded) {
+          if (isAuthenticated && isProfileLoaded && profile?.data) {
             return isUserOnboarded ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="relative w-9 h-9 rounded-full border-2 border-border hover:border-primary focus:outline-none transition-all flex items-center justify-center overflow-hidden shrink-0 cursor-pointer">
-                    {profile?.data?.profileImageUrl ? (
-                      <img src={profile?.data?.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
+                    {profile.data.profileImageUrl ? (
+                      <img src={profile.data.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-primary to-amber-600 text-primary-foreground flex items-center justify-center text-[12px] font-bold">
-                        {profile?.data?.name ? profile?.data?.name.charAt(0).toUpperCase() : ''}
+                        {profile.data.name ? profile.data.name.charAt(0).toUpperCase() : 'U'}
                       </div>
                     )}
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 p-2 rounded-xl border-border/80 shadow-xl dark:shadow-black/50">
                   <div className="px-3 py-2.5 mb-1 bg-secondary/30 rounded-lg border border-border/50">
-                    <p className="text-[13.5px] font-semibold text-foreground truncate">{profile?.data?.name}</p>
-                    <p className="text-[12px] text-muted-foreground font-mono truncate">@{profile?.data?.username}</p>
+                    <p className="text-[13.5px] font-semibold text-foreground truncate">{profile.data.name}</p>
+                    <p className="text-[12px] text-muted-foreground font-mono truncate">@{profile.data.username}</p>
                   </div>
                   
                   <DropdownMenuSeparator className="bg-border/60 my-1" />
                   
                   <DropdownMenuItem asChild className="cursor-pointer rounded-lg text-[13px] font-medium focus:bg-primary/10 focus:text-primary py-2">
-                    <Link href={profile?.data?.username ? `/profile/${profile.data.username}` : '/profile'} className="flex items-center gap-2">
+                    <Link href={profile.data.username ? `/profile/${profile.data.username}` : '/profile'} className="flex items-center gap-2">
                       <User className="w-4 h-4" />
                       <span>My Profile</span>
                     </Link>
@@ -211,14 +234,16 @@ export default function StudentHeader() {
             );
           }
           
-          // For authenticated users on profile pages where profile isn't loaded, show loading
-          if (isAuthenticated && !isProfileLoaded) {
+          // For authenticated users where profile is still loading, show a proper loading state
+          if (isAuthenticated && (!isProfileLoaded || !profile?.data)) {
             return (
-              <div className="w-9 h-9 rounded-full border-2 border-border animate-pulse bg-secondary/50 shrink-0"></div>
+              <div className="w-9 h-9 rounded-full border-2 border-border bg-muted animate-pulse flex items-center justify-center shrink-0">
+                <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+              </div>
             );
           }
           
-          // Default: no button for public profile visitors
+          // Default fallback
           return null;
         })()}
       </div>

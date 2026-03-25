@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginAdmin } from '@/services/auth.service';
-import { getCurrentAdmin } from '@/services/admin.service';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -32,18 +31,8 @@ export default function AdminLoginPage() {
         document.cookie = `accessToken=${accessToken}; path=/`;
       }
       
-      // Get fresh user data from /me endpoint
-      try {
-        const userData = await getCurrentAdmin();
-        if (['TEACHER', 'SUPERADMIN', 'ADMIN'].includes(userData.data.role)) {
-          router.push('/admin');
-        } else {
-          setError('Unauthorized access: Admin privileges required');
-        }
-      } catch (fetchError: any) {
-        console.error('Failed to fetch admin info:', fetchError);
-        setError('Login successful but failed to load user data');
-      }
+      // Redirect to admin dashboard - the protected route will handle authentication
+      router.push('/admin');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {

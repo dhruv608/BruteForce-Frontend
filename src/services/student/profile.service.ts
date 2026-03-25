@@ -7,8 +7,17 @@ export const studentProfileService = {
   },
   
   getProfileByUsername: async (username: string) => {
-    const res = await api.get(`/api/students/profile/${username}`);
-    return res.data;
+    try {
+      const res = await api.get(`/api/students/profile/${username}`);
+      return res.data;
+    } catch (error: any) {
+      console.error('Profile fetch error:', error);
+      // If network error or server not available, throw a more descriptive error
+      if (error.code === 'NETWORK_ERROR' || error.message === 'Network Error') {
+        throw new Error('Unable to connect to server. Please check if backend is running.');
+      }
+      throw error;
+    }
   },
   
   updateProfileImage: async (file: File) => {
@@ -21,7 +30,6 @@ export const studentProfileService = {
       const formData = new FormData();
       formData.append('file', file); // Backend middleware expects field name 'file'
       
-      console.log('📤 Uploading profile photo to /api/students/profile-image...');
       
       const res = await api.post('/api/students/profile-image', formData, {
         withCredentials: true,
@@ -30,7 +38,6 @@ export const studentProfileService = {
         }
       });
       
-      console.log('✅ Profile photo updated successfully');
       return res.data;
     } catch (error: any) {
       console.error('Profile image upload error:', error);
@@ -40,13 +47,11 @@ export const studentProfileService = {
 
   deleteProfileImage: async () => {
     try {
-      console.log('🗑️ Deleting profile photo...');
       
       const res = await api.delete('/api/students/profile-image', {
         withCredentials: true
       });
       
-      console.log('✅ Profile photo deleted successfully');
       return res.data;
     } catch (error: any) {
       console.error('Profile image delete error:', error);

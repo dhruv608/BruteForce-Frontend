@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { loginSuperAdmin } from '@/services/auth.service';
-import { getCurrentSuperAdmin } from '@/services/superadmin.service';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function SuperAdminLoginPage() {
@@ -36,18 +35,8 @@ export default function SuperAdminLoginPage() {
         document.cookie = `accessToken=${accessToken}; path=/`;
       }
       
-      // Get fresh user data from /me endpoint
-      try {
-        const userData = await getCurrentSuperAdmin();
-        if (userData.data.role === 'SUPERADMIN') {
-          router.push('/superadmin');
-        } else {
-          setError('Unauthorized access: SuperAdmin privileges required');
-        }
-      } catch (fetchError: any) {
-        console.error('Failed to fetch superadmin info:', fetchError);
-        setError('Login successful but failed to load user data');
-      }
+      // Redirect to superadmin dashboard - the protected route will handle authentication
+      router.push('/superadmin');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {

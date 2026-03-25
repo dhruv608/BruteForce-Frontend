@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { studentTopicService } from '@/services/student/topic.service';
 import { studentAuthService } from '@/services/student/auth.service';
+import { isStudentToken } from '@/lib/auth-utils';
 import { TopicCard } from '@/components/student/topics/TopicCard';
 import { Button } from '@/components/ui/button';
 import { Compass, PenTool, Zap, Target, Flame, Trophy, BookOpen } from 'lucide-react';
@@ -42,6 +43,12 @@ export default function StudentHomePage() {
 
 
   const refreshUserData = async () => {
+    // Check if we have a student token before making API calls
+    if (!isStudentToken()) {
+      console.log("No student token found, skipping API calls");
+      return;
+    }
+
     try {
       // Use lightweight /me endpoint for basic student info
       console.log("Calling getCurrentStudent...");

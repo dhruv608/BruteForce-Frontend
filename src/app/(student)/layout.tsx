@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import StudentHeader from '@/components/student/layout/StudentHeader';
 import { studentAuthService } from '@/services/student/auth.service';
+import { isStudentToken, clearAuthTokens } from '@/lib/auth-utils';
 
 export default function StudentLayout({
   children,
@@ -20,30 +21,27 @@ export default function StudentLayout({
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    console.log('=== LAYOUT USEEFFECT START ===');
-    console.log('Layout pathname:', pathname);
-    console.log('Window location:', window.location.pathname);
     
     // Allow public access to profile routes
     if (pathname.startsWith('/profile/')) {
-      console.log('✅ Public profile route detected, skipping auth');
       setLoading(false);
-      console.log('=== LAYOUT USEEFFECT END (SKIP AUTH) ===');
       return;
     }
 
-    console.log('❌ Not a profile route, checking auth...');
+    // Check if we have a student token
+    if (!isStudentToken()) {
+      clearAuthTokens(); // Clear any invalid tokens (like admin tokens)
+      router.push('/login');
+      return;
+    }
+
     const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-    console.log('Token exists:', !!token);
     
     if (!token) {
-      console.log('🔄 No token found, redirecting to login...');
       router.push('/login');
-      console.log('=== LAYOUT USEEFFECT END (REDIRECT) ===');
       return;
     }
 
-    console.log('✅ Token found, continuing with auth flow...');
 
     const checkProfile = async () => {
       try {

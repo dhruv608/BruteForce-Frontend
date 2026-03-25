@@ -5,18 +5,30 @@ import { useParams } from 'next/navigation';
 import { studentProfileService } from '@/services/student/profile.service';
 import { studentAuthService } from '@/services/student/auth.service';
 import { Button } from '@/components/ui/button';
-import { Github, Linkedin, Flame, Trophy, CheckCircle2, Link as LinkIcon, Camera, Edit2, X, Calendar, Target, TrendingUp, Users, MapPin, GraduationCap, Code, Activity, Clock, Award } from 'lucide-react';
+import { Github, Linkedin, Flame, Trophy, CheckCircle2, Link as LinkIcon, Camera, Edit2, X, Calendar, Target, TrendingUp, Users, MapPin, GraduationCap, Code, Activity, Clock, Award, BarChart3 } from 'lucide-react';
+import { TopicProgressModal } from '@/components/TopicProgressModal';
+import api from '@/lib/api';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function PublicProfilePage() {
-  console.log('=== PROFILE PAGE COMPONENT RENDER ===');
   const params = useParams();
   const username = params?.username as string;
-  console.log('Profile username from params:', username);
   
   const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showUsernameEditModal, setShowUsernameEditModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({
     name: '',
     github: '',
@@ -24,34 +36,81 @@ export default function PublicProfilePage() {
     leetcode: '',
     gfg: ''
   });
+  const [usernameForm, setUsernameForm] = useState({
+    username: ''
+  });
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [showTopicProgressModal, setShowTopicProgressModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    console.log('=== PROFILE PAGE USEEFFECT START ===');
-    console.log('Fetching profile for username:', username);
-    fetchProfileByUsername();
-    // Only fetch current user if we have a token
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-    if (token) {
-      fetchCurrentUser();
-    }
-    console.log('=== PROFILE PAGE USEEFFECT END ===');
+    // Fetch current user first to establish auth state
+    const initializeAuthAndProfile = async () => {
+      await fetchCurrentUser();
+      await fetchProfileByUsername();
+    };
+    
+    initializeAuthAndProfile();
   }, [username]);
 
   const fetchCurrentUser = async () => {
     try {
-      const user = await studentAuthService.getCurrentStudent();
-      setCurrentUser(user?.data);
-    } catch (err) {
-      console.log("User not authenticated");
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Auth check timeout')), 5000);
+      });
+      
+      const currentUserPromise = studentAuthService.getCurrentStudent();
+      const user = await Promise.race([currentUserPromise, timeoutPromise]) as any;
+      
+      console.log("Current user fetched:", user);
+      setCurrentUser(user);
+      
+      // Check if user has admin token trying to access student routes
+      if (user?.error === "Access denied. Students only.") {
+        console.log("Admin token detected, cannot access student routes");
+        setCurrentUser(null);
+        return;
+      }
+      
+    } catch (error: any) {
+      console.log("Auth check failed:", error?.response?.status || error.message);
+      
+      // Handle 403 errors (admin token trying to access student routes)
+      if (error?.response?.status === 403) {
+        console.log("403 error - likely admin token on student route");
+        setCurrentUser(null);
+        return;
+      }
+      
+      // For other errors, we still want to set authChecked = true
+      console.log("Authentication error, but proceeding...");
+    } finally {
+      setAuthChecked(true);
     }
   };
 
+  // Authentication is now completely optional - only check when user tries to edit
+  // This prevents all 403 errors on public profile views
+
   const fetchProfileByUsername = async () => {
+    if (!username) {
+      setProfileError('Username is required');
+      setLoading(false);
+      return;
+    }
+
+    // Add timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      setProfileError('Request timed out. Please try again.');
+      setLoading(false);
+    }, 10000); // 10 second timeout
+
     try {
       const data = await studentProfileService.getProfileByUsername(username);
+      clearTimeout(timeoutId);
       setProfileData(data);
+      setProfileError(null);
       setEditForm({
         name: data?.student?.name || '',
         github: data?.student?.github || '',
@@ -59,9 +118,27 @@ export default function PublicProfilePage() {
         leetcode: data?.student?.leetcode || '',
         gfg: data?.student?.gfg || ''
       });
-    } catch (err) {
+      setUsernameForm({
+        username: data?.student?.username || ''
+      });
+    } catch (err: any) {
+      clearTimeout(timeoutId);
       console.error("Failed to fetch profile", err);
+      
+      // Provide more specific error messages
+      let errorMessage = 'Failed to load profile';
+      if (err.response?.status === 404) {
+        errorMessage = 'Profile not found';
+      } else if (err.response?.status === 500) {
+        errorMessage = 'Server error. Please try again later.';
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setProfileError(errorMessage);
+      setProfileData(null);
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   };
@@ -73,9 +150,25 @@ export default function PublicProfilePage() {
     setUploading(true);
     try {
       await studentProfileService.updateProfileImage(file);
-      await fetchProfileByUsername();
-    } catch (err) {
+      
+      // Add timeout for profile refresh to prevent hanging
+      const refreshTimeout = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Profile refresh timeout')), 3000); // 3 second timeout
+      });
+      
+      await Promise.race([fetchProfileByUsername(), refreshTimeout]);
+      
+      // Show success feedback
+      console.log('Profile image updated successfully');
+    } catch (err: any) {
       console.error("Image upload failed", err);
+      
+      // If refresh timed out, still show success for the upload
+      if (err.message === 'Profile refresh timeout') {
+        console.log('Image uploaded but profile refresh timed out - manual refresh may be needed');
+        // Optionally show a user-friendly message
+        alert('Profile image updated! Please refresh the page to see changes.');
+      }
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -84,8 +177,29 @@ export default function PublicProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="text-center py-20 text-muted-foreground">
+        <div className="max-w-md mx-auto">
+          <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold mb-2">Loading Profile</h2>
+          <p className="text-sm">Fetching profile data for @{username}...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (profileError) {
+    return (
+      <div className="text-center py-20">
+        <div className="max-w-md mx-auto">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <X className="w-8 h-8 text-red-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Unable to Load Profile</h2>
+          <p className="text-muted-foreground mb-6">{profileError}</p>
+          <Button onClick={() => window.location.reload()} variant="outline">
+            Try Again
+          </Button>
+        </div>
       </div>
     );
   }
@@ -103,7 +217,236 @@ export default function PublicProfilePage() {
     ? student.name.split(' ').map((n: string) => n[0]).slice(0, 2).join('').toUpperCase()
     : 'ME';
 
-  const canEdit = currentUser?.username === student.username;
+  const canEdit = () => {
+    // If auth check hasn't completed, don't show edit button yet
+    if (!authChecked) {
+      return false;
+    }
+
+    // If no current user, definitely can't edit
+    if (!currentUser) {
+      return false;
+    }
+
+    // If current user has admin token (403 error), can't edit student profile
+    if (currentUser?.error === "Access denied. Students only.") {
+      return false;
+    }
+
+    // Check if profile data exists and has student info
+    if (!profileData?.student) {
+      return false;
+    }
+
+    // Multiple ways to check if this is the owner's profile
+    const isOwner1 = currentUser?.data?.id === profileData.student.id;
+    const isOwner2 = currentUser?.data?.username === profileData.student.username;
+    const isOwner3 = currentUser?.id === profileData.student.id;
+    const isOwner4 = currentUser?.username === profileData.student.username;
+    
+    // Check token-based username match
+    const token = localStorage.getItem('accessToken') || document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
+    let tokenUsername = null;
+    
+    if (token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        const decoded = JSON.parse(jsonPayload);
+        tokenUsername = decoded.email?.split('@')[0]; // Extract username from email
+      } catch (e) {
+        console.log("Token parsing failed in canEdit");
+      }
+    }
+    
+    const isOwner5 = tokenUsername === profileData.student.username;
+    
+    // Log for debugging
+    console.log("CanEdit check:", {
+      currentUser: currentUser?.data,
+      profileStudent: profileData.student,
+      isOwner1, isOwner2, isOwner3, isOwner4, isOwner5,
+      tokenUsername
+    });
+    
+    return isOwner1 || isOwner2 || isOwner3 || isOwner4 || isOwner5;
+  };
+
+  // Add a manual refresh function for auth state
+  const refreshAuthState = async () => {
+    setAuthChecked(false);
+    await fetchCurrentUser();
+  };
+
+  // Test function to debug authentication
+  const testAuth = async () => {
+    try {
+      const localStorageToken = localStorage.getItem('accessToken');
+      const cookieToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
+      const token = localStorageToken || cookieToken;
+
+      if (!token) {
+        console.log('No token found');
+        return;
+      }
+
+      const response = await fetch('/api/students/debug-auth', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+      console.log('Auth debug response:', data);
+    } catch (error) {
+      console.error('Auth debug error:', error);
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      setUploading(true);
+      
+      // Get token from multiple sources
+      const localStorageToken = localStorage.getItem('accessToken');
+      const cookieToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
+      const token = localStorageToken || cookieToken;
+
+      // Call the backend API to update profile
+      const response = await fetch('/api/students/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          github: editForm.github,
+          linkedin: editForm.linkedin
+        })
+      });
+
+      if (response.ok) {
+        // Refresh profile data
+        await fetchProfileByUsername();
+        setShowEditModal(false);
+        alert('Profile updated successfully!');
+      } else {
+        throw new Error('Failed to update profile');
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile. Please try again.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  console.log('=== DEBUGGING API URL ===');
+console.log('NEXT_PUBLIC_API_URL from process.env:', process.env.NEXT_PUBLIC_API_URL);
+console.log('Current baseURL from axios instance:', (api as any).defaults.baseURL);
+
+const handleSaveUsername = async () => {
+    try {
+      if (!usernameForm.username.trim()) {
+        alert('Username cannot be empty');
+        return;
+      }
+
+      // Get token from multiple sources
+      const localStorageToken = localStorage.getItem('accessToken');
+      const cookieToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
+      const token = localStorageToken || cookieToken;
+
+      if (!token) {
+        throw new Error('No authentication token found. Please log in again.');
+      }
+
+      console.log('Using token for username update:', token.substring(0, 20) + '...');
+
+      const response = await fetch('/api/students/username', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          username: usernameForm.username.trim()
+        })
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers.get('content-type'));
+
+      if (response.ok) {
+        // Refresh profile data and redirect to new URL
+        await fetchProfileByUsername();
+        setShowUsernameEditModal(false);
+        
+        // Redirect to new username URL
+        const newUsername = usernameForm.username.trim();
+        if (newUsername !== username) {
+          window.location.href = `/profile/${newUsername}`;
+        }
+      } else {
+        // Check if response is HTML (error page) instead of JSON
+        const contentType = response.headers.get('content-type');
+        console.log('Response content type:', contentType);
+        
+        if (contentType && contentType.includes('text/html')) {
+          // Get the response text to see what HTML we're getting
+          const htmlText = await response.text();
+          console.log('HTML Response (first 200 chars):', htmlText.substring(0, 200));
+          throw new Error('Authentication failed. Please log in again.');
+        }
+        
+        const error = await response.json() as { error?: string };
+        throw new Error(error.error || 'Failed to update username');
+      }
+    } catch (error: any) {
+      console.error('Error updating username:', error);
+      alert((error as Error).message || 'Failed to update username. Please try again.');
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteImage = async () => {
+    try {
+      setUploading(true);
+      
+      const token = localStorage.getItem('accessToken') || 
+                   document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
+
+      const response = await fetch('/api/students/profile-image', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        // Refresh profile data
+        await fetchProfileByUsername();
+        setShowDeleteConfirm(false);
+        alert('Profile image removed successfully!');
+      } else {
+        throw new Error('Failed to remove profile image');
+      }
+    } catch (error) {
+      console.error('Error removing profile image:', error);
+      alert('Failed to remove profile image. Please try again.');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-[1200px] mx-auto pb-16">
@@ -124,28 +467,26 @@ export default function PublicProfilePage() {
                 </div>
               )}
             </div>
-            
-            {canEdit && (
-              <button 
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-                className="absolute bottom-2 right-2 w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95 disabled:opacity-50 disabled:cursor-wait"
-              >
-                <Camera className="w-5 h-5" />
-              </button>
-            )}
-            <input 
-              type="file"
-              ref={fileInputRef} 
-              onChange={handleImageUpload} 
-              accept="image/*" 
-              className="hidden" 
-            />
           </div>
 
           <div className="flex-1 text-center sm:text-left">
-            <h1 className="text-4xl font-black font-serif italic text-foreground tracking-tight mb-2">{student.name}</h1>
-            <p className="text-muted-foreground font-mono text-lg mb-4">@{student.username}</p>
+            <div className="flex items-center justify-center sm:justify-start gap-3 mb-2">
+              <h1 className="text-4xl font-black font-serif italic text-foreground tracking-tight">{student.name}</h1>
+            </div>
+            <div className="flex items-center justify-center sm:justify-start gap-2 mb-4">
+              <p className="text-muted-foreground font-mono text-lg">@{student.username}</p>
+              {canEdit() && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                  onClick={() => setShowUsernameEditModal(true)}
+                  title="Edit username"
+                >
+                  <Edit2 className="w-3 h-3" />
+                </Button>
+              )}
+            </div>
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-[14px] font-medium text-muted-foreground">
               {student.batch && (
                 <span className="bg-primary/10 px-4 py-2 rounded-full border border-primary/20 flex items-center gap-2">
@@ -163,7 +504,23 @@ export default function PublicProfilePage() {
           </div>
           
           <div className="flex gap-4">
-            {canEdit && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex h-8 text-[12px]"
+              onClick={() => setShowTopicProgressModal(true)}
+            >
+              <BarChart3 className="w-3 h-3 mr-2" />
+              Topic Progress
+            </Button>
+            
+            {/* Show loading state while checking auth */}
+            {!authChecked ? (
+              <div className="hidden sm:flex items-center gap-2 px-3 h-8 text-[12px] text-muted-foreground">
+                <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin"></div>
+                Checking permissions...
+              </div>
+            ) : canEdit() ? (
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -173,6 +530,28 @@ export default function PublicProfilePage() {
                 <Edit2 className="w-3 h-3 mr-2" />
                 Edit Profile
               </Button>
+            ) : (
+              /* Show refresh button if user thinks they should be able to edit */
+              <div className="hidden sm:flex items-center gap-2">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 text-[12px] text-muted-foreground hover:text-foreground"
+                  onClick={refreshAuthState}
+                  title="Refresh authentication state"
+                >
+                  Refresh
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 text-[12px] text-blue-600 hover:text-blue-700"
+                  onClick={testAuth}
+                  title="Test authentication (debug)"
+                >
+                  Test Auth
+                </Button>
+              </div>
             )}
           </div>
         </div>
@@ -217,11 +596,58 @@ export default function PublicProfilePage() {
             </div>
           </div>
 
-          {/* PLATFORMS & SOCIALS */}
+          {/* FIXED INFO */}
+          <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
+            <h3 className="font-bold text-foreground mb-6 text-[16px] uppercase tracking-wider flex items-center gap-2">
+              <Users className="w-5 h-5 text-primary" />
+              Profile Information
+            </h3>
+            
+            <div className="space-y-4">
+              <div className="flex justify-between items-center p-4 bg-secondary/50 rounded-xl">
+                <span className="text-[14px] font-medium text-muted-foreground">Name</span>
+                <span className="font-bold text-foreground">{student.name || '-'}</span>
+              </div>
+              
+              <div className="flex justify-between items-center p-4 bg-secondary/50 rounded-xl">
+                <span className="text-[14px] font-medium text-muted-foreground">Email</span>
+                <span className="font-mono text-sm text-foreground truncate max-w-[150px]">{student.email || '-'}</span>
+              </div>
+
+              <div className="flex justify-between items-center p-4 bg-secondary/50 rounded-xl">
+                <span className="text-[14px] font-medium text-muted-foreground">Enrollment ID</span>
+                <span className="font-mono text-sm text-foreground">{student.enrollmentId || '-'}</span>
+              </div>
+
+              <div className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${student.leetcode ? 'bg-amber-500/10 border-amber-500/20' : 'bg-muted/30 border-dashed border-border opacity-60'}`}>
+                <div className="w-10 h-10 bg-amber-500 text-white rounded-lg flex items-center justify-center font-bold text-lg">
+                  <Code className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-[14px] font-bold">LeetCode</div>
+                  <div className="text-[12px] opacity-80 font-mono">{student.leetcode || 'Not linked'}</div>
+                </div>
+                {student.leetcode && <CheckCircle2 className="w-5 h-5 text-amber-500" />}
+              </div>
+
+              <div className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${student.gfg ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-muted/30 border-dashed border-border opacity-60'}`}>
+                <div className="w-10 h-10 bg-emerald-500 text-white rounded-lg flex items-center justify-center font-bold text-lg">
+                  <Code className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-[14px] font-bold">GeeksforGeeks</div>
+                  <div className="text-[12px] opacity-80 font-mono">{student.gfg || 'Not linked'}</div>
+                </div>
+                {student.gfg && <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
+              </div>
+            </div>
+          </div>
+
+          {/* EDITABLE SOCIAL LINKS */}
           <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
             <h3 className="font-bold text-foreground mb-6 text-[16px] uppercase tracking-wider flex items-center gap-2">
               <LinkIcon className="w-5 h-5 text-primary" />
-              Connected Platforms
+              Social Links
             </h3>
             
             <div className="space-y-4">
@@ -246,31 +672,13 @@ export default function PublicProfilePage() {
                 </div>
                 {student.linkedin && <CheckCircle2 className="w-5 h-5 text-blue-500" />}
               </a>
-
-              <div className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${student.leetcode ? 'bg-amber-500/10 border-amber-500/20 hover:shadow-md text-amber-600 dark:text-amber-500' : 'bg-muted/30 border-dashed border-border opacity-60'}`}>
-                <div className="w-10 h-10 bg-amber-500 text-white rounded-lg flex items-center justify-center font-bold text-lg">
-                  <Code className="w-6 h-6" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-[14px] font-bold">LeetCode</div>
-                  <div className="text-[12px] opacity-80 font-mono">{student.leetcode || 'Not linked'}</div>
-                </div>
-                {student.leetcode && <CheckCircle2 className="w-5 h-5 text-amber-500" />}
-              </div>
-
-              <div className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${student.gfg ? 'bg-emerald-500/10 border-emerald-500/20 hover:shadow-md text-emerald-600 dark:text-emerald-500' : 'bg-muted/30 border-dashed border-border opacity-60'}`}>
-                <div className="w-10 h-10 bg-emerald-500 text-white rounded-lg flex items-center justify-center font-bold text-lg">
-                  <Code className="w-6 h-6" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-[14px] font-bold">GeeksforGeeks</div>
-                  <div className="text-[12px] opacity-80 font-mono">{student.gfg || 'Not linked'}</div>
-                </div>
-                {student.gfg && <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
-              </div>
             </div>
             
-            <Button variant="outline" className="w-full mt-6 text-[12px] py-2 h-8">Manage Links</Button>
+            {canEdit() && (
+              <Button variant="outline" className="w-full mt-6 text-[12px] py-2 h-8" onClick={() => setShowEditModal(true)}>
+                Edit Social Links
+              </Button>
+            )}
           </div>
         </div>
 
@@ -538,20 +946,166 @@ export default function PublicProfilePage() {
             </div>
             
             <div className="p-6 space-y-4">
-              <input
-                value={editForm.name}
-                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                placeholder="Name"
-                className="w-full border p-3 rounded-lg"
-              />
+              {/* Profile Image Upload */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Profile Image</label>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-full border-2 border-border bg-muted flex items-center justify-center overflow-hidden">
+                    {student.profileImageUrl ? (
+                      <img src={student.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-primary to-amber-600 text-white flex items-center justify-center text-sm font-bold">
+                        {student.name?.charAt(0)?.toUpperCase() || 'U'}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleImageUpload}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    <Button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                    >
+                      {uploading ? 'Uploading...' : (student.profileImageUrl ? 'Change Image' : 'Add Image')}
+                    </Button>
+                    {student.profileImageUrl && (
+                      <Button
+                        onClick={handleDeleteImage}
+                        disabled={uploading}
+                        variant="ghost"
+                        size="sm"
+                        className="w-full mt-1 text-destructive hover:text-destructive"
+                      >
+                        Remove Image
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
 
-              <Button onClick={() => setShowEditModal(false)} className="w-full h-8 text-[12px]">
-                Save
-              </Button>
+              {/* GitHub */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">GitHub Username</label>
+                <input
+                  type="text"
+                  value={editForm.github}
+                  onChange={(e) => setEditForm({ ...editForm, github: e.target.value })}
+                  placeholder="github-username"
+                  className="w-full border border-border p-3 rounded-lg bg-background"
+                />
+              </div>
+
+              {/* LinkedIn */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">LinkedIn URL</label>
+                <input
+                  type="url"
+                  value={editForm.linkedin}
+                  onChange={(e) => setEditForm({ ...editForm, linkedin: e.target.value })}
+                  placeholder="https://linkedin.com/in/username"
+                  className="w-full border border-border p-3 rounded-lg bg-background"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <Button onClick={handleSaveProfile} disabled={uploading} className="flex-1">
+                  {uploading ? 'Saving...' : 'Save Changes'}
+                </Button>
+                <Button onClick={() => setShowEditModal(false)} variant="outline" className="flex-1">
+                  Cancel
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* USERNAME EDIT MODAL */}
+      {showUsernameEditModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-2xl border border-border w-full max-w-sm shadow-xl">
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h2 className="text-xl font-bold">Edit Username</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowUsernameEditModal(false)}
+                className="h-8 w-8 p-0"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Username</label>
+                <input
+                  type="text"
+                  value={usernameForm.username}
+                  onChange={(e) => setUsernameForm({ ...usernameForm, username: e.target.value })}
+                  placeholder="username"
+                  className="w-full border border-border p-3 rounded-lg bg-background"
+                />
+                <p className="text-xs text-muted-foreground">
+                  This will be your unique identifier for profile URLs
+                </p>
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <Button onClick={handleSaveUsername} className="flex-1">
+                  Save Username
+                </Button>
+                <Button onClick={() => setShowUsernameEditModal(false)} variant="outline" className="flex-1">
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TOPIC PROGRESS MODAL */}
+      <TopicProgressModal 
+        isOpen={showTopicProgressModal}
+        onClose={() => setShowTopicProgressModal(false)}
+        username={username}
+      />
+
+      {/* CUSTOM CONFIRM DIALOG */}
+      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Remove Profile Image</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to remove your profile image? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteConfirm(false)}
+              disabled={uploading}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDeleteImage}
+              disabled={uploading}
+            >
+              {uploading ? 'Removing...' : 'Remove'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -19,6 +19,7 @@ import { logoutUser } from '@/services/auth.service';
 import { getCurrentAdmin } from '@/services/admin.service';
 import { useAdminStore } from '@/store/adminStore';
 import { getAdminCities, getAdminBatches } from '@/services/admin.service';
+import { isAdminToken, clearAuthTokens } from '@/lib/auth-utils';
 
 function decodeJwt(token: string) {
   try {
@@ -43,6 +44,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [user, setUser] = useState<{name: string, role: string} | null>(null);
   const [cities, setCities] = useState<{id: number, city_name: string}[]>([]);
   const [batches, setBatches] = useState<{id: number, slug: string, batch_name: string}[]>([]);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const { 
     selectedCity, 
@@ -57,16 +60,38 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     router.push('/admin/login');
   };
 
+  const handleRetry = () => {
+    setAuthError(null);
+    setAuthLoading(true);
+    window.location.reload();
+  };
+
   useEffect(() => {
-    if (pathname === '/admin/login') return;
+    // Skip all API calls on login page only
+    if (pathname === '/admin/login') {
+      return;
+    }
+
+    // Check if we have an admin token before making any API calls
+    if (!isAdminToken()) {
+      console.log('No admin token found, clearing invalid tokens and redirecting to login');
+      clearAuthTokens(); // Clear any invalid tokens (like student tokens)
+      handleLogout();
+      return;
+    }
 
     const token = localStorage.getItem('accessToken');
-    if (!token) {
+    const cookieToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
+    
+    if (!token && !cookieToken) {
+      console.log('No admin token found, redirecting to login');
       handleLogout();
       return;
     }
 
     const loadUserAndData = async () => {
+      setAuthLoading(true);
+      setAuthError(null);
       setIsLoadingContext(true);
       try {
         // Get current admin user from API
@@ -78,7 +103,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         setCities(cityList);
 
         // Decode token for cityId/batchId if available
-        const payload = decodeJwt(token);
+        const activeToken = token || cookieToken;
+        const payload = decodeJwt(activeToken || '');
         let initialCityId = payload?.cityId;
         
         let matchingCity = null;
@@ -114,11 +140,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
              });
            }
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Failed to load admin data", err);
-        handleLogout();
+        
+        // Handle specific error cases
+        let errorMessage = 'Authentication failed';
+        if (err.response?.status === 403) {
+          errorMessage = 'Access forbidden - insufficient permissions';
+        } else if (err.response?.status === 401) {
+          errorMessage = 'Authentication failed - token expired';
+        } else if (err.code === 'NETWORK_ERROR') {
+          errorMessage = 'Network error - please check your connection';
+        }
+        
+        setAuthError(errorMessage);
+        
+        // Clear tokens and redirect to login after a delay
+        setTimeout(() => {
+          handleLogout();
+        }, 3000);
       } finally {
         setIsLoadingContext(false);
+        setAuthLoading(false);
       }
     };
 
@@ -173,6 +216,43 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (pathname === '/admin/login') {
     return <>{children}</>;
+  }
+
+  // Show loading state while authenticating
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold mb-2">Authenticating Admin</h2>
+          <p className="text-sm text-muted-foreground">Verifying your credentials...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state if authentication fails
+  if (authError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="max-w-md mx-auto text-center">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-red-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Authentication Error</h2>
+          <p className="text-muted-foreground mb-6">{authError}</p>
+          <div className="flex gap-3 justify-center">
+            <button onClick={handleRetry} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+              Retry
+            </button>
+            <button onClick={() => router.push('/admin/login')} className="px-4 py-2 border border-border rounded-lg hover:bg-muted transition-colors">
+              Login Again
+            </button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-4">Redirecting to login in 3 seconds...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!user) return null;

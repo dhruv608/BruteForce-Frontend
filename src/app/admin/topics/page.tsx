@@ -69,7 +69,7 @@ export default function AdminTopicsPage() {
    const [formError, setFormError] = useState('');
 
    //Pagination
-   const [limit, setLimit] = useState(10);
+   const [limit, setLimit] = useState(20);
    // Debounce search
    useEffect(() => {
       const handler = setTimeout(() => {
@@ -84,7 +84,7 @@ export default function AdminTopicsPage() {
       const params = new URLSearchParams();
       if (debouncedSearch) params.set('search', debouncedSearch);
       if (page > 1) params.set('page', page.toString());
-      if (limit !== 10) params.set('limit', limit.toString());
+      if (limit !== 20) params.set('limit', limit.toString());
       if (sortBy !== 'recent') params.set('sortBy', sortBy);
 
       const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
