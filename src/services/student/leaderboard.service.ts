@@ -2,18 +2,29 @@ import api from '@/lib/api';
 
 export const studentLeaderboardService = {
   getLeaderboard: async (filters: { city?: string; year?: number; type?: string } = {}, search?: string) => {
-    console.log('🚀 studentLeaderboardService.getLeaderboard called with:', { filters, search });
     try {
       const url = search 
         ? `/api/students/leaderboard?username=${encodeURIComponent(search)}` 
         : '/api/students/leaderboard';
-      console.log('🌍 Making API request to:', url, 'with body:', filters);
       
       const res = await api.post(url, filters);
-      console.log('✅ API response received:', res.data);
       return res.data;
-    } catch (error) {
-      console.error('❌ Leaderboard API error:', error);
+    } catch (error: any) {
+      // Handle silent errors (like token refresh failures) without throwing
+      if (error?.silent) {
+        // Return empty leaderboard data for silent failures
+        return {
+          success: false,
+          top10: [],
+          yourRank: null,
+          message: "Unable to load leaderboard",
+          filters: {
+            city: filters?.city || "all",
+            year: filters?.year || new Date().getFullYear(),
+            type: filters?.type || "all"
+          }
+        };
+      }
       throw error;
     }
   }

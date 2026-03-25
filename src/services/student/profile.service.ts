@@ -40,7 +40,6 @@ export const studentProfileService = {
       
       return res.data;
     } catch (error: any) {
-      console.error('Profile image upload error:', error);
       throw error;
     }
   },
@@ -54,17 +53,13 @@ export const studentProfileService = {
       
       return res.data;
     } catch (error: any) {
-      console.error('Profile image delete error:', error);
       throw error;
     }
   },
 
   updateProfileDetails: async (data: any) => {
     // Use the new PUT /api/students/me endpoint for updating current student profile
-    const res = await api.put('/api/students/me', data);
-
-
-    
+    const res = await api.put('/api/students/me', data);    
     return res.data;
   }
 };

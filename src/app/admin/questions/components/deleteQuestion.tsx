@@ -21,11 +21,11 @@ interface DeleteQuestionProps {
   onSuccess: () => void;
 }
 
-export default function DeleteQuestion({ 
-  open, 
-  onOpenChange, 
-  question, 
-  onSuccess 
+export default function DeleteQuestion({
+  open,
+  onOpenChange,
+  question,
+  onSuccess
 }: DeleteQuestionProps) {
 
   const [loading, setLoading] = useState(false);
@@ -47,12 +47,13 @@ export default function DeleteQuestion({
       setLoading(false);
     }
   };
-
+  console.log(process.env.NEXT_PUBLIC_MY_LINK);
   return (
+
     <Dialog open={open} onOpenChange={onOpenChange}>
-      
+
       <DialogContent className="sm:max-w-[440px] p-0 overflow-hidden">
-        
+
         {/* HEADER */}
         <DialogHeader className="px-6 py-4 border-b bg-red-500/5">
           <DialogTitle className="flex items-center gap-3 text-red-500 font-semibold">
@@ -114,8 +115,8 @@ export default function DeleteQuestion({
 
           {/* FOOTER */}
           <DialogFooter className="flex gap-2 pt-2">
-            
-            <Button 
+
+            <Button
               type="button"
               variant="ghost"
               onClick={() => onOpenChange(false)}
@@ -125,7 +126,7 @@ export default function DeleteQuestion({
               Cancel
             </Button>
 
-            <Button 
+            <Button
               type="button"
               variant="destructive"
               onClick={handleDelete}

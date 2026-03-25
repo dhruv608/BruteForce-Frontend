@@ -19,68 +19,37 @@ export default function StudentHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const [profile, setProfile] = useState<any>(null);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   useEffect(() => {
-    // Don't fetch profile for public profile routes
-    if (pathname.startsWith('/profile/')) {
-      return;
-    }
-
     // Check if we have a student token before making API calls
     if (!isStudentToken()) {
+      setProfileLoading(false);
       return; // Don't make API calls if not a student token
     }
 
     const fetchProfile = async () => {
+      setProfileLoading(true);
       try {
-        // Add timeout to prevent hanging
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Profile fetch timeout')), 5000); // 5 second timeout
-        });
-        
-        const profilePromise = studentAuthService.getCurrentStudent();
-        const data = await Promise.race([profilePromise, timeoutPromise]) as any;
-        
-        // /me endpoint returns clean data directly
+        const data = await studentAuthService.getCurrentStudent();
         setProfile(data);
       } catch (e: any) {
-        console.log("Failed to fetch student profile:", e?.response?.status || e.message);
-        
-        // Fallback: Try to get user info from token if API fails
-        try {
-          const token = localStorage.getItem('accessToken') || 
-                        document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
-          
-          if (token) {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(
-              atob(base64)
-                .split('')
-                .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-                .join('')
-            );
-            const decoded = JSON.parse(jsonPayload);
-            
-            // Create a minimal profile from token data
-            const tokenProfile = {
-              data: {
-                name: decoded.email?.split('@')[0] || 'User',
-                username: decoded.email?.split('@')[0] || 'user',
-                email: decoded.email,
-                profileImageUrl: null
-              }
-            };
-            
-            setProfile(tokenProfile);
-            return;
-          }
-        } catch (tokenError) {
-          console.log("Token parsing failed:", tokenError);
+        // Handle different error types gracefully
+        if (e?.response?.status === 401) {
+          // Token expired - will be handled by interceptors
+          return;
+        } else if (e?.response?.status === 403) {
+          // Admin token on student route
+          setProfile(null);
+        } else if (e?.code === 'NETWORK_ERROR') {
+          // Network connectivity issues
+          setProfile(null);
+        } else {
+          // Other errors
+          setProfile(null);
         }
-        
-        // If both API and token fail, set profile to null
-        setProfile(null);
+      } finally {
+        setProfileLoading(false);
       }
     };
     
@@ -102,7 +71,7 @@ export default function StudentHeader() {
     try {
       await studentAuthService.logout();
     } catch (e) {
-      console.error(e);
+      // Handle logout error silently
     } finally {
       localStorage.removeItem('accessToken');
       document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
@@ -182,7 +151,7 @@ export default function StudentHeader() {
           }
           
           // If authenticated and profile is loaded, show user dropdown
-          if (isAuthenticated && isProfileLoaded && profile?.data) {
+          if (isAuthenticated && profile?.data && !profileLoading) {
             return isUserOnboarded ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -234,11 +203,22 @@ export default function StudentHeader() {
             );
           }
           
-          // For authenticated users where profile is still loading, show a proper loading state
-          if (isAuthenticated && (!isProfileLoaded || !profile?.data)) {
+          // For authenticated users where profile is still loading, show shimmer effect
+          if (isAuthenticated && profileLoading) {
             return (
-              <div className="w-9 h-9 rounded-full border-2 border-border bg-muted animate-pulse flex items-center justify-center shrink-0">
-                <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+              <div className="relative w-9 h-9 rounded-full bg-gradient-to-r from-muted via-muted-foreground/20 to-muted animate-pulse shrink-0 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-muted-foreground/30 to-transparent animate-pulse"></div>
+              </div>
+            );
+          }
+          
+          // For authenticated users where profile failed to load, show login button
+          if (isAuthenticated && !profileLoading && !profile?.data) {
+            return (
+              <div className="flex items-center gap-3">
+                <Link href="/login" className="text-sm text-primary hover:underline">
+                  Login
+                </Link>
               </div>
             );
           }

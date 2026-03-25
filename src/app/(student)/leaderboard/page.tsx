@@ -7,7 +7,6 @@ import { LeaderboardData } from '@/hooks/useLeaderboard';
 
 // Server-side data fetching
 async function getLeaderboardData(search?: string, filters?: { city?: string; year?: number; type?: string }): Promise<LeaderboardData> {
-  console.log('🔍 Server-side fetching leaderboard data with search:', search, 'filters:', filters);
   try {
     const data = await studentLeaderboardService.getLeaderboard(
       { 
@@ -17,10 +16,8 @@ async function getLeaderboardData(search?: string, filters?: { city?: string; ye
       }, 
       search
     );
-    console.log('✅ Server-side leaderboard data received:', data);
     return data;
   } catch (error) {
-    console.error('❌ Failed to fetch leaderboard data:', error);
     return {
       success: false,
       top10: [],
@@ -38,14 +35,14 @@ async function getLeaderboardData(search?: string, filters?: { city?: string; ye
 async function getCurrentStudentDefaults() {
   try {
     const studentData = await studentAuthService.getCurrentStudent();
-    console.log('👤 Student profile data for defaults:', studentData);
     
     return {
       defaultCity: studentData?.data?.city_name || 'all',
       defaultYear: studentData?.data?.batch_year || new Date().getFullYear()
     };
   } catch (error) {
-    console.error('❌ Failed to get student data for defaults:', error);
+    // Silently handle auth errors - user might be admin or not logged in
+    // Fall back to defaults without exposing error details
     return {
       defaultCity: 'all',
       defaultYear: new Date().getFullYear()
@@ -58,7 +55,6 @@ export default async function StudentLeaderboardPage({
 }: {
   searchParams?: { search?: string; city?: string; year?: string; type?: string };
 }) {
-  console.log('🚀 StudentLeaderboardPage server component rendering');
   
   // Get student defaults for city and year
   const { defaultCity, defaultYear } = await getCurrentStudentDefaults();
@@ -69,18 +65,9 @@ export default async function StudentLeaderboardPage({
   const year = searchParams?.year ? Number(searchParams.year) : defaultYear;
   const type = searchParams?.type || 'all';
   
-  console.log('📝 Search params:', searchParams, 'Student defaults:', { defaultCity, defaultYear }, 'Parsed filters:', { search, city, year, type });
 
   // Fetch data on server side with filters
   const initialData = await getLeaderboardData(search, { city, year: year === 0 ? undefined : year, type });
-  console.log('📊 Initial data received from server:', {
-    success: initialData?.success,
-    top10Length: initialData?.top10?.length || 0,
-    hasYourRank: !!initialData?.yourRank,
-    yourRankName: initialData?.yourRank?.name || 'NO_YOUR_RANK',
-    firstStudentName: initialData?.top10?.[0]?.name || 'NO_TOP10_STUDENT',
-    fullDataStructure: JSON.stringify(initialData, null, 2)
-  });
 
   // Prefetch the query for client-side hydration
   await queryClient.prefetchQuery({
@@ -89,7 +76,6 @@ export default async function StudentLeaderboardPage({
     staleTime: 5 * 60 * 1000,
   });
 
-  console.log('🔄 Query prefetched for client hydration');
 
   const lastUpdatedFormat = 'Live';
 

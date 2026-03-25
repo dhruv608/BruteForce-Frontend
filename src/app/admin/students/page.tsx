@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link"
 import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAdminStore } from '@/store/adminStore';
@@ -18,8 +18,6 @@ import {
   Award,
   ExternalLink,
   AlertTriangle,
-  Upload,
-  Download
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -291,12 +289,16 @@ export default function AdminStudentsPage() {
                 students.map((student) => (
                   <TableRow
                     key={student.id}
-                    className="group hover:bg-muted/30 cursor-pointer transition-colors"
-                    onClick={() => router.push(`/admin/students/${student.username}`)}
+                    className="group hover:bg-muted/30 transition-colors"
                   >
                     <TableCell>
-                      <div className="font-bold text-foreground">{student.name}</div>
-                      <div className="text-xs text-muted-foreground font-mono">{student.email}</div>
+                      <Link 
+                        href={`/profile/${student.username}`}  target="_blank"
+                        className="hover:text-primary transition-colors"
+                      >
+                        <div className="font-bold text-foreground">{student.name}</div>
+                        <div className="text-xs text-muted-foreground font-mono">{student.email}</div>
+                      </Link>
                     </TableCell>
                     <TableCell>
                       <span className="text-sm font-medium text-muted-foreground">@{student.username}</span>

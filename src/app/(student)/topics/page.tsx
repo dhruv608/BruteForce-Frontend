@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { studentTopicService } from '@/services/student/topic.service';
 import { TopicCard } from '@/components/student/topics/TopicCard';
-import { Search, ArrowUpDown } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Pagination } from '@/components/Pagination';
 
@@ -11,14 +11,13 @@ export default function TopicsPage() {
   const [topics, setTopics] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState<'recent' | 'old'>('recent');
   const [page, setPage] = useState(1);
   const ITEMS_PER_PAGE = 6;
 
-  // Reset page when filters change
+  // Reset page when search changes
   useEffect(() => {
     setPage(1);
-  }, [searchQuery, sortOrder]);
+  }, [searchQuery]);
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -42,17 +41,12 @@ export default function TopicsPage() {
       result = result.filter(t => t.topic_name.toLowerCase().includes(q));
     }
 
-    result.sort((a, b) => {
-      const timeA = new Date(a.created_at || 0).getTime();
-      const timeB = new Date(b.created_at || 0).getTime();
-      return sortOrder === 'recent' ? timeB - timeA : timeA - timeB;
-    });
-
+    // Separate unlocked and locked topics (unlocked topics first)
     const unlocked = result.filter(t => (t.batchSpecificData?.totalClasses || 0) > 0);
     const locked = result.filter(t => (t.batchSpecificData?.totalClasses || 0) === 0);
 
     return [...unlocked, ...locked];
-  }, [topics, searchQuery, sortOrder]);
+  }, [topics, searchQuery]);
 
   const start = (page - 1) * ITEMS_PER_PAGE;
   const paginatedTopics = filteredAndSortedTopics.slice(start, start + ITEMS_PER_PAGE);
@@ -92,15 +86,6 @@ export default function TopicsPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            
-            <Button 
-              variant="outline" 
-              className="h-[42px] px-4 rounded-xl text-[13px] bg-card hover:bg-secondary border-border"
-              onClick={() => setSortOrder(prev => prev === 'recent' ? 'old' : 'recent')}
-            >
-              <ArrowUpDown className="w-4 h-4 mr-2 text-primary" />
-              {sortOrder === 'recent' ? 'Newest' : 'Oldest'}
-            </Button>
           </div>
         </div>
       </div>

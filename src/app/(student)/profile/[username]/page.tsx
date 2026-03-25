@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { studentProfileService } from '@/services/student/profile.service';
 import { studentAuthService } from '@/services/student/auth.service';
+import { ErrorHandler } from '@/lib/error-handler';
 import { Button } from '@/components/ui/button';
 import { Github, Linkedin, Flame, Trophy, CheckCircle2, Link as LinkIcon, Camera, Edit2, X, Calendar, Target, TrendingUp, Users, MapPin, GraduationCap, Code, Activity, Clock, Award, BarChart3 } from 'lucide-react';
 import { TopicProgressModal } from '@/components/TopicProgressModal';
@@ -63,28 +64,23 @@ export default function PublicProfilePage() {
       const currentUserPromise = studentAuthService.getCurrentStudent();
       const user = await Promise.race([currentUserPromise, timeoutPromise]) as any;
       
-      console.log("Current user fetched:", user);
       setCurrentUser(user);
       
       // Check if user has admin token trying to access student routes
       if (user?.error === "Access denied. Students only.") {
-        console.log("Admin token detected, cannot access student routes");
         setCurrentUser(null);
         return;
       }
       
     } catch (error: any) {
-      console.log("Auth check failed:", error?.response?.status || error.message);
       
       // Handle 403 errors (admin token trying to access student routes)
       if (error?.response?.status === 403) {
-        console.log("403 error - likely admin token on student route");
         setCurrentUser(null);
         return;
       }
       
       // For other errors, we still want to set authChecked = true
-      console.log("Authentication error, but proceeding...");
     } finally {
       setAuthChecked(true);
     }
@@ -95,22 +91,21 @@ export default function PublicProfilePage() {
 
   const fetchProfileByUsername = async () => {
     if (!username) {
-      setProfileError('Username is required');
-      setLoading(false);
       return;
     }
 
-    // Add timeout to prevent infinite loading
+    setLoading(true);
+    setProfileError(null);
+
     const timeoutId = setTimeout(() => {
-      setProfileError('Request timed out. Please try again.');
-      setLoading(false);
-    }, 10000); // 10 second timeout
+      setProfileError('Profile is taking longer than expected to load.');
+    }, 5000);
 
     try {
       const data = await studentProfileService.getProfileByUsername(username);
+      
       clearTimeout(timeoutId);
       setProfileData(data);
-      setProfileError(null);
       setEditForm({
         name: data?.student?.name || '',
         github: data?.student?.github || '',
@@ -123,22 +118,11 @@ export default function PublicProfilePage() {
       });
     } catch (err: any) {
       clearTimeout(timeoutId);
-      console.error("Failed to fetch profile", err);
       
-      // Provide more specific error messages
-      let errorMessage = 'Failed to load profile';
-      if (err.response?.status === 404) {
-        errorMessage = 'Profile not found';
-      } else if (err.response?.status === 500) {
-        errorMessage = 'Server error. Please try again later.';
-      } else if (err.message) {
-        errorMessage = err.message;
-      }
-      
-      setProfileError(errorMessage);
-      setProfileData(null);
+      // Use proper error handling
+      const userError = ErrorHandler.handle(err, 'fetchProfileByUsername');
+      setProfileError(userError.message);
     } finally {
-      clearTimeout(timeoutId);
       setLoading(false);
     }
   };
@@ -159,15 +143,11 @@ export default function PublicProfilePage() {
       await Promise.race([fetchProfileByUsername(), refreshTimeout]);
       
       // Show success feedback
-      console.log('Profile image updated successfully');
     } catch (err: any) {
-      console.error("Image upload failed", err);
       
       // If refresh timed out, still show success for the upload
       if (err.message === 'Profile refresh timeout') {
-        console.log('Image uploaded but profile refresh timed out - manual refresh may be needed');
-        // Optionally show a user-friendly message
-        alert('Profile image updated! Please refresh the page to see changes.');
+
       }
     } finally {
       setUploading(false);
@@ -261,19 +241,12 @@ export default function PublicProfilePage() {
         const decoded = JSON.parse(jsonPayload);
         tokenUsername = decoded.email?.split('@')[0]; // Extract username from email
       } catch (e) {
-        console.log("Token parsing failed in canEdit");
       }
     }
     
     const isOwner5 = tokenUsername === profileData.student.username;
     
     // Log for debugging
-    console.log("CanEdit check:", {
-      currentUser: currentUser?.data,
-      profileStudent: profileData.student,
-      isOwner1, isOwner2, isOwner3, isOwner4, isOwner5,
-      tokenUsername
-    });
     
     return isOwner1 || isOwner2 || isOwner3 || isOwner4 || isOwner5;
   };
@@ -284,72 +257,29 @@ export default function PublicProfilePage() {
     await fetchCurrentUser();
   };
 
-  // Test function to debug authentication
-  const testAuth = async () => {
-    try {
-      const localStorageToken = localStorage.getItem('accessToken');
-      const cookieToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
-      const token = localStorageToken || cookieToken;
-
-      if (!token) {
-        console.log('No token found');
-        return;
-      }
-
-      const response = await fetch('/api/students/debug-auth', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      const data = await response.json();
-      console.log('Auth debug response:', data);
-    } catch (error) {
-      console.error('Auth debug error:', error);
-    }
-  };
 
   const handleSaveProfile = async () => {
     try {
       setUploading(true);
       
-      // Get token from multiple sources
-      const localStorageToken = localStorage.getItem('accessToken');
-      const cookieToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
-      const token = localStorageToken || cookieToken;
-
-      // Call the backend API to update profile
-      const response = await fetch('/api/students/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          github: editForm.github,
-          linkedin: editForm.linkedin
-        })
+      // Use the existing profile service with automatic token handling
+      await studentProfileService.updateProfileDetails({
+        github: editForm.github,
+        linkedin: editForm.linkedin
       });
 
-      if (response.ok) {
-        // Refresh profile data
-        await fetchProfileByUsername();
-        setShowEditModal(false);
-        alert('Profile updated successfully!');
-      } else {
-        throw new Error('Failed to update profile');
-      }
+      // Refresh profile data
+      await fetchProfileByUsername();
+      setShowEditModal(false);
+      alert('Profile updated successfully!');
     } catch (error) {
-      console.error('Error updating profile:', error);
-      alert('Failed to update profile. Please try again.');
+      // Use proper error handling
+      ErrorHandler.showAlert(error, 'handleSaveProfile');
     } finally {
       setUploading(false);
     }
   };
 
-  console.log('=== DEBUGGING API URL ===');
-console.log('NEXT_PUBLIC_API_URL from process.env:', process.env.NEXT_PUBLIC_API_URL);
-console.log('Current baseURL from axios instance:', (api as any).defaults.baseURL);
 
 const handleSaveUsername = async () => {
     try {
@@ -367,8 +297,6 @@ const handleSaveUsername = async () => {
         throw new Error('No authentication token found. Please log in again.');
       }
 
-      console.log('Using token for username update:', token.substring(0, 20) + '...');
-
       const response = await fetch('/api/students/username', {
         method: 'PATCH',
         headers: {
@@ -380,9 +308,6 @@ const handleSaveUsername = async () => {
         })
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers.get('content-type'));
-
       if (response.ok) {
         // Refresh profile data and redirect to new URL
         await fetchProfileByUsername();
@@ -393,15 +318,12 @@ const handleSaveUsername = async () => {
         if (newUsername !== username) {
           window.location.href = `/profile/${newUsername}`;
         }
+        alert('Username updated successfully!');
       } else {
         // Check if response is HTML (error page) instead of JSON
         const contentType = response.headers.get('content-type');
-        console.log('Response content type:', contentType);
         
         if (contentType && contentType.includes('text/html')) {
-          // Get the response text to see what HTML we're getting
-          const htmlText = await response.text();
-          console.log('HTML Response (first 200 chars):', htmlText.substring(0, 200));
           throw new Error('Authentication failed. Please log in again.');
         }
         
@@ -409,8 +331,8 @@ const handleSaveUsername = async () => {
         throw new Error(error.error || 'Failed to update username');
       }
     } catch (error: any) {
-      console.error('Error updating username:', error);
-      alert((error as Error).message || 'Failed to update username. Please try again.');
+      // Use proper error handling
+      ErrorHandler.showAlert(error, 'handleSaveUsername');
     }
   };
 
@@ -441,7 +363,6 @@ const handleSaveUsername = async () => {
         throw new Error('Failed to remove profile image');
       }
     } catch (error) {
-      console.error('Error removing profile image:', error);
       alert('Failed to remove profile image. Please try again.');
     } finally {
       setUploading(false);
@@ -533,24 +454,17 @@ const handleSaveUsername = async () => {
             ) : (
               /* Show refresh button if user thinks they should be able to edit */
               <div className="hidden sm:flex items-center gap-2">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-8 text-[12px] text-muted-foreground hover:text-foreground"
-                  onClick={refreshAuthState}
-                  title="Refresh authentication state"
-                >
-                  Refresh
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-8 text-[12px] text-blue-600 hover:text-blue-700"
-                  onClick={testAuth}
-                  title="Test authentication (debug)"
-                >
-                  Test Auth
-                </Button>
+                {canEdit() && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-8 text-[12px] text-blue-600 hover:text-blue-700"
+                    onClick={() => setShowEditModal(true)}
+                    title="Edit profile"
+                  >
+                    Edit Profile
+                  </Button>
+                )}
               </div>
             )}
           </div>
@@ -609,10 +523,6 @@ const handleSaveUsername = async () => {
                 <span className="font-bold text-foreground">{student.name || '-'}</span>
               </div>
               
-              <div className="flex justify-between items-center p-4 bg-secondary/50 rounded-xl">
-                <span className="text-[14px] font-medium text-muted-foreground">Email</span>
-                <span className="font-mono text-sm text-foreground truncate max-w-[150px]">{student.email || '-'}</span>
-              </div>
 
               <div className="flex justify-between items-center p-4 bg-secondary/50 rounded-xl">
                 <span className="text-[14px] font-medium text-muted-foreground">Enrollment ID</span>
@@ -651,13 +561,13 @@ const handleSaveUsername = async () => {
             </h3>
             
             <div className="space-y-4">
-              <a href={student.github ? `https://github.com/${student.github}` : '#'} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${student.github ? 'bg-secondary/50 border-border hover:border-primary/50 hover:shadow-md' : 'bg-muted/30 border-dashed border-border opacity-60 pointer-events-none'}`}>
+              <a href={student.github || '#'} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${student.github ? 'bg-secondary/50 border-border hover:border-primary/50 hover:shadow-md' : 'bg-muted/30 border-dashed border-border opacity-60 pointer-events-none'}`}>
                 <div className="w-10 h-10 bg-gray-900 text-white rounded-lg flex items-center justify-center">
                   <Github className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
                   <div className="text-[14px] font-bold text-foreground">GitHub</div>
-                  <div className="text-[12px] text-muted-foreground font-mono">{student.github || 'Not connected'}</div>
+                  <div className="text-[12px] text-muted-foreground font-mono truncate">{student.github ? 'Connected' : 'Not connected'}</div>
                 </div>
                 {student.github && <CheckCircle2 className="w-5 h-5 text-green-500" />}
               </a>
@@ -993,12 +903,12 @@ const handleSaveUsername = async () => {
 
               {/* GitHub */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">GitHub Username</label>
+                <label className="text-sm font-medium">GitHub URL</label>
                 <input
-                  type="text"
+                  type="url"
                   value={editForm.github}
                   onChange={(e) => setEditForm({ ...editForm, github: e.target.value })}
-                  placeholder="github-username"
+                  placeholder="https://github.com/username"
                   className="w-full border border-border p-3 rounded-lg bg-background"
                 />
               </div>

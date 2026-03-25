@@ -13,11 +13,8 @@ export const studentAuthService = {
 
     try {
       const response = await api.get('/api/students/me');
-      console.log("Raw API response:", response);
-      console.log("Response data:", response.data);
       return response.data;
     } catch (error) {
-      console.error("API call failed:", error);
       throw error;
     }
   },

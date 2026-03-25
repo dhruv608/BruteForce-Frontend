@@ -42,7 +42,7 @@ export function useOnboardingModal(onComplete?: () => void) {
       
       console.log("Submitting onboarding payload:", payload);
       
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/students/me`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/me`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json', 
