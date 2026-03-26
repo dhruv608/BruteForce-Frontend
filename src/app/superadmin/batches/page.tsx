@@ -19,7 +19,7 @@ export default function BatchesPage() {
   const [batches, setBatches] = useState<Batch[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Filters
   const [search, setSearch] = useState('');
   const [filterCity, setFilterCity] = useState('');
@@ -43,8 +43,8 @@ export default function BatchesPage() {
     setLoading(true);
     try {
       const [batchesRes, citiesRes] = await Promise.all([
-        getAllBatches().catch(()=>[]),
-        getAllCities().catch(()=>[])
+        getAllBatches().catch(() => []),
+        getAllCities().catch(() => [])
       ]);
       setBatches(Array.isArray(batchesRes) ? batchesRes : []);
       setCities(Array.isArray(citiesRes) ? citiesRes : []);
@@ -78,10 +78,10 @@ export default function BatchesPage() {
     setSubmitting(true);
     try {
       if (modalMode === 'create') {
-        await createBatch({ 
-          batch_name: formData.batch_name, 
-          year: Number(formData.year), 
-          city_id: Number(formData.city_id) 
+        await createBatch({
+          batch_name: formData.batch_name,
+          year: Number(formData.year),
+          city_id: Number(formData.city_id)
         });
       } else if (targetBatch) {
         await updateBatch(targetBatch.id, {
@@ -124,7 +124,7 @@ export default function BatchesPage() {
 
   const uniqueYears = useMemo(() => {
     const years = new Set(batches.map(b => b.year));
-    return Array.from(years).sort((a,b) => b - a);
+    return Array.from(years).sort((a, b) => b - a);
   }, [batches]);
 
   const paginatedBatches = useMemo(() => {
@@ -145,7 +145,7 @@ export default function BatchesPage() {
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground">
               <Search className="w-4 h-4" />
             </div>
-            <Input 
+            <Input
               placeholder="Search batches..."
               value={search}
               onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
@@ -153,8 +153,8 @@ export default function BatchesPage() {
             />
           </div>
           <div className="flex items-center gap-3">
-            <Select 
-              value={filterCity || "all"} 
+            <Select
+              value={filterCity || "all"}
               onValueChange={v => { setFilterCity(v === 'all' ? '' : v); setCurrentPage(1); }}
             >
               <SelectTrigger className="w-full sm:max-w-37.5 bg-background">
@@ -170,8 +170,8 @@ export default function BatchesPage() {
                 ))}
               </SelectContent>
             </Select>
-            <Select 
-              value={filterYear || "all"} 
+            <Select
+              value={filterYear || "all"}
               onValueChange={v => { setFilterYear(v === 'all' ? '' : v); setCurrentPage(1); }}
             >
               <SelectTrigger className="w-35 bg-background">
@@ -189,10 +189,10 @@ export default function BatchesPage() {
             </Select>
           </div>
           {(filterCity || filterYear || search) && (
-            <button onClick={() => {setFilterCity(''); setFilterYear(''); setSearch('');}} className="text-xs text-muted-foreground hover:text-foreground ml-2 underline underline-offset-4">Clear</button>
+            <button onClick={() => { setFilterCity(''); setFilterYear(''); setSearch(''); }} className="text-xs text-muted-foreground hover:text-foreground ml-2 underline underline-offset-4">Clear</button>
           )}
         </div>
-        
+
         <Button onClick={openCreate} className="w-full sm:w-auto shrink-0">
           <Layers className="w-4 h-4 mr-2" />
           Create Batch
@@ -246,9 +246,9 @@ export default function BatchesPage() {
                     {batch._count?.students || 0}
                   </TableCell>
                   <TableCell className="text-right flex justify-end gap-1">
-                    <ActionButtons 
-                      onEdit={() => openEdit(batch)} 
-                      onDelete={() => { setTargetBatch(batch); setDelOpen(true); }} 
+                    <ActionButtons
+                      onEdit={() => openEdit(batch)}
+                      onDelete={() => { setTargetBatch(batch); setDelOpen(true); }}
                     />
                   </TableCell>
                 </TableRow>
@@ -256,10 +256,10 @@ export default function BatchesPage() {
             )}
           </TableBody>
         </Table>
-        <Pagination 
-          currentPage={currentPage} 
-          totalItems={filtered.length} 
-          limit={limit} 
+        <Pagination
+          currentPage={currentPage}
+          totalItems={filtered.length}
+          limit={limit}
           onPageChange={setCurrentPage}
           onLimitChange={setLimit}
           showLimitSelector={true}
@@ -267,67 +267,109 @@ export default function BatchesPage() {
         />
       </div>
 
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setModalOpen(false)} 
-        title={modalMode === 'create' ? "Create New Batch" : "Edit Batch"} 
-        subtitle="Batch will be linked to the selected city and year" 
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        title={modalMode === 'create' ? "Create New Batch" : "Edit Batch"}
+        subtitle="Batch will be linked to the selected city and year"
         icon={<Layers className="text-primary w-8 h-8" />}
       >
-        <div className="space-y-4">
+        <div className="space-y-6">
+
+          {/* Batch Name */}
           <div className="space-y-2">
-            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Batch Name *</label>
-            <Input 
+            <label className="text-sm font-semibold text-foreground tracking-wide">
+              Batch Name *
+            </label>
+            <Input
               placeholder="e.g. B3-2025"
               value={formData.batch_name}
-              onChange={(e) => setFormData({...formData, batch_name: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, batch_name: e.target.value })
+              }
               disabled={submitting}
+              className="h-11 rounded-xl border border-border bg-background/60 backdrop-blur-sm focus-visible:ring-2 focus-visible:ring-primary/40 transition-all duration-200"
             />
           </div>
+
+          {/* Year + City */}
           <div className="grid grid-cols-2 gap-4">
+
+            {/* Year */}
             <div className="space-y-2">
-              <label className="text-sm font-medium leading-none">Year *</label>
-              <Select 
-                value={String(formData.year)}
-                onValueChange={v => setFormData({...formData, year: Number(v)})}
+              <label className="text-sm font-semibold text-foreground tracking-wide">
+                Year *
+              </label>
+              <Input
+                type="number"
+                placeholder="e.g. 2025"
+                value={formData.year || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, year: Number(e.target.value) })
+                }
                 disabled={submitting}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Year" />
-                </SelectTrigger>
-                <SelectContent>
-                  {uniqueYears.length > 0 ? (
-                    uniqueYears.map(y => (
-                      <SelectItem key={y} value={String(y)}>{y}</SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value={String(new Date().getFullYear())}>{new Date().getFullYear()}</SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
+                min="2000"
+                max="2050"
+                className="h-11 rounded-xl border border-border bg-background/60 backdrop-blur-sm focus-visible:ring-2 focus-visible:ring-primary/40 transition-all duration-200"
+              />
             </div>
+
+            {/* City */}
             <div className="space-y-2">
-              <label className="text-sm font-medium leading-none">City *</label>
-              <Select 
+              <label className="text-sm font-semibold text-foreground tracking-wide">
+                City *
+              </label>
+              <Select
                 value={formData.city_id || ""}
-                onValueChange={v => setFormData({...formData, city_id: v})}
+                onValueChange={(v) =>
+                  setFormData({ ...formData, city_id: v })
+                }
                 disabled={submitting}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-16 w-full rounded-xl border border-border bg-background/60 backdrop-blur-sm focus:ring-2 focus:ring-primary/40 transition-all duration-200 px-3">
                   <SelectValue placeholder="Select City" />
                 </SelectTrigger>
-                <SelectContent>
-                  {cities.map(c => (
-                    <SelectItem key={c.id} value={String(c.id)}>{c.city_name}</SelectItem>
+
+                <SelectContent className="rounded-xl border border-border shadow-lg">
+                  {cities.map((c) => (
+                    <SelectItem
+                      key={c.id}
+                      value={String(c.id)}
+                      className="cursor-pointer hover:bg-muted/60 rounded-md transition"
+                    >
+                      {c.city_name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
-          <div className="flex items-center justify-end gap-2 pt-4 border-t mt-4">
-            <Button variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleSubmit} disabled={submitting || !formData.batch_name || !formData.city_id}>
-              {modalMode === 'create' ? 'Create Batch' : 'Update Batch'}
+
+          {/* Divider */}
+          <div className="border-t border-border/60 pt-4 flex items-center justify-end gap-3">
+
+            <Button
+              variant="outline"
+              onClick={() => setModalOpen(false)}
+              className="rounded-xl px-5 hover:bg-muted/50 transition"
+            >
+              Cancel
+            </Button>
+
+            <Button
+              onClick={handleSubmit}
+              disabled={
+                submitting ||
+                !formData.batch_name ||
+                !formData.city_id
+              }
+              className="rounded-xl px-6 shadow-md hover:shadow-lg transition-all duration-200"
+            >
+              {submitting
+                ? "Processing..."
+                : modalMode === "create"
+                  ? "Create Batch"
+                  : "Update Batch"}
             </Button>
           </div>
         </div>
