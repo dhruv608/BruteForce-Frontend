@@ -64,11 +64,13 @@ export function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleLogin} className="space-y-5">
+    <form onSubmit={handleLogin} className="space-y-6">
 
       {/* ERROR */}
       {error && (
-        <div className="flex items-center justify-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl">
+        <div className="flex items-center justify-center gap-2 px-4 py-3 
+          bg-red-500/10 border border-red-500/20 text-red-400 text-sm 
+          rounded-xl backdrop-blur-md animate-pulse">
           {error}
         </div>
       )}
@@ -85,7 +87,9 @@ export function LoginForm() {
           value={emailOrUsername}
           onChange={e => setEmailOrUsername(e.target.value)}
           disabled={loading}
-          className="h-11 rounded-lg"
+          className="h-11 rounded-lg bg-input border border-border 
+            focus:border-primary focus:shadow-[0_0_0_2px_rgba(204,255,0,0.2)] 
+            transition-all"
         />
       </div>
 
@@ -102,7 +106,8 @@ export function LoginForm() {
               e.preventDefault();
               router.push('/forgot-password');
             }}
-            className="text-primary font-medium text-xs hover:underline transition"
+            className="text-primary font-medium text-xs 
+              hover:underline hover:text-primary/80 transition"
           >
             Forgot password?
           </button>
@@ -115,14 +120,17 @@ export function LoginForm() {
             value={password}
             onChange={e => setPassword(e.target.value)}
             disabled={loading}
-            className="h-11 rounded-lg pr-10"
+            className="h-11 bg-input border border-border rounded-lg pr-10
+              focus:border-primary focus:shadow-[0_0_0_2px_rgba(204,255,0,0.2)]
+              transition-all"
           />
 
           {/* 👁️ TOGGLE */}
           <button
             type="button"
             onClick={() => setShowPassword(prev => !prev)}
-            className="absolute right-3 top-1/2 text-muted-foreground hover:text-foreground transition-all duration-200"
+            className="absolute right-3 top-1/2 -translate-y-1/2 
+              text-muted-foreground hover:text-primary transition"
             tabIndex={-1}
             style={{
               transform: 'translateY(-50%)',
@@ -147,15 +155,19 @@ export function LoginForm() {
       <Button
         type="submit"
         disabled={loading}
-        className="w-full h-11 text-sm font-semibold tracking-wide"
+        className="w-full h-11 text-sm font-semibold tracking-wide 
+          bg-primary text-primary-foreground 
+          hover:shadow-[0_0_20px_rgba(204,255,0,0.3)] 
+          transition-all duration-200 
+          active:scale-[0.97]"
       >
         {loading ? (
-          "Authenticating..."
+          <span className="animate-pulse">Authenticating...</span>
         ) : (
-          <>
-            <LogIn className="w-4 h-4 mr-2" />
+          <div className="flex items-center justify-center gap-2">
+            <LogIn className="w-4 h-4" />
             Sign In
-          </>
+          </div>
         )}
       </Button>
 
