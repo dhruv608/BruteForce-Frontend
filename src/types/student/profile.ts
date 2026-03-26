@@ -78,6 +78,9 @@ export interface UsernameUpdateResponse {
 export interface HeatmapData {
     date: string;
     count: number;
+    day: number;
+    month: number;
+    year: number;
 }
 
 // Activity data structure  
