@@ -33,13 +33,13 @@ export function ForgotPasswordForm() {
             value={email}
             onChange={e => setEmail(e.target.value)}
             disabled={loading}
-            className="h-11 bg-muted/40"
+            className="h-11"
           />
         </div>
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-11 mt-4 text-[14px] font-semibold tracking-wide bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-primary-foreground shadow-md transition-all active:scale-[0.98]"
+          className="w-full h-11 mt-4 text-[14px] font-semibold tracking-wide"
         >
           {loading ? 'Sending OTP...' : 'Send OTP'}
         </Button>

@@ -111,7 +111,7 @@ export function LoginForm() {
         <div className="relative">
           <Input
             type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
+            placeholder="•••••"
             value={password}
             onChange={e => setPassword(e.target.value)}
             disabled={loading}
@@ -122,8 +122,17 @@ export function LoginForm() {
           <button
             type="button"
             onClick={() => setShowPassword(prev => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition"
+            className="absolute right-3 top-1/2 text-muted-foreground hover:text-foreground transition-all duration-200"
             tabIndex={-1}
+            style={{
+              transform: 'translateY(-50%)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'var(--foreground)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'var(--muted-foreground)';
+            }}
           >
             {showPassword ? (
               <EyeOff className="w-4 h-4" />

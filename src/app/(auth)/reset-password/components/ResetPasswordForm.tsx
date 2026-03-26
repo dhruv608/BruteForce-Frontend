@@ -31,13 +31,14 @@ function ResetPasswordFormContent() {
           <label className="text-[12px] font-semibold text-foreground tracking-wide">New Password</label>
           <Input
             type="password"
-            placeholder="••••••••"
+            placeholder="•••••"
             value={fpNewPassword}
             onChange={e => setFpNewPassword(e.target.value)}
             disabled={loading}
-            className="h-11 bg-muted/40"
+            className="h-11"
             required
           />
+
           {/* <PasswordStrength password={fpNewPassword} /> */}
         </div>
         <div className="space-y-1.5">
@@ -52,14 +53,23 @@ function ResetPasswordFormContent() {
               value={fpConfirmPassword}
               onChange={(e) => setFpConfirmPassword(e.target.value)}
               disabled={loading}
-              className="h-11 bg-muted/40 pr-10"
+              className="h-11 pr-10"
               required
             />
 
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition active:scale-90"
+              className="absolute right-3 top-1/2 text-muted-foreground hover:text-foreground transition-all duration-200"
+              style={{
+                transform: 'translateY(-50%)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--foreground)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'var(--muted-foreground)';
+              }}
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -71,7 +81,7 @@ function ResetPasswordFormContent() {
           <Button
             type="submit"
             disabled={loading}
-            className="flex-1 h-11 text-[14px] font-semibold tracking-wide bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-primary-foreground shadow-md transition-all active:scale-[0.98]"
+            className="flex-1 h-11 text-[14px] font-semibold tracking-wide"
           >
             {loading ? 'Resetting Password...' : 'Reset Password'}
           </Button>
