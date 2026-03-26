@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { ProgressBar } from '../shared/ProgressBar';
+import React from "react";
+import { ProgressBar } from "../shared/ProgressBar";
 
 interface SubtopicHeaderProps {
   topic: any;
@@ -9,58 +9,76 @@ interface SubtopicHeaderProps {
 }
 
 export function SubtopicHeader({ topic, progress }: SubtopicHeaderProps) {
+  const hasImage = !!topic.photo_url;
+
   return (
-    <div className="bg-card border border-border/80 rounded-[24px] overflow-hidden shadow-sm mb-10 flex flex-col md:flex-row relative">
-      <div className="md:w-1/3 h-[180px] md:h-auto relative bg-gradient-to-br from-primary/20 via-primary/10 to-background border-r border-border/80">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        {topic.photo_url ? (
+    <div className="bg-card border border-border/70 rounded-2xl overflow-hidden mb-8 flex flex-col md:flex-row">
+
+      {/* LEFT VISUAL */}
+      <div className="md:w-1/3 h-[160px] md:h-auto">
+        {hasImage ? (
           <img
             src={topic.photo_url}
             alt={topic.topic_name}
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-              <div className="w-8 h-8 bg-primary/30 rounded-full" />
-            </div>
-          </div>
+          <div className="w-full h-full bg-muted" /> // 👈 CLEAN fallback (no circle, no gradient)
         )}
-
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:hidden" />
       </div>
 
-      <div className="p-6 sm:p-8 flex-1 flex flex-col justify-center">
-        <h1 className="font-serif italic text-3xl font-bold text-foreground mb-3">
-          {topic.topic_name}
-        </h1>
-        {topic.description && (
-          <p className="text-[14px] text-muted-foreground mb-6 max-w-2xl leading-relaxed">
-            {topic.description}
-          </p>
-        )}
+      {/* RIGHT CONTENT */}
+      <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
 
-        <div className="mt-auto pt-4 border-t border-border flex flex-col sm:flex-row sm:items-center gap-6">
+        {/* TITLE */}
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+            {topic.topic_name}
+          </h1>
+
+          {topic.description && (
+            <p className="text-sm text-muted-foreground mb-4 max-w-2xl">
+              {topic.description}
+            </p>
+          )}
+        </div>
+
+        {/* STATS + PROGRESS */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-4 border-t border-border">
+
+          {/* STATS */}
           <div className="flex items-center gap-5">
-            <div className="text-center">
-              <div className="text-[11px] font-mono text-muted-foreground uppercase tracking-widest mb-1">Classes</div>
-              <div className="font-semibold text-lg">{topic.classes?.length || 0}</div>
+            <div>
+              <p className="text-[11px] text-muted-foreground uppercase">Classes</p>
+              <p className="text-lg font-semibold">
+                {topic.classes?.length || 0}
+              </p>
             </div>
-            <div className="w-[1px] h-8 bg-border" />
-            <div className="text-center">
-              <div className="text-[11px] font-mono text-muted-foreground uppercase tracking-widest mb-1">Questions</div>
-              <div className="font-semibold text-lg">{topic.overallProgress?.totalQuestions || 0}</div>
+
+            <div className="w-[1px] h-6 bg-border" />
+
+            <div>
+              <p className="text-[11px] text-muted-foreground uppercase">Questions</p>
+              <p className="text-lg font-semibold">
+                {topic.overallProgress?.totalQuestions || 0}
+              </p>
             </div>
           </div>
 
-          <div className="flex-1 sm:ml-auto w-full sm:max-w-[200px]">
-            <div className="flex justify-between text-[11px] font-mono text-muted-foreground mb-1.5">
+          {/* PROGRESS */}
+          <div className="flex-1 sm:ml-auto w-full sm:max-w-[240px]">
+            <div className="flex justify-between text-[11px] text-muted-foreground mb-1">
               <span>Progress</span>
-              <span>{topic.overallProgress?.solvedQuestions || 0} / {topic.overallProgress?.totalQuestions || 0}</span>
+              <span>
+                {topic.overallProgress?.solvedQuestions || 0} /{" "}
+                {topic.overallProgress?.totalQuestions || 0}
+              </span>
             </div>
-            <ProgressBar progress={progress} />
+
+            <ProgressBar progress={progress} className="h-2" />
           </div>
         </div>
+
       </div>
     </div>
   );

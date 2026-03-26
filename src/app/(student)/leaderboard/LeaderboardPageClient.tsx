@@ -62,10 +62,20 @@ export function LeaderboardPageClient({ initialData, initialSearch }: Leaderboar
     if (studentData?.data) {
       // Only update defaults if current filters are still the initial defaults
       // and no URL parameters are set
-      const urlParams = new URLSearchParams(window.location.search);
-      const hasUrlParams = urlParams.has('city') || urlParams.has('year');
-      
-      if (!hasUrlParams) {
+      try {
+        const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+        const hasUrlParams = urlParams.has('city') || urlParams.has('year');
+        
+        if (!hasUrlParams) {
+          setFilters({
+            city: studentData.data.city?.city_name || 'all',
+            year: studentData.data.batch?.year || new Date().getFullYear(),
+            type: 'all'
+          });
+        }
+      } catch (error) {
+        // Fallback if URL parsing fails
+        console.warn('URL parsing failed, using defaults:', error);
         setFilters({
           city: studentData.data.city?.city_name || 'all',
           year: studentData.data.batch?.year || new Date().getFullYear(),
@@ -76,15 +86,21 @@ export function LeaderboardPageClient({ initialData, initialSearch }: Leaderboar
   }, [studentData]);
 
   const updateUrl = useCallback(() => {
-    const params = new URLSearchParams();
-    if (debouncedSearch) params.set('search', debouncedSearch);
-    if (filters.city !== 'all') params.set('city', filters.city);
-    if (filters.year !== 0) params.set('year', filters.year.toString());
-    if (filters.type !== 'all') params.set('type', filters.type);
-    
-    // Use window.history instead of router.replace to avoid scroll to top
-    const newUrl = `/leaderboard?${params.toString()}`;
-    window.history.replaceState({}, '', newUrl);
+    try {
+      const params = new URLSearchParams();
+      if (debouncedSearch) params.set('search', debouncedSearch);
+      if (filters.city !== 'all') params.set('city', filters.city);
+      if (filters.year !== 0) params.set('year', filters.year.toString());
+      if (filters.type !== 'all') params.set('type', filters.type);
+      
+      // Use window.history instead of router.replace to avoid scroll to top
+      const newUrl = `/leaderboard?${params.toString()}`;
+      if (typeof window !== 'undefined') {
+        window.history.replaceState({}, '', newUrl);
+      }
+    } catch (error) {
+      console.warn('URL update failed:', error);
+    }
   }, [debouncedSearch, filters]);
 
   useEffect(() => { 

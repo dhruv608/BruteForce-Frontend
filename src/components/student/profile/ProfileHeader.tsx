@@ -24,7 +24,7 @@ export function ProfileHeader({ student, canEdit, onEditProfile, onShowTopicProg
                 <div className="flex items-center gap-6">
                     {/* Profile Image */}
                     <div className="relative">
-                        <div className="w-32 h-32 overflow-hidden border-2 glass hover-glow transition-all duration-200 hover:scale-105 rounded-full border-[var(--border)]">
+                        <div className="w-35 h-35 overflow-hidden border-2 glass hover-glow transition-all duration-200 hover:scale-105 rounded-full border-[var(--border)]">
                             {student.profileImageUrl ? (
                                 <img src={student.profileImageUrl} alt={student.name} className="w-full h-full object-cover" />
                             ) : (
