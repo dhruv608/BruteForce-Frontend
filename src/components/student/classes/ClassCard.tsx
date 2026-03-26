@@ -35,7 +35,7 @@ export const ClassCard: React.FC<ClassCardProps> = ({
       className="group flex flex-col sm:flex-row bg-card border border-border/80 hover:border-primary/50 hover:shadow-lg rounded-2xl overflow-hidden transition-all duration-300 relative"
     >
       {/* Numbering / Icon Section */}
-      <div className="bg-secondary/30 sm:w-20 sm:flex-shrink-0 flex items-center justify-center py-4 sm:py-0 border-b sm:border-b-0 sm:border-r border-border/50 group-hover:bg-primary/5 transition-colors">
+      <div className="bg-secondary/30 sm:w-20 sm:flex-shrink-0 flex items-center justify-center py-4 sm:py-0 sm:border-b-0 sm:border-r border-border/50 group-hover:bg-primary/5 transition-colors">
         <div className="flex flex-col items-center">
           <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-1.5">Class</span>
           <span className="text-2xl font-black font-serif italic text-foreground group-hover:text-primary transition-colors">
