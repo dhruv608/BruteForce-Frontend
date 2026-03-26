@@ -46,6 +46,7 @@ export interface ProfileUpdateData {
     name?: string;
     leetcode_id?: string;
     gfg_id?: string;
+    username?: string;
 }
 
 export interface UsernameUpdateData {

@@ -33,6 +33,7 @@ import {
 } from '@/types/student';
 import { EditProfileModal } from '@/components/student/profile/EditProfileModal';
 import { EditUsernameModal } from '@/components/student/profile/EditUsernameModal';
+import { Toast } from '@/app/(auth)/shared/components/Toast';
 import { TopicProgressModal } from '@/components/student/topics/TopicProgressModal';
 export default function PublicProfilePage() {
   const params = useParams();
@@ -209,21 +210,25 @@ export default function PublicProfilePage() {
   const canEdit = () => {
     // If auth check hasn't completed, don't show edit button yet
     if (!authChecked) {
+      console.log('🔒 Edit not allowed: Auth not checked');
       return false;
     }
 
     // If no current user, definitely can't edit
     if (!currentUser) {
+      console.log('🔒 Edit not allowed: No current user');
       return false;
     }
 
     // If current user has admin token (403 error), can't edit student profile
     if (currentUser?.error === "Access denied. Students only.") {
+      console.log('🔒 Edit not allowed: Admin token detected');
       return false;
     }
 
     // Check if profile data exists and has student info
     if (!profileData?.student) {
+      console.log('🔒 Edit not allowed: No profile data');
       return false;
     }
 
@@ -231,6 +236,15 @@ export default function PublicProfilePage() {
     const isOwner1 = currentUser?.data?.id === profileData.student.id;
     const isOwner2 = currentUser?.data?.username === profileData.student.username;
 
+    console.log('🔍 Edit permission check:', {
+      authChecked,
+      hasCurrentUser: !!currentUser,
+      hasProfileData: !!profileData?.student,
+      currentUserData: currentUser?.data,
+      profileStudent: profileData.student,
+      isOwner1,
+      isOwner2
+    });
 
     // Check token-based username match
     const token = localStorage.getItem('accessToken') || document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
@@ -249,14 +263,23 @@ export default function PublicProfilePage() {
         const decoded = JSON.parse(jsonPayload);
         tokenUsername = decoded.email?.split('@')[0]; // Extract username from email
       } catch (e) {
+        console.log('🔍 Token decode failed:', e);
       }
     }
 
     const isOwner5 = tokenUsername === profileData.student.username;
+    const canEditResult = isOwner1 || isOwner2 || isOwner5;
 
-    // Log for debugging
+    console.log('🔍 Final edit permission result:', {
+      isOwner1,
+      isOwner2,
+      isOwner5,
+      tokenUsername,
+      profileUsername: profileData.student.username,
+      canEditResult
+    });
 
-    return isOwner1 || isOwner2 || isOwner5;
+    return canEditResult;
   };
 
   // Add a manual refresh function for auth state
@@ -300,45 +323,53 @@ export default function PublicProfilePage() {
       const localStorageToken = localStorage.getItem('accessToken');
       const cookieToken = document.cookie.split('; ').find(row => row.startsWith('accessToken='))?.split('=')[1];
       const token = localStorageToken || cookieToken;
-
       if (!token) {
-        throw new Error('No authentication token found. Please log in again.');
+        alert('Please log in to update your username.');
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1000);
+        return;
       }
 
-      const response = await fetch('/api/students/username', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          username: usernameForm.username.trim()
-        })
+      console.log("Updating username using /student/me API via service", {
+        payload: { username: usernameForm.username.trim() }
       });
 
-      if (response.ok) {
-        // Refresh profile data and redirect to new URL
-        await fetchProfileByUsername();
-        setShowUsernameEditModal(false);
+      // Use the same service as other profile updates (automatic token handling)
+      await studentProfileService.updateProfileDetails({
+        username: usernameForm.username.trim()
+      });
 
-        // Redirect to new username URL
-        const newUsername = usernameForm.username.trim();
-        if (newUsername !== username) {
-          window.location.href = `/profile/${newUsername}`;
-        }
-        alert('Username updated successfully!');
-      } else {
-        // Check if response is HTML (error page) instead of JSON
-        const contentType = response.headers.get('content-type');
+      // Refresh profile data and redirect to new URL
+      await fetchProfileByUsername();
+      setShowUsernameEditModal(false);
 
-        if (contentType && contentType.includes('text/html')) {
-          throw new Error('Authentication failed. Please log in again.');
-        }
-
-        const error = await response.json() as { error?: string };
-        throw new Error(error.error || 'Failed to update username');
+      // Redirect to new username URL
+      const newUsername = usernameForm.username.trim();
+      if (newUsername !== username) {
+        window.location.href = `/profile/${newUsername}`;
       }
+      alert('Username updated successfully!');
     } catch (error: unknown) {
+      console.log("Username update error:", error);
+
+      // Handle authentication failures gracefully
+      if (error instanceof Error) {
+        if (error.message === 'Token refresh failed' ||
+          error.message.includes('401') ||
+          error.message.includes('Unauthorized')) {
+          alert('Your session has expired. Please log in again to update your username.');
+          // Clear invalid tokens
+          localStorage.removeItem('accessToken');
+          document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+          // Redirect to login after a short delay
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 2000);
+          return;
+        }
+      }
+
       const apiError = error as ApiError;
       // Use proper error handling
       ErrorHandler.showAlert(apiError, 'handleSaveUsername');
@@ -461,20 +492,21 @@ export default function PublicProfilePage() {
                 Edit Profile
               </Button>
             ) : (
-              /* Show refresh button if user thinks they should be able to edit */
-              <div className="hidden sm:flex items-center gap-2">
-                {canEdit() && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 text-[12px] text-blue-600 hover:text-blue-700"
-                    onClick={() => setShowEditModal(true)}
-                    title="Edit profile"
-                  >
-                    Edit Profile
-                  </Button>
-                )}
-              </div>
+              (localStorage.getItem('accessToken') || document.cookie.split('; ').find(row => row.startsWith('accessToken='))) ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hidden sm:flex h-8 text-[12px]"
+                  onClick={() => setShowEditModal(true)}
+                >
+                  <Edit2 className="w-3 h-3 mr-2" />
+                  Edit Profile
+                </Button>
+              ) : (
+                <div className="hidden sm:flex items-center gap-2 px-3 h-8 text-[12px] text-muted-foreground">
+                  <span>Log in to edit profile</span>
+                </div>
+              )
             )}
           </div>
         </div>
@@ -596,6 +628,12 @@ export default function PublicProfilePage() {
             {canEdit() && (
               <Button variant="outline" className="w-full mt-6 text-[12px] py-2 h-8" onClick={() => setShowEditModal(true)}>
                 Edit Social Links
+              </Button>
+            )}
+            {/* Fallback: Show edit button if user has token but canEdit fails */}
+            {!canEdit() && (localStorage.getItem('accessToken') || document.cookie.split('; ').find(row => row.startsWith('accessToken='))) && (
+              <Button variant="outline" className="w-full mt-6 text-[12px] py-2 h-8 text-orange-600 border-orange-600/30 hover:border-orange-600/50" onClick={() => setShowEditModal(true)}>
+                Edit Social Links (Debug)
               </Button>
             )}
           </div>
@@ -907,6 +945,9 @@ export default function PublicProfilePage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* TOAST NOTIFICATIONS */}
+      <Toast />
     </div>
   );
 }

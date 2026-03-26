@@ -177,7 +177,6 @@ export function OnboardingStep1({
             <Input
               type="text"
               placeholder="e.g. ayush_dev"
-              value=''
               onChange={handleUsernameChange}
               required
               className={`${getInputStyles()} group-focus-within:shadow-lg`}
