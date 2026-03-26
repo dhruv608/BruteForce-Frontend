@@ -5,11 +5,11 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 hover-glow",
+  "group/button inline-flex shrink-0 items-center justify-center transition-all outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 hover-glow",
   {
     variants: {
       variant: {
-        default: "bg-accent-primary text-primary-foreground shadow-md hover-glow",
+        default: "text-primary-foreground shadow-md hover-glow",
         outline:
           "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         secondary:
@@ -30,7 +30,7 @@ const buttonVariants = cva(
         "icon-xs":
           "size-6 rounded-full px-1.5 text-xs in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
         "icon-sm":
-          "size-7 rounded-full px-1.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg",
+          "size-7 rounded-full px-1.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
         "icon-lg": "size-9",
       },
     },
@@ -59,6 +59,26 @@ function Button({
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
+      style={{
+        borderRadius: variant === "default" ? "10px" : undefined,
+        backgroundColor: variant === "default" ? "var(--accent-primary)" : undefined,
+        color: variant === "default" ? "#090A0F" : undefined,
+        fontWeight: variant === "default" ? "500" : undefined,
+        padding: variant === "default" ? "20px 20px" : undefined,
+        transition: "all 0.2s ease",
+      }}
+      onMouseEnter={(e) => {
+        if (variant === "default") {
+          e.currentTarget.style.transform = "scale(1.02)";
+          e.currentTarget.style.filter = "brightness(1.1)";
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (variant === "default") {
+          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.filter = "brightness(1)";
+        }
+      }}
       {...props}
     />
   )

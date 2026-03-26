@@ -12,7 +12,7 @@
   --popover: #1E2230;
   --popover-foreground: #E2E8F0;
 
-  --primary: #CCFF00;
+  --primary: #ccff00d1;
   --primary-foreground: #090A0F;
 
   --secondary: #0F1117;
@@ -93,6 +93,11 @@
   /* ===== ACCENT COLORS ===== */
   --accent-primary: var(--primary);
   --accent-secondary: var(--secondary);
+
+  /* ===== PLACEHOLDER STYLES ===== */
+  input::placeholder {
+    opacity: 0.6;
+  }
 }
 
 .dark {

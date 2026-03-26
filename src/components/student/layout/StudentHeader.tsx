@@ -105,7 +105,15 @@ export default function StudentHeader() {
         </Link>
 
         {/* Pill Navigation */}
-        <nav className="glass rounded-full px-3 py-2 flex items-center gap-1" style={{borderRadius: 'var(--radius-full)'}}>
+        <nav 
+          className="flex items-center gap-1 px-3 py-2 rounded-full transition-all duration-200"
+          style={{
+            background: 'rgba(255,255,255,0.04)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: 'var(--radius-full)'
+          }}
+        >
           {navLinks.map((link) => {
             const isActive = pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path));
             const Icon = link.icon;
@@ -122,20 +130,36 @@ export default function StudentHeader() {
                   }
                 }}
                 className={`
-                  relative px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all duration-200
-                  ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:glass'}
+                  relative px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 
+                  transition-all duration-200 ease-in-out
+                  ${isLocked ? 'opacity-50 cursor-not-allowed' : ''}
                   ${isActive && !isLocked 
-                    ? 'bg-accent-primary text-primary-foreground shadow-[0_0_15px_var(--hover-glow)]' 
-                    : 'text-text-secondary hover:text-accent-primary'
+                    ? 'text-black font-semibold' 
+                    : 'text-muted-foreground hover:text-foreground'
                   }
                 `}
-                style={{borderRadius: 'var(--radius-full)', padding: 'var(--spacing-sm) var(--spacing-xs)'}}
+                style={{
+                  borderRadius: 'var(--radius-full)',
+                  padding: 'var(--spacing-sm) var(--spacing-xs)',
+                  background: isActive && !isLocked ? 'var(--accent-primary)' : 'transparent',
+                  boxShadow: isActive && !isLocked ? '0 0 15px rgba(204, 255, 0, 0.3)' : 'none',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive && !isLocked) {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive && !isLocked) {
+                    e.currentTarget.style.background = 'transparent';
+                  }
+                }}
               >
                 <Icon className="w-4 h-4 transition-all duration-200" style={{fontSize: 'var(--text-sm)'}} />
                 <span className="relative" style={{fontSize: 'var(--text-sm)'}}>{link.name}</span>
                 {isLocked && (
                   <div className="absolute -top-1 -right-1">
-                    <Lock className="w-3 h-3 text-text-secondary" style={{fontSize: 'var(--text-xs)'}} />
+                    <Lock className="w-3 h-3 text-muted-foreground" style={{fontSize: 'var(--text-xs)'}} />
                   </div>
                 )}
               </Link>

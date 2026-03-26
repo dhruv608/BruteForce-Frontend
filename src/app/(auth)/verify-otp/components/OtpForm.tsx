@@ -36,7 +36,7 @@ function OtpFormContent() {
                 onChange={e => handleOtpChange(idx, e.target.value)}
                 onKeyDown={e => handleOtpKeyDown(idx, e)}
                 disabled={loading}
-                className="h-12 w-12 bg-muted/40 text-center text-xl font-mono p-0 rounded-md border-2 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                className="h-12 w-12 text-center text-xl font-mono p-0 rounded-md border-2 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 maxLength={1}
                 required
               />
@@ -44,10 +44,10 @@ function OtpFormContent() {
           </div>
         </div>
         <div className="flex gap-3 mt-4">
-          <Button type="button" onClick={() => router.push('/forgot-password')} disabled={loading} variant="outline" className="flex-1 h-11 text-[14px] font-semibold tracking-wide border-2">
+          <Button type="button" onClick={() => router.push('/forgot-password')} disabled={loading} variant="outline" className="flex-1 h-11 text-[14px] font-semibold tracking-wide">
             ← Back
           </Button>
-          <Button type="submit" disabled={loading} className="flex-1 h-11 text-[14px] font-semibold tracking-wide bg-gradient-to-r from-primary to-amber-600 hover:from-primary/90 hover:to-amber-600/90 text-primary-foreground shadow-md transition-all active:scale-[0.98]">
+          <Button type="submit" disabled={loading} className="flex-1 h-11 text-[14px] font-semibold tracking-wide">
             Verify OTP
           </Button>
         </div>
