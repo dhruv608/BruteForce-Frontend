@@ -298,7 +298,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  if (!user) return null;
+  if (!user && !authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-[100vh] bg-background text-foreground overflow-hidden selection:bg-primary/20">
@@ -349,11 +355,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors group"
           >
             <div className="w-8 h-8 rounded-md bg-muted text-muted-foreground flex items-center justify-center font-bold text-sm shrink-0 uppercase">
-              {user.name.charAt(0) || 'A'}
+              {user?.name?.charAt(0) || 'A'}
             </div>
             <div className="text-left flex-1 min-w-0">
-              <div className="text-sm font-medium truncate text-foreground">{user.name || 'Admin'}</div>
-              <div className="text-xs text-muted-foreground truncate">{user.role}</div>
+              <div className="text-sm font-medium truncate text-foreground">{user?.name || 'Admin'}</div>
+              <div className="text-xs text-muted-foreground truncate">{user?.role || 'Admin'}</div>
             </div>
             <LogOut className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-all" />
           </button>

@@ -23,48 +23,44 @@ export function FilterBar({
             placeholder="Search by username..." 
             value={lSearch}
             onChange={(e) => { setLSearch(e.target.value); }}
-            className="pl-9 h-9 bg-background focus-visible:ring-1 transition-all hover:bg-muted/50"
+            className="!pl-9 h-9 bg-background focus-visible:ring-1 transition-all hover:bg-muted/50"
         />
 
         
       </div>
       
-      {mode !== 'student' && (
-        <>
-          <Select 
-              value={lType} 
-              onChange={(v: any) => { setLType(v); }}
-              options={typeOptionsObj}
-              className=" w-[140px] h-9 text-sm"
-              icon={<TrendingUp className="w-3.5 h-3.5" />}
-              placeholder="Timeframe"
-          />
-          
-          <Select 
-              value={lCity} 
-              onChange={(v: any) => { 
-                setLCity(v); 
-              }}
-              options={cityOptionsObj}
-              className="w-[150px] h-9 text-sm"
-              icon={<MapPin className="w-3.5 h-3.5" />}
-              placeholder="City"
-          />
+      <Select 
+        value={lType} 
+        onChange={(v: any) => { setLType(v); }}
+        options={typeOptionsObj}
+        className=" w-[140px] h-9 text-sm"
+        icon={<TrendingUp className="w-3.5 h-3.5" />}
+        placeholder="Timeframe"
+    />
+    
+    <Select 
+        value={lCity} 
+        onChange={(v: any) => { 
+          setLCity(v); 
+        }}
+        options={cityOptionsObj}
+        className="w-[150px] h-9 text-sm"
+        icon={<MapPin className="w-3.5 h-3.5" />}
+        placeholder="City"
+    />
 
-          <Select 
-              value={lYear.toString()} 
-              onChange={(v: any) => { setLYear(Number(v)); }}
-              options={yearOptionsObj}
-              className="w-[130px] h-9 text-sm"
-              icon={<CalendarDays className="w-3.5 h-3.5" />}
-              placeholder="Year"
-              disabled={allYears.length === 0}
-          />
-          {allYears.length === 0 && (
-            <span className="text-xs text-muted-foreground ml-2">No years available</span>
-          )}
-        </>
-      )}
+    <Select 
+        value={lYear?.toString() || ''} 
+        onChange={(v: any) => { setLYear(Number(v)); }}
+        options={yearOptionsObj}
+        className="w-[130px] h-9 text-sm"
+        icon={<CalendarDays className="w-3.5 h-3.5" />}
+        placeholder="Year"
+        disabled={allYears.length === 0}
+    />
+    {allYears.length === 0 && (
+      <span className="text-xs text-muted-foreground ml-2">No years available</span>
+    )}
     </div>
   );
 }

@@ -1,9 +1,7 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Users, BarChart, CheckCircle2 } from 'lucide-react';
 import StatsShimmer from '@/components/admin/leaderboard/shimmers/StatsShimmer';
-import { getAdminLeaderboard } from '@/services/admin.service';
-import { studentLeaderboardService } from '@/services/student/leaderboard.service';
 
 const StatsCard = ({ icon, title, value, color, bg }: any) => (
   <div className="bg-card border border-border rounded-xl p-5 flex items-center gap-4 shadow-sm group hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-default">
@@ -17,65 +15,52 @@ const StatsCard = ({ icon, title, value, color, bg }: any) => (
   </div>
 );
 
-export function StatsSection({ lCity, lType, lYear, debouncedSearch, mode = 'admin' }: any) {
-  const [totalRecords, setTotalRecords] = useState(0);
-  const [avgCompletion, setAvgCompletion] = useState(0);
-  const [highestCompletion, setHighestCompletion] = useState(0);
-  const [loading, setLoading] = useState(true);
+export function StatsSection({ leaderboard, totalParticipants, loading, error, mode = 'admin' }: any) {
+  
+  // Calculate stats from leaderboard data
+  const calculatedStats = useMemo(() => {
+    if (!leaderboard || leaderboard.length === 0) {
+      return {
+        avgCompletion: 0,
+        highestCompletion: 0,
+        totalRecords: totalParticipants || 0
+      };
+    }
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      setLoading(true);
-      try {
-        const body = { city: lCity, type: lType, year: lYear === 0 ? undefined : Number(lYear) }; 
-        let res;
-        let leaderboard = [];
+    // Calculate completion percentages for each student
+    const completions = leaderboard.map((entry: any) => {
+      const hardComp = Number(entry.hard_completion || 0);
+      const medComp = Number(entry.medium_completion || 0);
+      const easyComp = Number(entry.easy_completion || 0);
+      return (hardComp + medComp + easyComp) / 3;
+    });
 
-        if (mode === 'student') {
-          res = await studentLeaderboardService.getLeaderboard(body, debouncedSearch);
-          leaderboard = res.top10 || [];
-          setTotalRecords(leaderboard.length);
-        } else {
-          const query = { page: 1, limit: 5, search: debouncedSearch || undefined };
-          res = await getAdminLeaderboard(query, body);
-          leaderboard = res.leaderboard || [];
-          setTotalRecords(res.total || 0);
-        }
+    // Calculate average completion
+    const avgCompletion = completions.length > 0 
+      ? completions.reduce((sum: number, comp: number) => sum + comp, 0) / completions.length 
+      : 0;
 
-        let avgC = 0;
-        let highestC = 0;
-        if (leaderboard.length > 0) {
-          let totalC = 0;
-          leaderboard.forEach((s: any) => {
-            const hc = Number(s.hard_completion || 0);
-            const mc = Number(s.medium_completion || 0);
-            const ec = Number(s.easy_completion || 0);
-            const comp = (hc + mc + ec) / 3;
-            totalC += comp;
-            if (comp > highestC) highestC = comp;
-          });
-          avgC = totalC / leaderboard.length;
-        }
-        setAvgCompletion(avgC);
-        setHighestCompletion(highestC);
-      } catch (err) {
-        setTotalRecords(0);
-        setAvgCompletion(0);
-        setHighestCompletion(0);
-      } finally {
-        setLoading(false);
-      }
+    // Calculate highest completion
+    const highestCompletion = completions.length > 0 
+      ? Math.max(...completions) 
+      : 0;
+
+    return {
+      avgCompletion,
+      highestCompletion,
+      totalRecords: totalParticipants || leaderboard.length
     };
-    fetchStats();
-  }, [lCity, lType, lYear, debouncedSearch]);
+  }, [leaderboard, totalParticipants]);
+
+  const { avgCompletion, highestCompletion, totalRecords } = calculatedStats;
 
   if (loading) return <StatsShimmer />;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <StatsCard icon={<Users />} title="Total Participants" value={totalRecords.toString()} color="text-blue-500" bg="bg-blue-500/10" />
-      <StatsCard icon={<BarChart />} title="Avg Completion" value={`${avgCompletion.toFixed(1)}%`} color="text-indigo-500" bg="bg-indigo-500/10" />
-      <StatsCard icon={<CheckCircle2 />} title="Peak Completion" value={`${highestCompletion.toFixed(1)}%`} color="text-emerald-500" bg="bg-emerald-500/10" />
+      <StatsCard icon={<BarChart />} title="Avg Completion" value={`${avgCompletion.toFixed(2)}%`} color="text-indigo-500" bg="bg-indigo-500/10" />
+      <StatsCard icon={<CheckCircle2 />} title="Peak Completion" value={`${highestCompletion.toFixed(2)}%`} color="text-emerald-500" bg="bg-emerald-500/10" />
     </div>
   );
 }

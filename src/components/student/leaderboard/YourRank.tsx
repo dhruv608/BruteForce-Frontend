@@ -11,7 +11,7 @@ export function YourRank({ yourRank }: YourRankProps) {
   if (!yourRank) return null;
 
   return (
-    <div className="bg-primary/5 border border-primary/20 rounded-xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+    <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
       
       <div className="flex items-center gap-6 z-10 w-full md:w-auto">

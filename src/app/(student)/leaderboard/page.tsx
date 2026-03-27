@@ -1,106 +1,147 @@
-import { Trophy, Clock } from 'lucide-react';
-import { getQueryClient } from '@/lib/queryClient';
-import { studentLeaderboardService } from '@/services/student/leaderboard.service';
-import { studentAuthService } from '@/services/student/auth.service';
-import { LeaderboardPageClient } from './LeaderboardPageClient';
-import { LeaderboardData } from '@/hooks/useLeaderboard';
+"use client";
 
-// Server-side data fetching
-async function getLeaderboardData(search?: string, filters?: { city?: string; year?: number; type?: string }): Promise<LeaderboardData> {
-  try {
-    const data = await studentLeaderboardService.getLeaderboard(
-      { 
-        city: filters?.city || 'all', 
-        year: filters?.year, 
-        type: filters?.type || 'all' 
-      }, 
-      search
-    );
-    return data;
-  } catch (error) {
-    return {
-      success: false,
-      top10: [],
-      yourRank: null,
-      message: "Failed to fetch data",
-      filters: {
-        city: filters?.city || "all",
-        year: filters?.year || 2024,
-        type: filters?.type || "all"
-      }
-    };
-  }
-}
+import { useState, useEffect } from "react";
+import { Trophy } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { studentLeaderboardService } from "@/services/student/leaderboard.service";
+import { studentAuthService } from "@/services/student/auth.service";
+import { EvaluationModal } from "@/components/admin/leaderboard/components/EvaluationModal";
+import { FilterBar } from "@/components/admin/leaderboard/components/FilterBar";
+import { PodiumSection } from "@/components/admin/leaderboard/components/PodiumSection";
+import { StatsSection } from "@/components/admin/leaderboard/components/StatsSection";
+import { LeaderboardTable } from "@/components/admin/leaderboard/components/LeaderboardTable";
+import { TimerLeaderboard } from "@/components/admin/leaderboard/components/TimerLeaderboard";
+import { YourRank } from "@/components/student/leaderboard/YourRank";
 
-async function getCurrentStudentDefaults() {
-  try {
-    const studentData = await studentAuthService.getCurrentStudent();
-    
-    return {
-      defaultCity: studentData?.data?.city_name || 'all',
-      defaultYear: studentData?.data?.batch_year || new Date().getFullYear()
-    };
-  } catch (error) {
-    // Silently handle auth errors - user might be admin or not logged in
-    // Fall back to defaults without exposing error details
-    return {
-      defaultCity: 'all',
-      defaultYear: new Date().getFullYear()
-    };
-  }
-}
+export default function StudentLeaderboardPage() {
+  const [lType, setLType] = useState('all');
+  const [lCity, setLCity] = useState('all');
+  const [lYear, setLYear] = useState(2025);
+  const [lSearch, setLSearch] = useState('');
 
-export default async function StudentLeaderboardPage({
-  searchParams
-}: {
-  searchParams?: { search?: string; city?: string; year?: string; type?: string };
-}) {
-  
-  // Get student defaults for city and year
-  const { defaultCity, defaultYear } = await getCurrentStudentDefaults();
-  
-  const queryClient = getQueryClient();
-  const search = searchParams?.search || '';
-  const city = searchParams?.city || defaultCity;
-  const year = searchParams?.year ? Number(searchParams.year) : defaultYear;
-  const type = searchParams?.type || 'all';
-  
+  // Get current student data to set default city and year
+  const { data: studentData } = useQuery({
+    queryKey: ['currentStudent'],
+    queryFn: async () => {
+      const response = await studentAuthService.getCurrentStudent();
+      return response.data;
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    retry: false
+  });
 
-  // Fetch data on server side with filters
-  const initialData = await getLeaderboardData(search, { city, year: year === 0 ? undefined : year, type });
+  // Set default city and year based on logged-in student
+  useEffect(() => {
+    if (studentData) {
+      const student = studentData;
+      setLCity(student.city?.city_name || 'all');
+      setLYear(student.batch?.year || 2025);
+    }
+  }, [studentData]);
 
-  // Prefetch the query for client-side hydration
-  await queryClient.prefetchQuery({
-    queryKey: ["leaderboard", { city, year: year === 0 ? undefined : year, type }, search],
-    queryFn: () => getLeaderboardData(search, { city, year: year === 0 ? undefined : year, type }),
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
+  const { data: leaderboardData, isLoading, error } = useQuery({
+    queryKey: ['studentLeaderboard', lCity === 'all' ? 'all' : lCity, lYear, lType, lSearch],
+    queryFn: async () => {
+      return await studentLeaderboardService.getLeaderboard({
+        city: lCity === 'All Cities' ? 'all' : lCity,
+        year: lYear,
+        type: lType
+      }, lSearch);
+    },
     staleTime: 5 * 60 * 1000,
   });
 
-
-  const lastUpdatedFormat = 'Live';
+  const data = leaderboardData?.data;
 
   return (
     <div className="max-w-6xl mx-auto px-8 py-8">
       <div className="glass rounded-2xl p-8 mb-8">
-        <div className="flex items-end justify-between">
+        <div className="flex items-center justify-between">
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center gap-3">
               <h2 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-3">
                 <Trophy className="w-6 h-6 text-primary" />
-                Leaderboard
+                Student Leaderboard
+                <EvaluationModal />
               </h2>
             </div>
             <p className="text-muted-foreground text-sm bg-muted/50 inline-block px-3 py-1 rounded-md border border-border/50 w-fit">
-              Top 10 Students {city !== 'all' ? `in ${city}` : 'Globally'} {year !== 0 ? `- ${year}` : ''}
+              Top 10 Students {lCity !== 'all' ? `in ${lCity}` : 'Globally'} {lYear ? `- ${lYear}` : ''}
             </p>
           </div>
-          <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground bg-muted/30 px-3 py-1.5 border border-border/50 rounded-full shadow-sm">
-            <Clock className="w-3.5 h-3.5" /> Last Updated: {lastUpdatedFormat}
+          <div className="flex justify-end">
+            <TimerLeaderboard 
+              lastUpdated={data?.last_calculated}
+              refreshInterval={4}
+              onRefresh={handleRefresh}
+            />
           </div>
         </div>
       </div>
 
-      <LeaderboardPageClient initialData={initialData} initialSearch={search} />
+      <FilterBar
+        lSearch={lSearch}
+        setLSearch={setLSearch}
+        lType={lType}
+        setLType={setLType}
+        typeOptionsObj={[
+          { value: 'all', label: 'All Time' },
+          { value: 'weekly', label: 'Weekly' },
+          { value: 'monthly', label: 'Monthly' }
+        ]}
+        lCity={lCity}
+        setLCity={setLCity}
+        cityOptionsObj={[
+          ...(data?.available_cities?.map((city: any) => ({
+            value: city.city_name,
+            label: city.city_name
+          })) || [])
+        ]}
+        setLYear={setLYear}
+        lYear={lYear}
+        yearOptionsObj={[
+          { value: 'all', label: 'All Years' },
+          ...(data?.available_cities?.[0]?.available_years?.map((year: number) => ({
+            value: year.toString(),
+            label: year.toString()
+          })) || [])
+        ]}
+        allYears={data?.available_cities?.[0]?.available_years || []}
+        mode="student"
+      />
+
+      <div className="flex flex-col space-y-6">
+        <PodiumSection
+          top3={data?.top10?.slice(0, 3) || []}
+          loading={isLoading}
+          error={error?.message}
+        />
+        
+        <StatsSection
+          leaderboard={data?.top10 || []}
+          totalParticipants={data?.top10?.length || 0}
+          loading={isLoading}
+          error={error?.message}
+        />
+
+        <YourRank yourRank={data?.yourRank} />
+
+        <LeaderboardTable
+          data={{ leaderboard: data?.top10 || [], total: data?.top10?.length || 0 }}
+          loading={isLoading}
+          error={error?.message}
+          selectedCity={lCity === 'All Cities' ? 'all' : lCity}
+          page={1}
+          limit={10}
+          setPage={() => {}}
+          setLimit={() => {}}
+          mode="student"
+        />
+      </div>
     </div>
   );
 }
