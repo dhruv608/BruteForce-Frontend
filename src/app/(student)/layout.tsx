@@ -98,7 +98,7 @@ export default function StudentLayout({
       <RecentQuestionsProvider>
         <StudentHeader />
         
-        <main className="flex-1 relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <main className="flex-1 overflow-y-auto custom-scrollbar relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
           {children}
         </main>
         

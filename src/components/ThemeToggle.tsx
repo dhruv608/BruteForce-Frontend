@@ -41,10 +41,22 @@ export function ThemeToggle() {
       root.style.colorScheme = "light";
     }
     
-    // Force a reflow to ensure theme changes are applied immediately
-    root.style.display = 'none';
-    root.offsetHeight; // Trigger reflow
-    root.style.display = '';
+    // Force reflow on all scrollable containers, not just root
+    const scrollableElements = document.querySelectorAll('.custom-scrollbar, [class*="overflow-y-auto"]');
+    scrollableElements.forEach((el) => {
+      const element = el as HTMLElement;
+      const originalDisplay = element.style.display;
+      element.style.display = 'none';
+      element.offsetHeight; // Trigger reflow
+      element.style.display = originalDisplay;
+    });
+    
+    // Also trigger reflow on root as fallback
+    requestAnimationFrame(() => {
+      root.style.display = 'none';
+      root.offsetHeight;
+      root.style.display = '';
+    });
   };
 
   const toggleTheme = () => {
