@@ -393,7 +393,7 @@ export default function AdminClassesPage() {
           setPage(1);
         }}
         showLimitSelector={true}
-        loading={loading}
+        
       />
 
       {/* CREATE MODAL */}

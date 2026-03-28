@@ -132,7 +132,6 @@ export function Sidebar({
                 href={item.href}
                 label={item.label}
                 icon={item.icon}
-                isActive={false}
                 showDivider={item.showDivider}
                 dividerLabel={item.dividerLabel}
                 isCollapsed={isCollapsed}
