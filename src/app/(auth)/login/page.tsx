@@ -5,23 +5,10 @@ import { GoogleAuthButton } from './components/GoogleAuthButton';
 export default function LoginPage() {
   return (
     <>
-      <div className="text-center  mb-8">
-        <h1
-          className="
-    font-serif italic text-4xl font-bold mb-2 shrink-0
-
-    text-logo
-
-    tracking-tight
-
-    drop-shadow-[0_0_10px_var(--hover-glow)]
-    hover:drop-shadow-[0_0_20px_var(--hover-glow)]
-
-    transition-all duration-300
-  "
-        >
-          BruteForce
-        </h1>
+      <div className="text-center   mb-8">
+       <h1 className="font-serif italic text-5xl font-bold bg-gradient-to-r from-white via-white to-slate-500 bg-clip-text text-foreground tracking-tighter">
+              Brute<span className="text-primary">Force</span>
+            </h1>
         <p className="text-[13.5px] text-muted-foreground font-medium">
           Outwork. Outsolve. Outrank.
         </p>

@@ -15,12 +15,13 @@ interface ModalProps {
   children: React.ReactNode;
   icon?: React.ReactNode;
   variant?: 'default' | 'danger';
+  preventOutsideClose?: boolean;
 }
 
-export function Modal({ isOpen, onClose, title, subtitle, children, icon, variant = 'default' }: ModalProps) {
+export function Modal({ isOpen, onClose, title, subtitle, children, icon, variant = 'default', preventOutsideClose = false }: ModalProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden border-border/40 shadow-2xl rounded-3xl">
+    <Dialog  open={isOpen} onOpenChange={(open) => !open && !preventOutsideClose && onClose()}>
+      <DialogContent className="sm:max-w-md  border-border/40 shadow-2xl rounded-3xl">
         <div className="px-6 pt-8 pb-6 flex flex-col gap-5 text-center sm:text-left">
           <DialogHeader className="flex flex-col sm:flex-row sm:items-start gap-4 space-y-0">
             {icon && (

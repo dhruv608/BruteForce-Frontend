@@ -1,15 +1,17 @@
-import React from 'react';
-import { ForgotPasswordForm } from './components/ForgotPasswordForm';
-import { BackButton } from './components/BackButton';
-import { Modal } from '../shared/components/Modal';
+"use client";
+
+import React, { useState } from 'react';
+import { ForgotPasswordModal } from '../../../components/auth/ForgotPasswordModal';
 
 export default function ForgotPasswordPage() {
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
-            <Modal>
-                <BackButton />
-                <ForgotPasswordForm />
-            </Modal>
-        </div>
-    );
+  const [isModalOpen, setIsModalOpen] = useState(true);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+      <ForgotPasswordModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
+    </div>
+  );
 }

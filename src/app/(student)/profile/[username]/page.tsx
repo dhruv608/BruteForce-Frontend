@@ -26,6 +26,7 @@ import { ActivityHeatmap } from '@/components/student/profile/ActivityHeatmap';
 import { RecentActivity } from '@/components/student/profile/RecentActivity';
 import TopicProgressModal from '@/components/student/topics/TopicProgressModal';
 import { handleToastError, showSuccess, showDeleteSuccess } from '@/utils/toast-system';
+import { toast } from '@/utils/toast';
 
 export default function PublicProfilePage() {
   const params = useParams();
@@ -67,11 +68,23 @@ export default function PublicProfilePage() {
   const [imageRemoved, setImageRemoved] = useState(false);
 
   useEffect(() => {
-    const initializeAuthAndProfile = async () => {
-      await fetchCurrentUser();
+    const initializeProfile = async () => {
+      // Always fetch profile data first
       await fetchProfileByUsername();
+      
+      // Only try to fetch current user if we have a valid student token
+      if (localStorage.getItem('accessToken') || document.cookie.split('; ').find(row => row.startsWith('accessToken='))) {
+        await fetchCurrentUser().catch(() => {
+          // Silently fail auth check - profile should still be viewable
+          setCurrentUser(null);
+          setAuthChecked(true);
+        });
+      } else {
+        setCurrentUser(null);
+        setAuthChecked(true);
+      }
     };
-    initializeAuthAndProfile();
+    initializeProfile();
   }, [username]);
 
   const fetchCurrentUser = async () => {
@@ -258,7 +271,7 @@ export default function PublicProfilePage() {
   const handleSaveUsername = async () => {
     try {
       if (!usernameForm.username.trim()) {
-        handleToastError({ message: 'Username cannot be empty' });
+        toast.error('Username cannot be empty');
         return;
       }
 
@@ -267,7 +280,7 @@ export default function PublicProfilePage() {
       const token = localStorageToken || cookieToken;
       
       if (!token) {
-        handleToastError({ message: 'Please log in to update your username.' });
+        toast.error('Please log in to update your username.');
         setTimeout(() => {
           window.location.href = '/login';
         }, 1000);
@@ -295,7 +308,7 @@ export default function PublicProfilePage() {
         if (error.message === 'Token refresh failed' ||
           error.message.includes('401') ||
           error.message.includes('Unauthorized')) {
-          handleToastError({ message: 'Your session has expired. Please log in again to update your username.' });
+          toast.error('Your session has expired. Please log in again to update your username.');
           localStorage.removeItem('accessToken');
           document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
           setTimeout(() => {

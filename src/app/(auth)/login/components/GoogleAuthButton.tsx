@@ -27,7 +27,7 @@ export function GoogleAuthButton() {
       const payload = JSON.parse(atob(idToken.split('.')[1]));
 
       if (!payload.email?.endsWith('@pwioi.com')) {
-        setError('Access denied: Use your @pwioi.com email.');
+        setError('Please use your PW student email to log in.');
         setLoading(false);
         return;
       }

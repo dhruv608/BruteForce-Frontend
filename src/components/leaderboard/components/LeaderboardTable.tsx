@@ -27,10 +27,10 @@ export function LeaderboardTable({
           <TableShimmer />
         </div>
       ) : (
-        <div className=" flex-1 p-0  overflow-auto rounded-2xl">
-          <Table className="no-scrollbar">
+        <div className=" flex-1 p-0   rounded-2xl">
+          <Table >
             <TableHeader>
-              <TableRow className="bg-muted/50 hover:bg-muted/50 border-border/80">
+              <TableRow className="bg-muted/50  border-border/80">
                 <TableHead className="font-bold px-4">Student</TableHead>
                 <TableHead className=" text-center font-bold">{rankColumnName}</TableHead>
                 <TableHead className="font-bold">Location</TableHead>
@@ -39,7 +39,7 @@ export function LeaderboardTable({
                 <TableHead className="font-bold text-center">Solved</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody >
               {errorMsg ? (
                 <TableRow>
                   <TableCell colSpan={6} className="h-[300px] text-center text-red-500">

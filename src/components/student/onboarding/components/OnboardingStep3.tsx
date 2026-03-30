@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { Button } from '../../../../app/(auth)/shared/components/Button';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, ExternalLink } from 'lucide-react';
 
 export function OnboardingStep3({ data, setStep, confirmChecked, setConfirmChecked, submitOnboarding, loading }: any) {
 
@@ -10,115 +10,166 @@ export function OnboardingStep3({ data, setStep, confirmChecked, setConfirmCheck
   };
 
   return (
-    <>
-      {/* HEADER */}
-      <div className="text-center mb-8 space-y-2">
-        <h1 className="font-serif italic text-3xl font-bold bg-gradient-to-br from-primary to-amber-600 bg-clip-text text-transparent">
-          Confirm Validation
-        </h1>
+    <div className="space-y-4">
 
-        <p className="text-xs text-muted-foreground font-medium">
-          Verify your profiles before final submission.
+      {/* ⚠️ WARNING */}
+      <div className="
+      flex gap-2
+      bg-destructive/10
+      border border-destructive/20
+      text-destructive
+      text-[11px] font-medium
+      px-2 rounded-2xl py-3
+    ">
+        <AlertTriangle className="w-3.5 h-3.5 mt-[2px]" />
+
+        <p className="leading-snug">
+          Ensure usernames are correct.
+          <span className="font-semibold"> Cannot be changed later.</span>
         </p>
       </div>
 
-      <div className="space-y-6">
+      {/* 🔗 PROFILE CARDS */}
+      <div className="space-y-2">
 
-        {/* WARNING */}
-        <div className="flex gap-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium p-4 rounded-xl">
-          <AlertTriangle className="w-4 h-4 mt-[2px]" />
-          <div>
-            If your usernames are incorrect, evaluation will fail.  
-            You <span className="font-semibold">cannot edit</span> tracking fields after submission.
-          </div>
-        </div>
+        {/* LEETCODE */}
+        <div className="
+        flex justify-between items-center
+        px-3 py-2.5
+        rounded-2xl glass
+        border border-border/60
+      ">
+          <div className="space-y-[2px]">
+            <p className="text-[9px] font-semibold uppercase text-muted-foreground">
+              LeetCode
+            </p>
 
-        {/* PROFILE CARDS */}
-        <div className="space-y-4">
-
-          {/* LEETCODE */}
-          <div className="p-4 bg-muted/40 rounded-xl border flex justify-between items-center">
-            <div className="space-y-1">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                LeetCode
-              </p>
-              <p className="font-medium text-sm truncate max-w-[160px]" title={data.leetcode_id}>
-                {data.leetcode_id}
-              </p>
-            </div>
-
-            <a
-              href={`https://leetcode.com/u/${data.leetcode_id}/`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:bg-primary/5 transition-all border border-primary/20 text-xs font-semibold px-3 py-1.5 bg-primary/10 rounded-md whitespace-nowrap"
+            <p
+              className="text-sm font-medium truncate max-w-[140px]"
+              title={data.leetcode_id}
             >
-              View →
-            </a>
+              {data.leetcode_id}
+            </p>
           </div>
+          <a
+            href={`https://leetcode.com/u/${data.leetcode_id}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-[11px] font-medium px-3 py-1.5 rounded  bg-primary text-primary-foreground
+    border border-primary/30   hover:brightness-110  hover:shadow-[0_0_10px_var(--hover-glow)]  transition-all duration-200 active:scale-[0.96]"
+          >
+            <span>View</span>
+            <ExternalLink size={12} />
+          </a>
+        </div>
 
-          {/* GFG */}
-          <div className="p-4 bg-muted/40 rounded-xl border flex justify-between items-center">
-            <div className="space-y-1">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                GeeksForGeeks
-              </p>
-              <p className="font-medium text-sm truncate max-w-[160px]" title={data.gfg_id}>
-                {data.gfg_id}
-              </p>
-            </div>
+        {/* GFG */}
+        <div className="
+        flex justify-between items-center
+        px-3 py-2.5
+        rounded-2xl glass
+        border border-border/60
+      ">
+          <div className="space-y-[2px]">
+            <p className="text-[9px] font-semibold uppercase text-muted-foreground">
+              GFG
+            </p>
 
-            <a
-              href={`https://auth.geeksforgeeks.org/user/${data.gfg_id}/`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:bg-primary/5 transition-all border border-primary/20 text-xs font-semibold px-3 py-1.5 bg-primary/10 rounded-md whitespace-nowrap"
+            <p
+              className="text-sm font-medium truncate max-w-[140px]"
+              title={data.gfg_id}
             >
-              View →
-            </a>
+              {data.gfg_id}
+            </p>
           </div>
-        </div>
 
-        {/* CONFIRM */}
-        <div className="flex items-start gap-3 pt-2">
-          <input
-            type="checkbox"
-            id="confirmData"
-            checked={confirmChecked}
-            onChange={e => setConfirmChecked(e.target.checked)}
-            className="mt-1 w-4 h-4 text-primary cursor-pointer border-border rounded"
-          />
+          <a
+            href={`https://auth.geeksforgeeks.org/user/${data.gfg_id}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="
+    inline-flex items-center gap-1.5
 
-          <label
-            htmlFor="confirmData"
-            className="text-xs text-muted-foreground leading-tight cursor-pointer"
+    text-[11px] font-medium
+    px-3 py-1.5 rounded
+
+    bg-primary text-primary-foreground
+    border border-primary/30
+
+    hover:brightness-110
+    hover:shadow-[0_0_10px_var(--hover-glow)]
+
+    transition-all duration-200
+    active:scale-[0.96]
+  "
           >
-            I confirm that the above profiles are correct and belong to me.
-          </label>
-        </div>
-
-        {/* ACTIONS */}
-        <div className="flex gap-3 pt-2">
-
-          <Button
-            variant="outline"
-            onClick={handleEdit}
-            disabled={loading}
-            className="w-1/3 h-11"
-          >
-            Edit
-          </Button>
-
-          <Button
-            onClick={submitOnboarding}
-            disabled={!confirmChecked || loading}
-            className="w-2/3 h-11 font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
-          >
-            {loading ? "Saving securely..." : "Confirm & Continue"}
-          </Button>
-
+            <span>View</span>
+            <ExternalLink size={12} />
+          </a>
         </div>
       </div>
-    </>
+
+      {/* ✅ CHECKBOX */}
+      <div className="flex items-start gap-2 pt-1">
+
+        <input
+          type="checkbox"
+          id="confirmData"
+          checked={confirmChecked}
+          onChange={(e) => setConfirmChecked(e.target.checked)}
+          className="mt-[3px] w-3.5 h-3.5 accent-primary cursor-pointer"
+        />
+
+        <label
+          htmlFor="confirmData"
+          className="text-[11px] text-muted-foreground leading-snug cursor-pointer"
+        >
+          I confirm these profiles are correct.
+        </label>
+      </div>
+
+      {/* 🔘 ACTIONS */}
+      <div className="flex gap-2 pt-2">
+
+        <Button
+          variant="outline"
+          onClick={handleEdit}
+          disabled={loading}
+          className="
+          w-1/3 h-10
+          rounded-lg
+          text-sm font-medium
+
+          border-border
+          hover:bg-accent/50
+
+          transition
+          active:scale-[0.97]
+        "
+        >
+          Edit
+        </Button>
+
+        <Button
+          onClick={submitOnboarding}
+          disabled={!confirmChecked || loading}
+          className="
+          w-2/3 h-10
+          rounded-lg
+          text-sm font-medium
+
+          bg-primary text-primary-foreground
+
+          hover:shadow-[0_0_15px_var(--hover-glow)]
+          transition
+          active:scale-[0.97]
+
+          disabled:opacity-50
+        "
+        >
+          {loading ? "Saving..." : "Confirm & Continue"}
+        </Button>
+      </div>
+    </div>
   );
 }

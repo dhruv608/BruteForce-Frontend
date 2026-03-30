@@ -1,9 +1,10 @@
 "use client";
+
 import React, { useState, useEffect, useRef } from "react";
 import { Input } from "../../../../app/(auth)/shared/components/Input";
 import { Button } from "../../../../app/(auth)/shared/components/Button";
 import { useUsernameCheck } from "../hooks/useUsernameCheck";
-import { Loader, CheckCircle, XCircle, Type } from "lucide-react";
+import { Loader, CheckCircle, XCircle } from "lucide-react";
 
 type UsernameStatus =
   | "idle"
@@ -83,7 +84,7 @@ export function OnboardingStep1({
   const canProceed =
     usernameStatus === "available" && data.username?.trim().length >= 3;
 
-  // 🔥 STATUS MESSAGE (UNIFIED SIZE)
+  // 🔥 STATUS MESSAGE
   const getStatusMessage = () => {
     const base = "flex items-center gap-2 text-xs font-medium";
 
@@ -92,7 +93,7 @@ export function OnboardingStep1({
         return (
           <div className={`${base} text-muted-foreground`}>
             <Loader size={14} className="animate-spin" />
-            <span>Typing...</span>
+            <span>Checking...</span>
           </div>
         );
 
@@ -125,64 +126,52 @@ export function OnboardingStep1({
     }
   };
 
-  // 🔥 INPUT STYLES (PREMIUM LOOK)
-  const getInputStyles = () => {
-    const base =
-      "h-12 rounded-xl bg-white/5 backdrop-blur-md border px-4 text-sm transition-all duration-300";
-
-    switch (usernameStatus) {
-      case "typing":
-        return `${base} border-blue-400/30 ring-2 ring-blue-400/10`;
-
-      case "available":
-        return `${base} border-green-400/40 ring-2 ring-green-400/20 shadow-md shadow-green-500/10`;
-
-      case "taken":
-      case "invalid":
-        return `${base} border-red-400/40 ring-2 ring-red-400/20 shadow-md shadow-red-500/10`;
-
-      default:
-        return `${base} border-white/10 focus:ring-2 focus:ring-primary/40`;
-    }
-  };
-
   return (
-    <>
-      {/* HEADER */}
-      <div className="text-center mb-8 space-y-2">
-        <h1 className="font-serif italic text-3xl font-bold bg-gradient-to-br from-primary to-amber-600 bg-clip-text text-transparent">
-          Set Username
-        </h1>
+    <div className="space-y-5">
 
-        <p className="text-sm text-muted-foreground">
-          Choose a unique username for your profile
-        </p>
-      </div>
-
-      {/* FORM */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
           if (canProceed) setStep(2);
         }}
-        className="space-y-6"
+        className="space-y-5"
       >
-        {/* INPUT */}
-        <div className="space-y-3">
-          <label className="text-xs font-semibold text-muted-foreground">
-            Username <span className="text-red-500">*</span>
-          </label>
 
-          <div className="relative group">
+        {/* INPUT BLOCK */}
+        <div className="space-y-2">
+
+          {/* FLOATING LABEL (ONLY WHEN TYPING) */}
+          {data.username?.trim() !== "" && (
+            <label className="text-xs font-medium text-muted-foreground">
+              Username <span className="text-destructive">*</span>
+            </label>
+          )}
+
+          <div className="relative">
+
             <Input
               type="text"
-              placeholder="e.g. ayush_dev"
+              placeholder="ayush_dev"
+              value={data.username ?? ""}
               onChange={handleUsernameChange}
               required
-              className={`${getInputStyles()} group-focus-within:shadow-lg`}
+              className="
+                w-full h-11
+                rounded-xl
+                bg-background/70
+                border border-border
+                px-4 text-sm
+
+                focus:border-primary
+                focus:ring-2 focus:ring-primary/20
+
+                hover:border-primary/30
+
+                transition-all duration-200
+              "
             />
 
-            {/* RIGHT ICON */}
+            {/* ICONS */}
             {usernameStatus === "available" && (
               <CheckCircle
                 size={18}
@@ -201,31 +190,40 @@ export function OnboardingStep1({
             {usernameStatus === "typing" && (
               <Loader
                 size={18}
-                className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-blue-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-primary"
               />
             )}
           </div>
 
-          {/* STATUS */}
-          <div className="min-h-[20px] transition-all duration-300">
-            <div key={usernameStatus} className="animate-fade-in">
+          {/* STATUS → ONLY WHEN USER TYPES */}
+          {data.username?.trim() !== "" && (
+            <div className="text-xs animate-fade-in">
               {getStatusMessage()}
             </div>
-          </div>
-
-         
-          
+          )}
         </div>
 
         {/* BUTTON */}
         <Button
           type="submit"
           disabled={!canProceed || isPending}
-          className="w-full h-12 rounded-xl font-semibold bg-gradient-to-r from-primary to-amber-500 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] disabled:opacity-50"
+          className="
+            w-full h-11
+            rounded-xl
+            font-medium text-sm
+
+            bg-primary text-primary-foreground
+
+            hover:shadow-[0_0_20px_var(--hover-glow)]
+            hover:brightness-105
+
+            transition-all duration-200
+            active:scale-[0.97]
+
+            disabled:opacity-50 disabled:cursor-not-allowed
+          "
         >
-          
-            <span>Next →</span>
-         
+          {isPending ? "Checking..." : "Next →"}
         </Button>
       </form>
 
@@ -246,6 +244,6 @@ export function OnboardingStep1({
           animation: fade-in 0.25s ease-out;
         }
       `}</style>
-    </>
+    </div>
   );
 }

@@ -4,89 +4,141 @@ import { Input } from '../../../../app/(auth)/shared/components/Input';
 import { Button } from '../../../../app/(auth)/shared/components/Button';
 
 export function OnboardingStep2({ data, setData, setStep }: { data: any, setData: any, setStep: any }) {
-  return (
-    <>
-      {/* HEADER */}
-      <div className="text-center mb-8 space-y-2">
-        <h1 className="font-serif italic text-3xl font-bold bg-gradient-to-br from-primary to-amber-600 bg-clip-text text-transparent">
-          Coding Profiles
-        </h1>
+ return (
+  <div className=" space-y-6">
 
-        <p className="text-xs text-muted-foreground font-medium">
-          Connect your coding profiles for automated evaluation tracking.
+    {/* FORM */}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (data.leetcode_id && data.gfg_id) setStep(3);
+      }}
+      className="space-y-6"
+    >
+
+      {/* LEETCODE */}
+      <div className="space-y-3 p-4 rounded-2xl glass   border border-border/60  ">
+
+        <div className="flex justify-between items-center">
+          <label className="text-s font-semibold text-muted-foreground tracking-wide">
+            LeetCode Username
+          </label>
+
+        
+        </div>
+
+        <Input
+          type="text"
+          value={data.leetcode_id ?? ""}
+          onChange={(e) =>
+            setData({ ...data, leetcode_id: e.target.value })
+          }
+          placeholder="ayush_dev"
+          required
+          className="
+            h-11 rounded-xl
+            bg-background/70
+            border border-border
+            px-4 text-sm w-full
+
+            focus:border-primary
+            focus:ring-2 focus:ring-primary/20
+
+            hover:border-primary/30
+
+            transition-all duration-200
+          "
+        />
+
+        <p className="text-[11px] text-muted-foreground">
+          Used to track your problem-solving progress automatically.
         </p>
       </div>
 
-      {/* FORM */}
-      <form
-        onSubmit={e => {
-          e.preventDefault();
-          if (data.leetcode_id && data.gfg_id) setStep(3);
-        }}
-        className="space-y-6"
-      >
+      {/* GFG */}
+      <div className="space-y-3 p-4 rounded-2xl glass  border border-border/60 ">
 
-        {/* LEETCODE */}
-        <div className="space-y-2 p-4 rounded-xl border bg-muted/30">
-          <div className="flex justify-between items-center">
-            <label className="text-xs font-semibold text-orange-400 tracking-wide">
-              LeetCode Username
-            </label>
+        <div className="flex justify-between items-center">
+          <label className="text-s font-semibold text-muted-foreground tracking-wide">
+            GFG Username
+          </label>
 
-            <span className="text-[10px] uppercase font-bold text-red-400 tracking-wider">
-              Required
-            </span>
-          </div>
-
-          <Input
-            type="text"
-            value={data.leetcode_id}
-            onChange={e => setData({ ...data, leetcode_id: e.target.value })}
-            className="h-11 rounded-lg bg-muted/40 focus-visible:ring-2 focus-visible:ring-primary/50 transition-all"
-            placeholder="LeetCode Handle"
-            required
-          />
-
-          <p className="text-[11px] text-muted-foreground">
-            Used to track your problem-solving progress automatically.
-          </p>
+         
         </div>
 
-        {/* GFG */}
-        <div className="space-y-2 p-4 rounded-xl border bg-muted/30">
-          <div className="flex justify-between items-center">
-            <label className="text-xs font-semibold text-green-400 tracking-wide">
-              GFG Username
-            </label>
+        <Input
+          type="text"
+          value={data.gfg_id ?? ""}
+          onChange={(e) =>
+            setData({ ...data, gfg_id: e.target.value })
+          }
+          placeholder="ayush_gfg"
+          required
+          className="
+            h-11 rounded-xl
+            bg-background/70
+            border border-border
+            px-4 text-sm w-full
 
-            <span className="text-[10px] uppercase font-bold text-red-400 tracking-wider">
-              Required
-            </span>
-          </div>
+            focus:border-primary
+            focus:ring-2 focus:ring-primary/20
 
-          <Input
-            type="text"
-            value={data.gfg_id}
-            onChange={e => setData({ ...data, gfg_id: e.target.value })}
-            className="h-11 rounded-lg bg-muted/40 focus-visible:ring-2 focus-visible:ring-primary/50 transition-all"
-            placeholder="GeeksForGeeks Handle"
-            required
-          />
+            hover:border-primary/30
 
-          <p className="text-[11px] text-muted-foreground">
-            Helps evaluate your coding performance across topics.
-          </p>
-        </div>
+            transition-all duration-200
+          "
+        />
 
-        {/* CTA */}
+        <p className="text-[11px] text-muted-foreground">
+          Helps evaluate your coding performance across topics.
+        </p>
+      </div>
+
+      {/* BUTTONS */}
+      <div className="flex gap-3 pt-2">
+
+        <Button
+          type="button"
+          onClick={() => setStep(1)}
+          variant="outline"
+          className="
+            flex-1 h-11
+            rounded-xl
+            font-medium text-sm
+
+            border-border
+            hover:bg-accent/50
+
+            transition-all duration-200
+            active:scale-[0.97]
+          "
+        >
+          ← Back
+        </Button>
+
         <Button
           type="submit"
           disabled={!data.leetcode_id || !data.gfg_id}
-          className="w-full h-11 font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="
+            flex-1 h-11
+            rounded-xl
+            font-medium text-sm
+
+            bg-primary text-primary-foreground
+
+            hover:shadow-[0_0_20px_var(--hover-glow)]
+            hover:brightness-105
+
+            transition-all duration-200
+            active:scale-[0.97]
+
+            disabled:opacity-50 disabled:cursor-not-allowed
+          "
         >
           Continue →
         </Button>
-      </form>
-    </>
-  );
+      </div>
+    </form>
+  </div>
+);
 }

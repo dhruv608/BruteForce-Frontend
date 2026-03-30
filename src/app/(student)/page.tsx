@@ -8,10 +8,19 @@ import { isStudentToken } from '@/lib/auth-utils';
 import { TopicCard } from '@/components/student/topics/TopicCard';
 import { Button } from '@/components/ui/button';
 import { Target, Flame, Trophy } from 'lucide-react';
-import { OnboardingModal } from '@/components/student/onboarding/OnboardingModal';
+import { Modal } from '@/components/Modal';
+import { OnboardingStep1 } from '@/components/student/onboarding/components/OnboardingStep1';
+import { OnboardingStep2 } from '@/components/student/onboarding/components/OnboardingStep2';
+import { OnboardingStep3 } from '@/components/student/onboarding/components/OnboardingStep3';
+import { ProgressBar } from '@/components/student/onboarding/components/ProgressBar';
+import { useOnboardingModal } from '@/components/student/onboarding/hooks/useOnboardingModal';
 import { HeroSection } from '@/components/student/home/HeroSection';
 import { TopicsSection } from '@/components/student/home/TopicsSection';
 import { handleToastError } from "@/utils/toast-system";
+      import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
 
 interface User {
   username?: string;
@@ -44,6 +53,9 @@ export default function StudentHomePage() {
   });
   const [loading, setLoading] = useState(true);
 
+  // Onboarding hook
+  const { step, setStep, data, setData, confirmChecked, setConfirmChecked, loading: onboardingLoading, submitOnboarding } = useOnboardingModal(() => setShowOnboarding(false));
+
 
   const refreshUserData = async () => {
     // Check if we have a student token before making API calls
@@ -71,6 +83,24 @@ export default function StudentHomePage() {
       setStudentResponse(studentData);
       setUser(studentData?.data);
       setTopics(topicsData);
+
+      // Initialize onboarding data with existing user info
+      if (studentData?.data) {
+        const username = studentData?.data?.username || '';
+        const leetcode = studentData?.data?.leetcode || '';
+        const gfg = studentData?.data?.gfg || '';
+        const cityId = studentData?.data?.cityId || studentData?.data?.city_id || '';
+        const batchId = studentData?.data?.batchId || studentData?.data?.batch_id || '';
+
+        setData((prev: any) => ({
+          ...prev,
+          username: username || '',
+          leetcode_id: leetcode || '',
+          gfg_id: gfg || '',
+          city_id: cityId || prev.city_id,
+          batch_id: batchId || prev.batch_id
+        }));
+      }
 
       // Check onboarding requirements from clean /me data
       const username = studentData?.data?.username;
@@ -157,12 +187,85 @@ export default function StudentHomePage() {
         <TopicsSection topics={topics} />
       </div>
 
-      {/* Onboarding Modal - Only shows if required fields are missing */}
-      <OnboardingModal
-        isOpen={showOnboarding}
-        user={user}
-        onClose={() => setShowOnboarding(false)}
-      />
+
+{showOnboarding && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center">
+
+    {/* 🔥 BACKDROP */}
+    <div
+      className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+      onClick={() => {}} // prevent outside close
+    />
+
+    {/* 🔥 MODAL */}
+    <div
+      className="
+        relative z-10
+         max-w-[720px]
+
+        rounded-2xl
+        border border-border/40
+        bg-background/95
+        backdrop-blur-xl
+
+        shadow-2xl
+        overflow-hidden
+
+        animate-in fade-in zoom-in-95
+      "
+    >
+
+      {/* HEADER */}
+      <div className="px-6 pt-6 pb-4 border-b border-border/30 relative">
+        <h2 className="text-lg font-semibold">
+          Complete Your Profile
+        </h2>
+
+        <p className="text-sm text-muted-foreground mt-1">
+          Step {step} of 3 - Let's set up your BruteForce profile
+        </p>
+
+      </div>
+
+      {/* STEPPER */}
+      <div className="px-6 pt-4">
+        <ProgressBar step={step} />
+      </div>
+
+      {/* BODY */}
+      <div className="px-6 pb-6 pt-4 max-h-[75vh] overflow-y-auto">
+
+        {step === 1 && (
+          <OnboardingStep1
+            data={data}
+            setData={setData}
+            setStep={setStep}
+          />
+        )}
+
+        {step === 2 && (
+          <OnboardingStep2
+            data={data}
+            setData={setData}
+            setStep={setStep}
+          />
+        )}
+
+        {step === 3 && (
+          <OnboardingStep3
+            data={data}
+            setStep={setStep}
+            confirmChecked={confirmChecked}
+            setConfirmChecked={setConfirmChecked}
+            submitOnboarding={submitOnboarding}
+            loading={onboardingLoading}
+          />
+        )}
+
+      </div>
+    </div>
+  </div>
+)}
     </> 
   ); 
 }

@@ -63,7 +63,13 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full overflow-y-auto custom-scrollbar flex flex-col ">
+      <body className="min-h-full overflow-y-auto custom-scrollbar flex flex-col relative">
+        {/* 🔥 BACKGROUND GLOW */}
+        <div className="fixed inset-0 pointer-events-none -z-10">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 blur-[120px]" />
+          <div className="absolute bottom-10 right-10 w-72 h-72 bg-blue-500/10 blur-[120px]" />
+        </div>
+        
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <QueryProvider>
             <ErrorBoundary>
