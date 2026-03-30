@@ -27,7 +27,7 @@ export function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProp
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-[#050507]/85 backdrop-blur-xl"
+            className="absolute inset-0 bg-loginCard/85 backdrop-blur-xl"
           />
 
           {/* 🔥 AMBIENT RADIAL GLOW */}
@@ -41,7 +41,7 @@ export function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProp
             transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
             className="
               relative z-10 w-full max-w-[420px]
-              bg-[#090A0F] border border-white/[0.06]
+              bg-loginCard border border-foreground/6
               rounded-[32px] overflow-hidden
               shadow-[0_32px_64px_-16px_rgba(0,0,0,0.8)]
             "
@@ -54,12 +54,12 @@ export function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProp
               <motion.div 
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#CCFF00]/10 border border-[#CCFF00]/20 mb-6 group"
+                className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-logo/10 border border-border mb-6 group"
               >
-                <Mail className="text-[#CCFF00] group-hover:scale-110 transition-transform duration-300" size={30} />
+                <Mail className="text-logo group-hover:scale-110 transition-transform duration-300" size={30} />
               </motion.div>
 
-              <h2 className="text-2xl font-bold text-white tracking-tight leading-tight">
+              <h2 className="text-2xl font-bold text-foreground tracking-tight leading-tight">
                 Forgot <span className="text-[#CCFF00]">Password?</span>
               </h2>
               <p className="text-slate-500 text-sm mt-2 font-medium">
@@ -99,28 +99,29 @@ export function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProp
 
                 {/* INPUT FIELD */}
                 <div className="space-y-2 group">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 transition-colors group-focus-within:text-[#CCFF00]">
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 transition-colors group-focus-within:text-logo">
                     Email Address
                   </label>
                   <div className="relative">
                     <Mail 
                       size={16} 
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#CCFF00] transition-colors" 
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-logo transition-colors" 
                     />
                     <Input
                       type="email"
-                      placeholder="name@company.com"
+                      placeholder="student@pwioi.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       disabled={loading}
                       className="
-                        !pl-11 w-full h-12 bg-white/[0.03] border-white/10 rounded-xl
-                        text-white placeholder:text-slate-600 outline-none
-                        focus:border-[#CCFF00]/40 focus:ring-4 focus:ring-[#CCFF00]/5
-                        transition-all duration-300 group-hover:border-white/20
+                        !pl-12 w-full !h-14  border-border  rounded-2xl
+                        text-foreground placeholder:text-slate-600 focus:outline-none
+                        focus:border-logo/40 focus:ring-4 focus:ring-logo/5
+                        transition-all duration-300 group-hover:border-foreground/20
                       "
                       required
                     />
+                    
                   </div>
                 </div>
 
@@ -154,10 +155,7 @@ export function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProp
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 ease-in-out" />
                 </Button>
 
-                {/* BOTTOM CAPTION */}
-                <p className="text-center text-[10px] text-slate-600 uppercase tracking-widest flex items-center justify-center gap-2">
-                   <Sparkles size={10} className="text-[#CCFF00]/50" /> Secure Encryption Active
-                </p>
+               
               </form>
             </div>
 

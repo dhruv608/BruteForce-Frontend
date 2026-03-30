@@ -54,5 +54,10 @@ export const studentAuthService = {
     const res = await api.post('/api/auth/reset-password', data);
     showSuccess('PASSWORD_RESET');
     return res.data;
+  },
+
+  verifyOtp: async (email: string, otp: string) => {
+    const res = await api.post('/api/auth/verify-otp', { email, otp });
+    return res.data;
   }
 };

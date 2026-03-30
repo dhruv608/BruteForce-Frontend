@@ -14,7 +14,9 @@ import {
 } from "lucide-react";
 import { Button } from "../../app/(auth)/shared/components/Button";
 import { Input } from "../../app/(auth)/shared/components/Input";
+import { PasswordInputWithValidation } from "../../components/ui/PasswordStrengthIndicator";
 import { useResetPassword } from "../../app/(auth)/reset-password/hooks/useResetPassword";
+import { useProgressivePasswordValidation } from "../../hooks/useProgressivePasswordValidation";
 
 interface ResetPasswordModalProps {
   isOpen: boolean;
@@ -35,6 +37,15 @@ function ResetPasswordModalContent({ isOpen, onClose }: ResetPasswordModalProps)
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const router = useRouter();
+  
+  // Progressive validation for new password
+  const { isComplete: isPasswordComplete } = useProgressivePasswordValidation(fpNewPassword);
+  
+  // Check if passwords match
+  const doPasswordsMatch = fpNewPassword && fpConfirmPassword && fpNewPassword === fpConfirmPassword;
+  
+  // Form validation
+  const isFormValid = fpNewPassword && fpConfirmPassword && isPasswordComplete && doPasswordsMatch;
 
   if (!isOpen) return null;
 
@@ -46,11 +57,11 @@ function ResetPasswordModalContent({ isOpen, onClose }: ResetPasswordModalProps)
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="absolute inset-0 bg-[#050507]/80 backdrop-blur-md"
+        className="absolute inset-0 bg-loginCard/80 backdrop-blur-md"
       />
 
       {/* 🔥 AMBIENT GLOW DECORATION */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[400px] bg-[#CCFF00]/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[400px] bg-logo/5 rounded-full blur-[120px] pointer-events-none" />
 
       {/* 🔥 MODAL CONTAINER */}
       <motion.div
@@ -60,26 +71,26 @@ function ResetPasswordModalContent({ isOpen, onClose }: ResetPasswordModalProps)
         transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
         className="
           relative z-10 w-full max-w-[420px]
-          bg-[#090A0F] border border-white/[0.06]
+          bg-loginCard border border-foreground/6
           rounded-[28px] overflow-hidden
           shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)]
         "
       >
         {/* PREMIUM GLASS REFLECTION TOP LAYER */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.03] to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-forground/3 to-transparent pointer-events-none" />
 
         {/* HEADER */}
         <div className="relative px-8 pt-10 pb-6 text-center">
           <motion.div 
             initial={{ rotate: -10, scale: 0.9 }}
             animate={{ rotate: 0, scale: 1 }}
-            className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#CCFF00]/10 border border-[#CCFF00]/20 mb-6"
+            className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-logo/10 border border-logo/20 mb-6"
           >
-            <ShieldCheck className="text-[#CCFF00]" size={28} />
+            <ShieldCheck className="text-logo" size={28} />
           </motion.div>
 
-          <h2 className="text-2xl font-bold text-white tracking-tight leading-tight">
-            Reset <span className="text-[#CCFF00]">Password</span>
+          <h2 className="text-2xl font-bold text-forground tracking-tight leading-tight">
+            Reset <span className="text-primary">Password</span>
           </h2>
           <p className="text-slate-500 text-sm mt-2">
             Enter your new secure access credentials
@@ -113,57 +124,39 @@ function ResetPasswordModalContent({ isOpen, onClose }: ResetPasswordModalProps)
             </AnimatePresence>
 
             {/* NEW PASSWORD */}
-            <div className="space-y-2 group">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-[#CCFF00]">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
                 New Password
               </label>
-              <div className="relative">
-                <Lock 
-                  size={16} 
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#CCFF00] transition-colors" 
-                />
-                <Input
-                  type={showPass ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={fpNewPassword}
-                  onChange={(e) => setFpNewPassword(e.target.value)}
-                  disabled={loading}
-                  className="
-                    !pl-11 w-full h-12 bg-white/[0.03] border-white/10 rounded-xl
-                    focus:border-[#CCFF00]/40 focus:ring-4 focus:ring-[#CCFF00]/5
-                    transition-all duration-300
-                  "
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 active:scale-90 transition-all"
-                >
-                  {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
+              <PasswordInputWithValidation
+                password={fpNewPassword}
+                onPasswordChange={setFpNewPassword}
+                disabled={loading}
+                showStrengthIndicator={true}
+                showChecklist={true}
+                className="space-y-2"
+              />
             </div>
 
             {/* CONFIRM PASSWORD */}
             <div className="space-y-2 group">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-[#CCFF00]">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-logo">
                 Confirm Password
               </label>
               <div className="relative">
                 <Lock 
                   size={16} 
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#CCFF00] transition-colors" 
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-logo transition-colors" 
                 />
                 <Input
                   type={showConfirm ? "text" : "password"}
-                  placeholder="••••••••"
+                  placeholder="•••••••"
                   value={fpConfirmPassword}
                   onChange={(e) => setFpConfirmPassword(e.target.value)}
                   disabled={loading}
                   className="
-                    !pl-11 w-full h-12 bg-white/[0.03] border-white/10 rounded-xl
-                    focus:border-[#CCFF00]/40 focus:ring-4 focus:ring-[#CCFF00]/5
+                    !pl-11 w-full !h-12 bg-white/[0.03] border-white/10 rounded-xl
+                    focus:border-logo/40 focus:ring-4 focus:ring-logo/5
                     transition-all duration-300
                   "
                   required
@@ -171,11 +164,30 @@ function ResetPasswordModalContent({ isOpen, onClose }: ResetPasswordModalProps)
                 <button
                   type="button"
                   onClick={() => setShowConfirm(!showConfirm)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 active:scale-90 transition-all"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg text-slate-500 hover:text-forground hover:bg-forground/10 active:scale-90 transition-all"
                 >
                   {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+              
+              {/* Password match indicator */}
+              {fpConfirmPassword && (
+                <div className={`text-xs font-medium flex items-center gap-2 ${
+                  doPasswordsMatch ? 'text-green-400' : 'text-red-400'
+                }`}>
+                  {doPasswordsMatch ? (
+                    <>
+                      <ShieldCheck size={14} />
+                      <span>Passwords match</span>
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle size={14} />
+                      <span>Passwords do not match</span>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* ACTIONS */}
@@ -186,8 +198,8 @@ function ResetPasswordModalContent({ isOpen, onClose }: ResetPasswordModalProps)
                 disabled={loading}
                 variant="outline"
                 className="
-                  flex-1 h-12 rounded-xl order-2 sm:order-1
-                  border-white/10 hover:bg-white/5 hover:text-white text-slate-400
+                  flex-1 h-12 text-foreground rounded-2xl order-2 sm:order-1 border
+                  border-border hover:bg-foreground/5 hover:text-foreground 
                   transition-all duration-200 gap-2
                 "
               >
@@ -197,12 +209,13 @@ function ResetPasswordModalContent({ isOpen, onClose }: ResetPasswordModalProps)
 
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !isFormValid}
                 className="
                   flex-1 h-12 rounded-xl order-1 sm:order-2
                   bg-[#CCFF00] text-black font-bold
                   hover:bg-[#d9ff33] hover:shadow-[0_0_20px_rgba(204,255,0,0.3)]
                   active:scale-[0.98] transition-all duration-300
+                  disabled:opacity-50 disabled:cursor-not-allowed
                 "
               >
                 {loading ? (

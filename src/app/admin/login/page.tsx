@@ -8,6 +8,7 @@ import { loginAdmin } from '@/services/auth.service';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { handleToastError } from "@/utils/toast-system";
+import { PasswordInputWithValidation } from '@/components/ui/PasswordStrengthIndicator';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -39,7 +40,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050507] p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-loginCard p-4 relative overflow-hidden">
       {/* 🌌 AMBIENT BACKGROUND GLOW */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
@@ -54,17 +55,17 @@ export default function AdminLoginPage() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="w-full  max-w-md relative"
+        className="w-full  max-w-md relative "
       >
        
 
-        <div className="bg-[#090A0F] border border-white/[0.06] rounded-[32px] p-10 shadow-2xl relative overflow-hidden">
+        <div className="bg-loginCard border border-border rounded-[32px] p-10 shadow-2xl relative overflow-hidden">
           {/* GLASS REFLECTION */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
 
           {/* HEADER */}
           <div className="mb-10 text-center relative z-10">
-            <h1 className="font-serif italic text-5xl font-bold bg-gradient-to-r from-white via-white to-slate-500 bg-clip-text text-transparent tracking-tighter">
+            <h1 className="font-serif italic text-5xl font-bold bg-gradient-to-r from-white via-white to-slate-500 bg-clip-text text-foreground tracking-tighter">
               Brute<span className="text-primary">Force</span>
             </h1>
             <p className="text-slate-500 text-[11px] font-black uppercase tracking-[0.3em] mt-3">Admin Operations Portal</p>
@@ -73,49 +74,40 @@ export default function AdminLoginPage() {
           <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
             {/* EMAIL FIELD */}
             <div className="space-y-2 group">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 group-focus-within:text-primary transition-colors">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 group-focus-within:text-logo transition-colors">
                 Email Id
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-primary transition-colors" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-logo transition-colors" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
-                  className="w-full h-12 pl-11 pr-4 bg-white/[0.03] border border-white/10 rounded-xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/40 transition-all"
+                  className="w-full h-12 pl-11 pr-4  border border-border rounded-xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-logo/40 transition-all"
                   placeholder="admin@bruteforce.com"
                   required
                 />
               </div>
             </div>
-
-            {/* PASSWORD FIELD */}
             <div className="space-y-2 group">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 group-focus-within:text-primary transition-colors">
-               Password
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 group-focus-within:text-logo transition-colors">
+                Email Id
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-primary transition-colors" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={loading}
-                  className="w-full h-12 pl-11 pr-12 bg-white/[0.03] border border-white/10 rounded-xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/40 transition-all"
-                  placeholder="••••••••"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-slate-500 hover:text-white transition-colors"
-                  tabIndex={-1}
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
+            {/* PASSWORD FIELD */}
+            <PasswordInputWithValidation
+              password={password}
+              onPasswordChange={setPassword}
+              disabled={loading}
+              showStrengthIndicator={true}
+              showChecklist={false}
+              className="space-y-2"
+            />
+                
               </div>
             </div>
+
 
             {/* SUBMIT BUTTON */}
             <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>

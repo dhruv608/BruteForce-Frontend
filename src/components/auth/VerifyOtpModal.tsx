@@ -1,10 +1,9 @@
 "use client";
 
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ShieldCheck, AlertCircle, X, Sparkles } from "lucide-react";
 import { Button } from "../../app/(auth)/shared/components/Button";
-import { Input } from "../../app/(auth)/shared/components/Input";
 import { useOtpVerification } from "../../app/(auth)/verify-otp/hooks/useOtpVerification";
 
 interface VerifyOtpModalProps {
@@ -19,10 +18,15 @@ function VerifyOtpModalContent({ isOpen, onClose }: VerifyOtpModalProps) {
     loading,
     handleOtpChange,
     handleOtpKeyDown,
+    handlePaste,
     handleVerifyOtpLocal,
     router,
     firstOtpInputRef,
+    inputRefs,
   } = useOtpVerification();
+
+  // Local ref for handling the ref callback properly
+  const localInputRefs = useRef<(HTMLInputElement | null)[]>(Array(6).fill(null));
 
   // Auto-focus first input on mount
   useEffect(() => {
@@ -54,11 +58,11 @@ function VerifyOtpModalContent({ isOpen, onClose }: VerifyOtpModalProps) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="absolute inset-0 bg-[#050507]/80 backdrop-blur-md"
+        className="absolute inset-0 bg-loginCard/80 backdrop-blur-md"
       />
 
       {/* 🔥 AMBIENT GLOW */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[400px] bg-[#CCFF00]/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[400px] bg-logo/5 rounded-full blur-[120px] pointer-events-none" />
 
       {/* 🔥 MODAL CARD */}
       <motion.div
@@ -68,7 +72,7 @@ function VerifyOtpModalContent({ isOpen, onClose }: VerifyOtpModalProps) {
         transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
         className="
           relative z-10 w-full max-w-[420px]
-          bg-[#090A0F] border border-white/[0.06]
+          bg-loginCard border border-white/[0.06]
           rounded-[32px] overflow-hidden
           shadow-[0_32px_64px_-16px_rgba(0,0,0,0.8)]
         "
@@ -89,12 +93,12 @@ function VerifyOtpModalContent({ isOpen, onClose }: VerifyOtpModalProps) {
           <motion.div
             initial={{ y: -10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#CCFF00]/10 border border-[#CCFF00]/20 mb-6 group"
+            className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-logo/10 border border-logo/20 mb-6 group"
           >
-            <ShieldCheck className="text-[#CCFF00] group-hover:scale-110 transition-transform" size={28} />
+            <ShieldCheck className="text-logo group-hover:scale-110 transition-transform" size={28} />
           </motion.div>
 
-          <h2 className="text-2xl font-bold text-white tracking-tight leading-tight">
+          <h2 className="text-2xl font-bold text-foreground tracking-tight leading-tight">
             Verify <span className="text-[#CCFF00]">Identity</span>
           </h2>
           <p className="text-slate-500 text-sm mt-2 font-medium">
@@ -121,37 +125,49 @@ function VerifyOtpModalContent({ isOpen, onClose }: VerifyOtpModalProps) {
               )}
             </AnimatePresence>
 
-            {/* 🔥 OTP INPUT GRID (ENHANCED VISIBILITY) */}
-            <div className="flex justify-between gap-2 sm:gap-3">
-              {fpOtpArray.map((digit, idx) => (
-                <div key={idx} className="relative group">
-                  <Input
-                    ref={idx === 0 ? firstOtpInputRef : undefined}
-                    id={`otp-${idx}`}
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                    value={digit}
-                    onChange={(e) => handleOtpChange(idx, e.target.value)}
-                    onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                    disabled={loading}
-                    maxLength={1}
-                    required
-                    className="
-                      w-11 h-14 sm:w-12 sm:h-16
-                      text-center text-2xl font-black
-                      bg-white/[0.03] border-white/10 text-[#CCFF00]
-                      rounded-2xl transition-all duration-300
-                      focus:border-[#CCFF00]/50 focus:ring-[6px] focus:ring-[#CCFF00]/5
-                      group-hover:border-white/20
-                      p-0 flex items-center justify-center
-                    "
-                  />
-                  {/* Subtle underline decoration */}
-                  <div className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-4 h-0.5 rounded-full transition-all duration-300 ${digit ? 'bg-[#CCFF00] w-6' : 'bg-white/10'}`} />
-                </div>
-              ))}
-            </div>
+            {/* 🔥 ENHANCED OTP INPUT GRID */}
+            <div className="flex justify-center gap-3">
+  {fpOtpArray.map((digit, idx) => (
+    <input
+      key={idx}
+      ref={(el) => {
+        localInputRefs.current[idx] = el;
+        inputRefs.current[idx] = el;
+        if (idx === 0 && firstOtpInputRef) {
+          (firstOtpInputRef as any).current = el;
+        }
+      }}
+      type="text"
+      inputMode="numeric"
+      pattern="[0-9]*"
+      maxLength={1}
+      value={digit}
+      disabled={loading}
+      onChange={(e) => handleOtpChange(idx, e.target.value)}
+      onKeyDown={(e) => handleOtpKeyDown(idx, e)}
+      onPaste={idx === 0 ? handlePaste : undefined}
+      className={`
+        w-12 h-14 sm:w-14 sm:h-16
+        rounded-md border border-input
+        bg-background
+
+        text-center text-xl font-semibold
+        text-foreground
+
+        shadow-sm
+        transition-all duration-200
+
+        focus:outline-none
+        focus:ring-2 focus:ring-ring
+        focus:border-ring
+
+        disabled:opacity-50 disabled:cursor-not-allowed
+
+        ${digit ? "border-ring" : ""}
+      `}
+    />
+  ))}
+</div>
 
             {/* ACTION BUTTONS */}
             <div className="flex flex-col gap-4">
@@ -160,8 +176,8 @@ function VerifyOtpModalContent({ isOpen, onClose }: VerifyOtpModalProps) {
                 disabled={loading}
                 className="
                   w-full h-14 rounded-2xl
-                  bg-[#CCFF00] text-black font-black text-sm uppercase tracking-widest
-                  hover:bg-[#d9ff33] hover:shadow-[0_0_30px_rgba(204,255,0,0.2)]
+                  bg-logo text-black font-black text-sm uppercase tracking-widest
+                  hover:bg-logo hover:shadow-[0_0_30px_rgba(204,255,0,0.2)]
                   active:scale-[0.98] transition-all duration-300
                   disabled:opacity-50 disabled:grayscale
                 "
@@ -182,7 +198,7 @@ function VerifyOtpModalContent({ isOpen, onClose }: VerifyOtpModalProps) {
                 type="button"
                 onClick={() => router.push("/forgot-password")}
                 disabled={loading}
-                className="flex items-center justify-center gap-2 w-full py-2 text-slate-500 hover:text-white transition-all group"
+                className="flex items-center justify-center gap-2 w-full py-2 text-slate-500 hover:text-foreground transition-all group"
               >
                 <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
                 <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Resend Code / Change Email</span>
@@ -204,6 +220,17 @@ function VerifyOtpModalContent({ isOpen, onClose }: VerifyOtpModalProps) {
         }
         input[type=number] {
           -moz-appearance: textfield;
+        }
+        
+        /* Shake animation for error */
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
+        }
+        
+        .shake {
+          animation: shake 0.3s ease-in-out;
         }
       `}</style>
     </div>

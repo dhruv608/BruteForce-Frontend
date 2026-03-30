@@ -7,14 +7,16 @@ import { LogIn, Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
 import { studentAuthService } from '@/services/student/auth.service';
 import { useLocalStorage } from '../../shared/hooks/useLocalStorage';
 import { handleToastError } from "@/utils/toast-system";
+import { usePasswordValidation } from '@/hooks/usePasswordValidation';
+import { PasswordInputWithValidation } from '@/components/ui/PasswordStrengthIndicator';
 
 export function LoginForm() {
   const router = useRouter();
   const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const { validationResult } = usePasswordValidation(password);
 
   const [, setOnboardingUser] = useLocalStorage('onboardingUser', null);
 
@@ -62,14 +64,14 @@ export function LoginForm() {
           Email ID / Username
         </label>
         <div className="relative group">
-          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-[#CCFF00] transition-colors" />
+          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-logo transition-colors" />
           <input
             type="text"
             placeholder="admin@bruteforce.com"
             value={emailOrUsername}
             onChange={(e) => { setEmailOrUsername(e.target.value); setEmailError(''); }}
             disabled={loading}
-            className="w-full h-14 pl-12 pr-4 bg-input border border-white/5 rounded-2xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-[#CCFF00]/50 focus:ring-1 focus:ring-[#CCFF00]/20 transition-all"
+            className="w-full h-12 pl-12 pr-4  border border-border rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:border-logo/50 focus:ring-1 focus:ring-logo/20 transition-all"
           />
         </div>
         {emailError && <p className="text-[#CCFF00] text-[10px] font-bold uppercase ml-1 tracking-tighter">{emailError}</p>}
@@ -81,25 +83,22 @@ export function LoginForm() {
           <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">
             Password
           </label>
-        </div>
-        <div className="relative group">
-          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-[#CCFF00] transition-colors" />
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={loading}
-            className="w-full h-14 pl-12 pr-12 bg-input border border-white/5 rounded-2xl text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-[#CCFF00]/50 focus:ring-1 focus:ring-[#CCFF00]/20 transition-all"
-          />
           <button
             type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
+            className="text-[10px] font-bold text-slate-500 hover:text-[#CCFF00] uppercase tracking-widest transition-colors"
+            onClick={() => router.push('/forgot-password')}
           >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            Forgot Password?
           </button>
         </div>
+        <PasswordInputWithValidation
+          password={password}
+          onPasswordChange={setPassword}
+          disabled={loading}
+          showStrengthIndicator={true}
+          showChecklist={false}
+          className="space-y-2"
+        />
       </div>
 
       {/* LOG IN BUTTON */}
