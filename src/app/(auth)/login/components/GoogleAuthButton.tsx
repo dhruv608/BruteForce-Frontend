@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { studentAuthService } from '@/services/student/auth.service';
 import { useLocalStorage } from '../../shared/hooks/useLocalStorage';
 import { AlertTriangle, Loader2 } from 'lucide-react';
-import { handleToastError } from "@/utils/toast-system";
 
 export function GoogleAuthButton() {
   const router = useRouter();
@@ -43,7 +42,7 @@ export function GoogleAuthButton() {
         setError('Login failed: No token received.');
       }
     } catch (err: any) {
-      handleToastError(err);
+      
       setError(
         err.response?.data?.error ||
         err.response?.data?.message ||

@@ -14,8 +14,23 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { getAllTopics } from '@/services/admin.service';
+import { getAllTopics, bulkUploadQuestions } from '@/services/admin.service';
 import { handleToastError } from "@/utils/toast-system";
+
+// CSV validation interface
+interface CSVRow {
+  question_name: string;
+  question_link: string;
+  level: 'EASY' | 'MEDIUM' | 'HARD';
+  type: 'HOMEWORK' | 'CLASSWORK';
+}
+
+interface ValidationResult {
+  isValid: boolean;
+  errors: string[];
+  validRows: CSVRow[];
+  totalRows: number;
+}
 
 export default function BulkUploadModal({
   open,
@@ -27,8 +42,10 @@ export default function BulkUploadModal({
   const [selectedTopic, setSelectedTopic] = useState('');
   const [loading, setLoading] = useState(false);
   const [topics, setTopics] = useState([]);
-  const [csvData, setCsvData] = useState([]);
+  const [csvData, setCsvData] = useState<CSVRow[]>([]);
   const [topicsLoading, setTopicsLoading] = useState(false);
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
+  const [csvValidated, setCsvValidated] = useState(false);
 
   const [showGuide, setShowGuide] = useState(false);
 
@@ -56,12 +73,7 @@ export default function BulkUploadModal({
         
       } catch (error: any) {
         handleToastError(error);
-        // console.error('❌ Error fetching topics:', error);
-        // console.error('❌ Error details:', {
-        //   message: error.message,
-        //   response: error.response?.data,
-        //   status: error.response?.status
-        // });
+        
       } finally {
         setTopicsLoading(false);
       }
@@ -70,11 +82,192 @@ export default function BulkUploadModal({
     fetchTopics();
   }, [open]);
 
+  // CSV parsing and validation function
+  const parseAndValidateCSV = useCallback((file: File): Promise<ValidationResult> => {
+    const errors: string[] = [];
+    const validRows: CSVRow[] = [];
+    
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        try {
+          const text = e.target?.result as string;
+          const lines = text.split('\n').filter(line => line.trim());
+          
+          // Check if file has header
+          if (lines.length === 0) {
+            errors.push('CSV file is empty');
+            resolve({ isValid: false, errors, validRows, totalRows: 0 });
+            return;
+          }
+          
+          const header = lines[0].toLowerCase().replace(/\s/g, '');
+          const expectedHeader = 'question_name,question_link,level,type';
+          
+          if (header !== expectedHeader) {
+            errors.push(`Invalid header. Expected: "question_name,question_link,level,type"`);
+          }
+          
+          // Parse data rows
+          for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+            
+            // Parse CSV properly (handle quoted commas)
+            const result = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g) || [];
+            const cleanColumns = result.map(col => col.replace(/^"|"$/g, '').trim());
+            
+            if (cleanColumns.length !== 4) {
+              errors.push(`Row ${i + 1}: Invalid format. Expected 4 columns, got ${cleanColumns.length}`);
+              continue;
+            }
+            
+            const [question_name, question_link, level, type] = cleanColumns;
+            
+            // Validate required fields
+            if (!question_name) {
+              errors.push(`Row ${i + 1}: Question name is required`);
+              continue;
+            }
+            
+            if (!question_link) {
+              errors.push(`Row ${i + 1}: Question link is required`);
+              continue;
+            }
+            
+            // Validate URL format (basic check)
+            if (!question_link.startsWith('http')) {
+              errors.push(`Row ${i + 1}: Invalid question link format`);
+              continue;
+            }
+            
+            // Validate level
+            if (!['EASY', 'MEDIUM', 'HARD'].includes(level.toUpperCase())) {
+              errors.push(`Row ${i + 1}: Invalid level "${level}". Must be EASY, MEDIUM, or HARD`);
+              continue;
+            }
+            
+            // Validate type
+            if (!['HOMEWORK', 'CLASSWORK'].includes(type.toUpperCase())) {
+              errors.push(`Row ${i + 1}: Invalid type "${type}". Must be HOMEWORK or CLASSWORK`);
+              continue;
+            }
+            
+            validRows.push({
+              question_name,
+              question_link,
+              level: level.toUpperCase() as 'EASY' | 'MEDIUM' | 'HARD',
+              type: type.toUpperCase() as 'HOMEWORK' | 'CLASSWORK'
+            });
+          }
+          
+          resolve({
+            isValid: errors.length === 0 && validRows.length > 0,
+            errors,
+            validRows,
+            totalRows: lines.length - 1
+          });
+          
+        } catch (error) {
+          errors.push('Failed to parse CSV file');
+          resolve({ isValid: false, errors, validRows: [], totalRows: 0 });
+        }
+      };
+      
+      reader.onerror = () => {
+        errors.push('Failed to read file');
+        resolve({ isValid: false, errors, validRows: [], totalRows: 0 });
+      };
+      
+      reader.readAsText(file);
+    });
+  }, []);
+  
+  // Handle file change
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) {
+      setFile(null);
+      setValidationResult(null);
+      setCsvValidated(false);
+      return;
+    }
+    
+    // Check file type
+    if (!f.name.endsWith('.csv')) {
+      setValidationResult({
+        isValid: false,
+        errors: ['Please upload a CSV file'],
+        validRows: [],
+        totalRows: 0
+      });
+      setCsvValidated(true);
+      setFile(f);
+      return;
+    }
+    
+    setFile(f);
+    setLoading(true);
+    
+    try {
+      const result = await parseAndValidateCSV(f);
+      setValidationResult(result);
+      setCsvValidated(true);
+      setCsvData(result.validRows);
+    } catch (error) {
+      setValidationResult({
+        isValid: false,
+        errors: ['Failed to validate CSV'],
+        validRows: [],
+        totalRows: 0
+      });
+      setCsvValidated(true);
+    } finally {
+      setLoading(false);
+    }
+  }, [parseAndValidateCSV]);
+  
+  // Handle upload
+  const handleUpload = useCallback(async () => {
+    if (!file || !selectedTopic || !validationResult?.isValid) {
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('topic_id', selectedTopic);
+      
+      await bulkUploadQuestions(formData);
+      
+      // Reset form and close modal
+      setFile(null);
+      setSelectedTopic('');
+      setValidationResult(null);
+      setCsvValidated(false);
+      setCsvData([]);
+      
+      if (onSuccess) {
+        onSuccess();
+      }
+      
+      onOpenChange(false);
+      
+    } catch (error) {
+      handleToastError(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [file, selectedTopic, validationResult, onSuccess, onOpenChange]);
+  
   const handleClose = () => {
     if (!loading) onOpenChange(false);
   };
-
-  const isUploadDisabled = !file || loading || !selectedTopic;
+  
+  const isUploadDisabled = !file || !selectedTopic || loading || !csvValidated || !validationResult?.isValid;
 
   return (
     <>
@@ -137,10 +330,7 @@ export default function BulkUploadModal({
                 <Input
                   type="file"
                   accept=".csv"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) setFile(f);
-                  }}
+                  onChange={handleFileChange}
                   className="hidden"
                 />
               </label>
@@ -163,6 +353,54 @@ export default function BulkUploadModal({
               </Button>
             </div>
 
+            {/* CSV VALIDATION STATUS */}
+            {csvValidated && validationResult && (
+              <div className={`rounded-xl p-4 border ${validationResult.isValid 
+                ? 'bg-green-500/10 border-green-500/30 text-green-400' 
+                : 'bg-red-500/10 border-red-500/30 text-red-400'
+              }`}>
+                <div className="flex items-start gap-3">
+                  {validationResult.isValid ? (
+                    <CheckCircle2 className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                  ) : (
+                    <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                  )}
+                  <div className="space-y-2">
+                    <p className="font-medium">
+                      {validationResult.isValid 
+                        ? `✅ CSV Valid - ${validationResult.validRows.length} questions ready to upload`
+                        : '❌ CSV Validation Failed'
+                      }
+                    </p>
+                    
+                    {!validationResult.isValid && validationResult.errors.length > 0 && (
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium">Errors found:</p>
+                        <ul className="text-sm space-y-1 list-disc list-inside">
+                          {validationResult.errors.slice(0, 5).map((error, index) => (
+                            <li key={index}>{error}</li>
+                          ))}
+                          {validationResult.errors.length > 5 && (
+                            <li className="text-muted-foreground">
+                              ...and {validationResult.errors.length - 5} more errors
+                            </li>
+                          )}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    {validationResult.isValid && validationResult.validRows.length > 0 && (
+                      <div className="mt-3 pt-3 border-t border-current/20">
+                        <p className="text-sm">
+                          📊 Ready to create {validationResult.validRows.length} questions
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
           </div>
 
           {/* FOOTER */}
@@ -173,9 +411,10 @@ export default function BulkUploadModal({
 
             <Button
               disabled={isUploadDisabled}
+              onClick={handleUpload}
               className="w-full h-12 text-sm font-semibold bg-primary"
             >
-              {loading ? "Uploading..." : "Upload Questions"}
+              {loading ? "Creating Questions..." : "Create Questions"}
             </Button>
           </DialogFooter>
 

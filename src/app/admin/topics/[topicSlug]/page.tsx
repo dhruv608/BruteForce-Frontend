@@ -227,15 +227,15 @@ export default function AdminClassesPage() {
   shadow-md
 ">
 
-  <div className="
+          <div className="
     flex items-center justify-between
     px-5 py-4
   ">
 
-    {/* SEARCH */}
-    <div className="relative flex-1 max-w-sm group">
+            {/* SEARCH */}
+            <div className="relative flex-1 max-w-sm group">
 
-      <Search className="
+              <Search className="
         absolute left-3 top-1/2 -translate-y-1/2
         w-4 h-4
         text-muted-foreground
@@ -244,11 +244,11 @@ export default function AdminClassesPage() {
         group-focus-within:text-primary
       " />
 
-      <Input
-        placeholder="Search classes..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="
+              <Input
+                placeholder="Search classes..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="
           h-10 !pl-9 !pr-9 rounded-full
 
           bg-accent/40
@@ -259,11 +259,11 @@ export default function AdminClassesPage() {
 
           transition-all
         "
-      />
-    </div>
+              />
+            </div>
 
-    {/* COUNT BADGE */}
-    <div className="
+            {/* COUNT BADGE */}
+            <div className="
       text-xs font-semibold tracking-wide
 
       px-3 py-1.5 rounded-full
@@ -273,11 +273,11 @@ export default function AdminClassesPage() {
 
       shadow-[0_0_10px_var(--hover-glow)]
     ">
-      {totalRecords} Classes
-    </div>
+              {totalRecords} Classes
+            </div>
 
-  </div>
-</div>
+          </div>
+        </div>
 
         <div className="overflow-x-auto">
           <Table >
@@ -398,94 +398,111 @@ export default function AdminClassesPage() {
           setPage(1);
         }}
         showLimitSelector={true}
-        
+
       />
 
       {/* CREATE MODAL */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="sm:max-w-[480px] rounded-2xl border border-border bg-background/95 backdrop-blur-xl p-6">
+        <DialogContent
+          className="sm:max-w-[520px] rounded-3xl border border-white/10 
+    bg-gradient-to-br from-background via-background/95 to-background/90 
+    backdrop-blur-2xl p-0 shadow-2xl overflow-hidden"
+        >
 
-          {/* Header */}
-          <DialogHeader className="space-y-1">
-            <DialogTitle className="text-xl font-semibold tracking-tight">
-              Create Class Module
-            </DialogTitle>
-            <DialogDescription className="text-sm text-muted-foreground">
-              Add a new class assigned under {topicSlug}.
-            </DialogDescription>
-          </DialogHeader>
+          {/* 🔥 Header */}
+          <div className="p-6 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+            <DialogHeader className="space-y-1">
+              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                Create Class Module
+              </DialogTitle>
 
-          {/* Form */}
-          <form onSubmit={handleCreateSubmit} className="space-y-5 mt-4">
+              <DialogDescription className="text-sm text-muted-foreground">
+                Add a new class under <span className="font-medium text-foreground">{topicSlug}</span>
+              </DialogDescription>
+            </DialogHeader>
+          </div>
 
-            {/* Error */}
+          {/* 📄 Form */}
+          <form onSubmit={handleCreateSubmit} className="p-6 space-y-5">
+
+            {/* ❌ Error */}
             {formError && (
-              <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-lg">
+              <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl">
                 {formError}
               </div>
             )}
 
-            {/* Class Name */}
-            <div className="space-y-2">
+            {/* 🏷 Class Name */}
+            <div >
               <label className="text-sm font-medium">
                 Class Name <span className="text-destructive">*</span>
               </label>
               <Input
                 value={className}
-                onChange={e => setClassName(e.target.value)}
+                onChange={(e) => setClassName(e.target.value)}
                 required
-                placeholder="e.g. Intro to Arrays"
+                placeholder="Intro to Arrays"
                 disabled={submitting}
-                className="h-11 rounded-xl px-3"
+                className="mt-1 w-full h-11 rounded-2xl bg-muted/30 border border-border/40 
+          focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition"
               />
             </div>
 
-            {/* Description */}
+            {/* 📝 Description */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Description</label>
               <textarea
                 value={description}
-                onChange={e => setDescription(e.target.value)}
+                onChange={(e) => setDescription(e.target.value)}
                 disabled={submitting}
                 placeholder="Optional details about this class."
-                className="w-full h-24 px-3 py-2 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
+                className="mt-1 w-full h-24 px-3 py-2 rounded-2xl border border-border/40 
+          bg-muted/30 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
               />
             </div>
 
-            {/* Duration + Date */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* ⏱ Duration + 📅 Date */}
+            <div className="flex justify-between">
               <div className="space-y-2">
                 <label className="text-sm font-medium">
                   Duration <span className="text-xs text-muted-foreground">(min)</span>{" "}
                   <span className="text-destructive">*</span>
                 </label>
+
                 <Input
                   type="number"
                   value={duration}
-                  onChange={e => setDuration(e.target.value)}
+                  onChange={(e) => setDuration(e.target.value)}
                   required
                   placeholder="90"
                   disabled={submitting}
-                  className="h-11 rounded-xl px-3"
+                  className="mt-1 h-12 rounded-2xl bg-muted/30 border border-border/40 
+      focus:ring-2 focus:ring-primary/40 px-4"
                 />
               </div>
 
+              {/* 📅 Date */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">
                   Date <span className="text-destructive">*</span>
                 </label>
-                <Input
-                  type="date"
-                  value={classDate}
-                  onChange={e => setClassDate(e.target.value)}
-                  required
-                  disabled={submitting}
-                  className="h-11 rounded-xl px-3"
-                />
+
+                <div className="relative">
+                  <Input
+                    type="date"
+                    value={classDate}
+                    onChange={(e) => setClassDate(e.target.value)}
+                    required
+                    disabled={submitting}
+                    className="mt-1 h-12 rounded-2xl bg-muted/30 border border-border/40 
+        focus:ring-2 focus:ring-primary/40 px-4 pr-10  appearance-none"
+                  />
+                </div>
               </div>
+
             </div>
 
-            {/* PDF Link */}
+            {/* 📄 PDF Link */}
             <div className="space-y-2">
               <label className="text-sm font-medium">
                 PDF Content Link{" "}
@@ -494,34 +511,41 @@ export default function AdminClassesPage() {
               <Input
                 type="url"
                 value={pdfUrl}
-                onChange={e => setPdfUrl(e.target.value)}
+                onChange={(e) => setPdfUrl(e.target.value)}
                 placeholder="https://..."
                 disabled={submitting}
-                className="h-11 rounded-xl px-3"
+                className="mt-1 w-full h-11 rounded-2xl bg-muted/30 border border-border/40 
+          focus:ring-2 focus:ring-primary/40"
               />
             </div>
 
-            {/* Footer */}
-            <DialogFooter className="pt-4 flex justify-end gap-3 border-t border-border/60">
+            {/* 🔻 Footer */}
+            <DialogFooter className="pt-5 flex justify-between items-center border-t border-border/50">
 
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsCreateOpen(false)}
-                disabled={submitting}
-                className="rounded-xl px-5"
-              >
-                Cancel
-              </Button>
+              <span className="text-xs text-muted-foreground">
+                * Required fields
+              </span>
 
-              <Button
-                type="submit"
-                disabled={submitting}
-                className="rounded-xl px-6 shadow-sm hover:shadow-md transition"
-              >
-                {submitting ? "Creating..." : "Create Class"}
-              </Button>
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setIsCreateOpen(false)}
+                  disabled={submitting}
+                  className="rounded-xl px-5"
+                >
+                  Cancel
+                </Button>
 
+                <Button
+                  type="submit"
+                  disabled={submitting}
+                  className="rounded-xl px-6 bg-primary hover:bg-primary/90 
+            shadow-lg shadow-primary/20 transition-all"
+                >
+                  {submitting ? "Creating..." : "Create Class"}
+                </Button>
+              </div>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -529,126 +553,152 @@ export default function AdminClassesPage() {
 
       {/* EDIT MODAL */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="sm:max-w-[480px] rounded-2xl border border-border bg-background/95 backdrop-blur-xl p-6">
+        <DialogContent
+          className="sm:max-w-[520px] rounded-3xl border border-white/10 
+    bg-gradient-to-br from-background via-background/95 to-background/90 
+    backdrop-blur-2xl p-0 shadow-2xl overflow-hidden"
+        >
 
-          {/* Header */}
-          <DialogHeader className="space-y-1">
-            <DialogTitle className="text-xl font-semibold tracking-tight">
-              Update Class Details
-            </DialogTitle>
-            <DialogDescription className="text-sm text-muted-foreground">
-              Modify class attributes directly.
-            </DialogDescription>
-          </DialogHeader>
+          {/* 🔥 Header */}
+          <div className="p-6 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+            <DialogHeader className="space-y-1">
+              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                Update Class Details
+              </DialogTitle>
 
-          {/* Form */}
-          <form onSubmit={handleEditSubmit} className="space-y-5 mt-4">
+              <DialogDescription className="text-sm text-muted-foreground">
+                Modify class attributes directly.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
 
-            {/* Error */}
+          {/* 📄 Form */}
+          <form onSubmit={handleEditSubmit} className="p-6 space-y-5">
+
+            {/* ❌ Error */}
             {formError && (
-              <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-lg">
+              <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl">
                 {formError}
               </div>
             )}
 
-            {/* Class Name */}
+            {/* 🏷 Class Name */}
             <div className="space-y-2">
               <label className="text-sm font-medium">
                 Class Name <span className="text-destructive">*</span>
               </label>
               <Input
                 value={className}
-                onChange={e => setClassName(e.target.value)}
+                onChange={(e) => setClassName(e.target.value)}
                 required
                 placeholder="e.g. Intro to Arrays"
                 disabled={submitting}
-                className="h-11 rounded-xl px-3"
+                className="w-full pt-1 h-11 rounded-2xl bg-muted/30 border border-border/40 
+          focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition"
               />
             </div>
 
-            {/* Description */}
+            {/* 📝 Description */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Description</label>
               <textarea
                 value={description}
-                onChange={e => setDescription(e.target.value)}
+                onChange={(e) => setDescription(e.target.value)}
                 disabled={submitting}
                 placeholder="Optional details about this class."
-                className="w-full h-24 px-3 py-2 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
+                className="w-full h-24 px-3 py-2 rounded-2xl border border-border/40 
+          bg-muted/30 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
               />
             </div>
 
-            {/* Duration + Date */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* ⏱ Duration + 📅 Date */}
+            <div className="flex justify-between">
+
+              {/* Duration */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">
-                  Duration{" "}
-                  <span className="text-xs text-muted-foreground">(min)</span>{" "}
+                  Duration <span className="text-xs text-muted-foreground">(min)</span>{" "}
                   <span className="text-destructive">*</span>
                 </label>
+
                 <Input
                   type="number"
                   value={duration}
-                  onChange={e => setDuration(e.target.value)}
+                  onChange={(e) => setDuration(e.target.value)}
                   required
                   placeholder="90"
                   disabled={submitting}
-                  className="h-11 rounded-xl px-3"
+                  className=" pt-1 h-12 rounded-2xl bg-muted/30 border border-border/40 
+            focus:ring-2 focus:ring-primary/40 px-4"
                 />
               </div>
 
+              {/* Date */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">
                   Date <span className="text-destructive">*</span>
                 </label>
-                <Input
-                  type="date"
-                  value={classDate}
-                  onChange={e => setClassDate(e.target.value)}
-                  required
-                  disabled={submitting}
-                  className="h-11 rounded-xl px-3"
-                />
+
+                <div className="relative">
+                  <Input
+                    type="date"
+                    value={classDate}
+                    onChange={(e) => setClassDate(e.target.value)}
+                    required
+                    disabled={submitting}
+                    className="pt-1 h-12 rounded-2xl bg-muted/30 border border-border/40 
+              focus:ring-2 focus:ring-primary/40 px-4 pr-10 appearance-none"
+                  />
+
+                </div>
               </div>
             </div>
 
-            {/* PDF Link */}
+            {/* 📄 PDF */}
             <div className="space-y-2">
               <label className="text-sm font-medium">
                 PDF Content Link{" "}
                 <span className="text-xs text-muted-foreground">(Optional)</span>
               </label>
+
               <Input
                 type="url"
                 value={pdfUrl}
-                onChange={e => setPdfUrl(e.target.value)}
+                onChange={(e) => setPdfUrl(e.target.value)}
                 placeholder="https://..."
                 disabled={submitting}
-                className="h-11 rounded-xl px-3"
+                className="pt-1 w-full h-11 rounded-2xl bg-muted/30 border border-border/40 
+          focus:ring-2 focus:ring-primary/40"
               />
             </div>
 
-            {/* Footer */}
-            <DialogFooter className="pt-4 flex justify-end gap-3 border-t border-border/60">
+            {/* 🔻 Footer */}
+            <DialogFooter className="pt-5 flex justify-between items-center border-t border-border/50">
 
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsEditOpen(false)}
-                disabled={submitting}
-                className="rounded-xl px-5"
-              >
-                Cancel
-              </Button>
+              <span className="text-xs text-muted-foreground">
+                * Required fields
+              </span>
 
-              <Button
-                type="submit"
-                disabled={submitting}
-                className="rounded-xl px-6 shadow-sm hover:shadow-md transition"
-              >
-                {submitting ? "Saving..." : "Save Changes"}
-              </Button>
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setIsEditOpen(false)}
+                  disabled={submitting}
+                  className="rounded-xl px-5"
+                >
+                  Cancel
+                </Button>
 
+                <Button
+                  type="submit"
+                  disabled={submitting}
+                  className="rounded-xl px-6 bg-primary hover:bg-primary/90 
+            shadow-lg shadow-primary/20 transition-all"
+                >
+                  {submitting ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
             </DialogFooter>
           </form>
         </DialogContent>

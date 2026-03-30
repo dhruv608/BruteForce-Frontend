@@ -7,7 +7,7 @@ import { getAllCities, City } from '@/services/city.service';
 import { getAllBatches, Batch } from '@/services/batch.service';
 import { Layers, Activity, MapPin, Users2,  ArrowUpRight, Sparkles, Globe, Target } from 'lucide-react';
 import { Skeleton } from "@/components/ui/skeleton";
-import { AreaChart,Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart,Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { handleToastError } from "@/utils/toast-system";
 
 import { motion } from "framer-motion";
@@ -19,10 +19,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     <div
       style={{
         background: "var(--card)",
-        border: "1px solid rgba(255,255,255,0.08)",
+        border: "1px solid var(--border)",
         borderRadius: "12px",
         padding: "12px 16px",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
         minWidth: "130px",
       }}
     >
@@ -187,7 +187,7 @@ export default function SuperAdminDashboard() {
         {/* Batches */}
         <div
           onClick={() => router.push('/superadmin/batches')}
-          className="cursor-pointer glass card-premium p-6 rounded-2xl group hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 border border-border/20 hover:border-primary/30 relative overflow-hidden"
+          className="cursor-pointer glass card-premium p-6 rounded-2xl group transition-all duration-300 border border-border/20 relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-chart-3/5 rounded-full -mr-10 -mt-10  transition-transform duration-500"></div>
 
@@ -211,7 +211,7 @@ export default function SuperAdminDashboard() {
         {/* Admins */}
         <div
           onClick={() => router.push('/superadmin/admins')}
-          className="cursor-pointer glass card-premium p-6 rounded-2xl group hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 border border-border/20 hover:border-primary/30 relative overflow-hidden"
+          className="cursor-pointer glass card-premium p-6 rounded-2xl group transition-all duration-300 border border-border/20 relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-chart-5/5 rounded-full -mr-10 -mt-10  transition-transform duration-500"></div>
 
@@ -245,7 +245,7 @@ export default function SuperAdminDashboard() {
           {/* Header */}
           <div className="flex items-center justify-between mb-7">
             <h3 className="text-[15px] font-medium text-foreground flex items-center gap-2.5">
-              {/* Wave / area icon */}
+              {/* Bar chart icon */}
               <svg
                 width="18"
                 height="18"
@@ -253,18 +253,10 @@ export default function SuperAdminDashboard() {
                 fill="none"
                 className="text-chart-3"
               >
-                <path
-                  d="M1 13 C3 13, 4 7, 6.5 7 C9 7, 9.5 11, 12 11 C14.5 11, 15 5, 17 5"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-                <path
-                  d="M1 13 C3 13, 4 7, 6.5 7 C9 7, 9.5 11, 12 11 C14.5 11, 15 5, 17 5 L17 17 L1 17Z"
-                  fill="currentColor"
-                  opacity="0.12"
-                />
+                <rect x="2" y="8" width="3" height="8" rx="1" fill="currentColor" />
+                <rect x="6" y="5" width="3" height="11" rx="1" fill="currentColor" />
+                <rect x="10" y="3" width="3" height="13" rx="1" fill="currentColor" />
+                <rect x="14" y="6" width="3" height="10" rx="1" fill="currentColor" />
               </svg>
               City breakdown
             </h3>
@@ -276,22 +268,17 @@ export default function SuperAdminDashboard() {
           {/* Chart */}
           <div className="h-[240px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
+              <BarChart
                 data={cityBreakdown}
-                margin={{ top: 20, right: 4, left: -4, bottom: 0 }}
+                margin={{ top: 20, right: 20, left: -4, bottom: 0 }}
+                barGap={8}
+                barSize={40}
               >
-                <defs>
-                  <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#60A5FA" stopOpacity={0.25} />
-                    <stop offset="60%" stopColor="#60A5FA" stopOpacity={0.06} />
-                    <stop offset="100%" stopColor="#60A5FA" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-
                 <CartesianGrid
-                  stroke="rgba(255,255,255,0.05)"
+                  stroke="var(--border)"
                   strokeDasharray="4 4"
                   vertical={false}
+                  opacity={0.3}
                 />
 
                 <XAxis
@@ -309,7 +296,7 @@ export default function SuperAdminDashboard() {
                   axisLine={false}
                   tickLine={false}
                   tick={{
-                    fill: "rgba(100,116,139,0.5)",
+                    fill: "var(--muted-foreground)",
                     fontSize: 11,
                   }}
                   tickCount={5}
@@ -319,49 +306,47 @@ export default function SuperAdminDashboard() {
                 <Tooltip
                   content={<CustomTooltip />}
                   cursor={{
-                    stroke: "rgba(96,165,250,0.2)",
-                    strokeWidth: 1.5,
-                    strokeDasharray: "4 4",
+                    fill: "var(--chart-3)",
+                    fillOpacity: 0.1,
                   }}
                 />
 
-                <Area
-                  type="monotone"
+                <Bar
                   dataKey="count"
-                  stroke="#60A5FA"
-                  strokeWidth={2.5}
-                  fill="url(#areaGradient)"
-                  dot={{
-                    r: 4,
-                    fill: "#60A5FA",
-                    strokeWidth: 2,
-                    stroke: "var(--card)",
-                  }}
-                  activeDot={{
-                    r: 6,
-                    fill: "#60A5FA",
-                    strokeWidth: 2,
-                    stroke: "var(--card)",
-                  }}
-                  animationDuration={900}
+                  radius={[8, 8, 0, 0]}
+                  animationDuration={800}
                   animationEasing="ease-out"
-                />
-              </AreaChart>
+                >
+                  {cityBreakdown.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={[
+                        'var(--chart-1)', // Primary lime
+                        'var(--chart-2)', // Cyan  
+                        'var(--chart-3)', // Blue
+                        'var(--chart-5)', // Green
+                        'var(--chart-4)', // Red (for contrast)
+                      ][index % 5]}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
           </div>
 
           {/* Footer legend */}
           <div className="flex items-center gap-5 mt-4 pt-4 border-t border-border/10">
             <div className="flex items-center gap-2 text-xs text-muted-foreground/50">
-              <span className="inline-block w-5 h-0.5 rounded bg-chart-3/70"></span>
+              <div className="flex gap-1">
+                <div className="w-3 h-3 rounded-sm bg-chart-1"></div>
+                <div className="w-3 h-3 rounded-sm bg-chart-2"></div>
+                <div className="w-3 h-3 rounded-sm bg-chart-3"></div>
+              </div>
               Batches per city
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground/50">
-              <span
-                className="inline-block w-2.5 h-2.5 rounded-full border-2 bg-chart-3"
-                style={{ borderColor: "var(--card)" }}
-              ></span>
-              Data point
+              <div className="w-3 h-3 rounded-sm bg-chart-3"></div>
+              City data
             </div>
           </div>
         </motion.div>
@@ -378,7 +363,7 @@ export default function SuperAdminDashboard() {
           <div className="space-y-3  pt-3">
             <button
               onClick={() => router.push('/superadmin/admins')}
-              className="w-full mb-4  group relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-5/10 to-transparent border border-chart-5/20 hover:border-chart-5/40 px-4 py-5 text-left transition-all duration-300 hover:shadow-lg hover:shadow-chart-5/10"
+              className="w-full mb-4 group relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-5/10 to-transparent border border-chart-5/20 hover:border-chart-5/40 px-4 py-5 text-left transition-all duration-300"
             >
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -396,7 +381,7 @@ export default function SuperAdminDashboard() {
 
             <button
               onClick={() => router.push('/superadmin/cities')}
-              className="w-full mb-4 group relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-2/10 to-transparent border border-chart-2/20 hover:border-chart-2/40 px-4 py-5 text-left transition-all duration-300 hover:shadow-lg hover:shadow-chart-2/10"
+              className="w-full mb-4 group relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-2/10 to-transparent border border-chart-2/20 hover:border-chart-2/40 px-4 py-5 text-left transition-all duration-300"
             >
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -414,7 +399,7 @@ export default function SuperAdminDashboard() {
 
             <button
               onClick={() => router.push('/superadmin/batches')}
-              className="w-full group relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-3/10 to-transparent border border-chart-3/20 hover:border-chart-3/40 px-4 py-5 text-left transition-all duration-300 hover:shadow-lg hover:shadow-chart-3/10"
+              className="w-full group relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-3/10 to-transparent border border-chart-3/20 hover:border-chart-3/40 px-4 py-5 text-left transition-all duration-300"
             >
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-3">

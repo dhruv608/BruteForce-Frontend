@@ -74,18 +74,20 @@ export default function RootLayout({
         <Toaster 
           position="top-right" 
           theme="system" 
-          richColors 
-          closeButton
+          richColors={false}
+          closeButton={false}
           duration={4000}
-          className="glass-premium-toast"
+          className="premium-saas-toast"
           toastOptions={{
-            style: {
-              background: 'rgba(var(--glass-toast-bg), 0.9)',
-              border: '1px solid rgba(var(--glass-toast-border), 0.2)',
-              backdropFilter: 'blur(12px)',
-              borderRadius: '12px',
-              boxShadow: '0 8px 32px rgba(var(--glass-toast-shadow), 0.12)',
-            }
+            classNames: {
+              toast: 'premium-saas-toast',
+              icon: 'premium-toast-icon',
+              title: 'premium-toast-title',
+              description: 'premium-toast-description',
+              actionButton: 'premium-toast-action',
+              cancelButton: 'premium-toast-cancel',
+              closeButton: 'premium-toast-close',
+            },
           }}
         />
       </body>

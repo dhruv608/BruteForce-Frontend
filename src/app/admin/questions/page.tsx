@@ -440,11 +440,7 @@ export default function AdminQuestionsBankPage() {
 
     return (
       <div
-        className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium w-fit
-      ${isHomework
-            ? "bg-primary/10 text-primary border border-primary/20"
-            : "bg-muted/40 text-muted-foreground border border-border"
-          }`}
+        className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium w-fit text-muted-foreground`}
       >
         {isHomework ? (
           <BookOpen className="w-3.5 h-3.5" />
@@ -460,15 +456,15 @@ export default function AdminQuestionsBankPage() {
   function DifficultyBadge({ level }: { level: string }) {
     const config = {
       EASY: {
-        color: "bg-green-500/10 text-green-400 border-green-500/20",
+        color: "text-muted-foreground border-0",
         
       },
       MEDIUM: {
-        color: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
+        color: "text-muted-foreground border-0",
         
       },
       HARD: {
-        color: "bg-red-500/10 text-red-400 border-red-500/20",
+        color: "text-muted-foreground border-0",
         
       },
     };
@@ -488,19 +484,19 @@ export default function AdminQuestionsBankPage() {
     const config: any = {
       LEETCODE: {
         icon: Code,
-        color: "bg-[#FFA116]/10 text-[#FFA116] border-[#FFA116]/20",
+        color: " text-[#FFA116] border-0",
       },
       GFG: {
         icon: BookOpen,
-        color: "bg-[#2F8D46]/10 text-[#2F8D46] border-[#2F8D46]/20",
+        color: " text-[#2F8D46] border-0 ",
       },
       INTERVIEWBIT: {
         icon: Brain,
-        color: "bg-[#3B82F6]/10 text-[#3B82F6] border-[#3B82F6]/20",
+        color: "text-[#3B82F6] border-0",
       },
       OTHER: {
         icon: HelpCircle,
-        color: "bg-muted/40 text-muted-foreground border-border",
+        color: " text-muted-foreground border-0",
       },
     };
 
@@ -655,23 +651,23 @@ export default function AdminQuestionsBankPage() {
 
               {/* HEADER */}
               <TableHeader>
-                <TableRow className="bg-muted/30 border-b border-border/40 p-6 ">
-                  <TableHead className="text-xs uppercase tracking-wide text-muted-foreground">
+                <TableRow className="bg-muted/30  border-b border-border/40 p-6 ">
+                  <TableHead className="text-s font-bold  uppercase tracking-wide text-muted-foreground">
                     Question
                   </TableHead>
-                  <TableHead className="text-xs uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="text-s font-bold  uppercase tracking-wide text-muted-foreground">
                     Type
                   </TableHead>
-                  <TableHead className="text-xs uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="text-s font-bold uppercase tracking-wide text-muted-foreground">
                     Difficulty
                   </TableHead>
-                  <TableHead className="text-xs uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="text-s font-bold uppercase tracking-wide text-muted-foreground">
                     Topic
                   </TableHead>
-                  <TableHead className="text-xs uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="text-s font-bold uppercase tracking-wide text-muted-foreground">
                     Platform
                   </TableHead>
-                  <TableHead className="text-right text-xs uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="text-right text-xs font-bold uppercase tracking-wide text-muted-foreground">
                     Actions
                   </TableHead>
                 </TableRow>

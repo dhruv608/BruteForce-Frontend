@@ -40,7 +40,9 @@ export default function AdminLoginPage() {
         document.cookie = `accessToken=${accessToken}; path=/`;
       }
 
-      router.push('/admin');
+      // Use window.location.href instead of router.push to ensure full page reload
+      // This guarantees the admin layout re-mounts with fresh authentication state
+      window.location.href = '/admin';
     } catch (err: any) {
       // Error is already handled by showLoginPromise
       // console.error('Admin login error:', err);

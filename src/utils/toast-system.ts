@@ -7,77 +7,168 @@ import {
   XCircle, 
   AlertCircle, 
   Info, 
-  Loader2
+  Loader2,
+  X
 } from 'lucide-react';
 
-// Enhanced toast configuration with glass premium styling
+// Premium SaaS toast configuration
 export const toastConfig: ToasterProps = {
   position: 'top-right',
   theme: 'system',
-  richColors: true,
-  closeButton: true,
-  duration: 4000,
-  style: {
-    background: 'rgba(var(--glass-toast-bg), 0.9)',
-    border: '1px solid rgba(var(--glass-toast-border), 0.2)',
-    backdropFilter: 'blur(12px)',
-    borderRadius: '12px',
-    boxShadow: '0 8px 32px rgba(var(--glass-toast-shadow), 0.12)',
-    fontSize: '14px',
-    fontWeight: '500',
-  }
+  richColors: false,
+  closeButton: false,
+  duration: 2000,
+  className: 'premium-saas-toast',
+  toastOptions: {
+    classNames: {
+      toast: 'premium-saas-toast',
+      icon: 'premium-toast-icon',
+      title: 'premium-toast-title',
+      description: 'premium-toast-description',
+      actionButton: 'premium-toast-action',
+      cancelButton: 'premium-toast-cancel',
+      closeButton: 'premium-toast-close',
+    },
+  },
 };
 
-// Glass premium toast variants
+// Custom premium toast renderer
+const PremiumToastRenderer = ({ toast: toastObj, title, description, icon, id }: any) => {
+  const isSuccess = toastObj.type === 'success';
+  const isError = toastObj.type === 'error';
+  const isWarning = toastObj.type === 'warning';
+  const isInfo = toastObj.type === 'info';
+  const isLoading = toastObj.type === 'loading';
+
+  const getIcon = () => {
+    if (isLoading) return React.createElement(Loader2, { className: "w-5 h-5 animate-spin text-blue-400" });
+    if (isSuccess) return React.createElement(CheckCircle, { className: "w-5 h-5 text-lime-400" });
+    if (isError) return React.createElement(XCircle, { className: "w-5 h-5 text-red-400" });
+    if (isWarning) return React.createElement(AlertCircle, { className: "w-5 h-5 text-yellow-400" });
+    if (isInfo) return React.createElement(Info, { className: "w-5 h-5 text-blue-400" });
+    return icon;
+  };
+
+  const getBorderColor = () => {
+    if (isSuccess) return 'border-lime-500/30';
+    if (isError) return 'border-red-500/30';
+    if (isWarning) return 'border-yellow-500/30';
+    if (isInfo) return 'border-blue-500/30';
+    return 'border-gray-500/30';
+  };
+
+  const getProgressBarColor = () => {
+    if (isSuccess) return 'bg-gradient-to-r from-lime-500 to-lime-400';
+    if (isError) return 'bg-gradient-to-r from-red-500 to-red-400';
+    if (isWarning) return 'bg-gradient-to-r from-yellow-500 to-yellow-400';
+    if (isInfo) return 'bg-gradient-to-r from-blue-500 to-blue-400';
+    return 'bg-gradient-to-r from-gray-500 to-gray-400';
+  };
+
+  const getTitleColor = () => {
+    if (isSuccess) return 'text-lime-400';
+    if (isError) return 'text-red-400';
+    if (isWarning) return 'text-yellow-400';
+    if (isInfo) return 'text-blue-400';
+    return 'text-gray-300';
+  };
+
+  const getIconGlow = () => {
+    if (isSuccess) return 'shadow-lime-500/25';
+    if (isError) return 'shadow-red-500/25';
+    if (isWarning) return 'shadow-yellow-500/25';
+    if (isInfo) return 'shadow-blue-500/25';
+    return 'shadow-gray-500/25';
+  };
+
+  const duration = toastObj.duration || 4000;
+
+  return React.createElement('div', { className: "premium-toast-wrapper" },
+    React.createElement('div', { className: `premium-saas-toast ${getBorderColor()}` },
+      // Icon Container
+      React.createElement('div', { className: `premium-icon-container ${getIconGlow()}` },
+        getIcon()
+      ),
+      
+      // Content
+      React.createElement('div', { className: "premium-toast-content" },
+        React.createElement('div', { className: `premium-toast-title ${getTitleColor()}` },
+          title || description
+        )
+      ),
+      
+      // Close Button
+      !isLoading && React.createElement('button', {
+        onClick: () => toast.dismiss(id),
+        className: "premium-toast-close-btn"
+      },
+        React.createElement(X, { className: "w-4 h-4" })
+      ),
+      
+      // Progress Bar
+      !isLoading && duration && duration !== Infinity && 
+        React.createElement('div', { className: "premium-progress-container" },
+          React.createElement('div', {
+            className: `premium-progress-bar ${getProgressBarColor()}`,
+            style: {
+              animation: `shrink ${duration}ms linear forwards`,
+            }
+          })
+        )
+    )
+  );
+};
+
+// Premium SaaS toast variants
 export const glassToast = {
   success: (message: string, options?: any) => {
-    return toast.success(message, {
-      ...toastConfig,
-      icon: React.createElement(CheckCircle, { className: "w-5 h-5 text-green-400" }),
-      className: 'border-green-500/20 bg-green-500/10',
-      duration: 4000,
-      ...options,
-    });
+    return toast.custom((id) => 
+      React.createElement(PremiumToastRenderer, {
+        toast: { type: 'success', duration: 4000, ...options },
+        title: message,
+        id: id
+      })
+    , { duration: 4000, ...options });
   },
 
   error: (message: string, options?: any) => {
-    return toast.error(message, {
-      ...toastConfig,
-      icon: React.createElement(XCircle, { className: "w-5 h-5 text-red-400" }),
-      className: 'border-red-500/20 bg-red-500/10',
-      duration: 6000,
-      ...options,
-    });
+    return toast.custom((id) => 
+      React.createElement(PremiumToastRenderer, {
+        toast: { type: 'error', duration: 6000, ...options },
+        title: message,
+        id: id
+      })
+    , { duration: 6000, ...options });
   },
 
   warning: (message: string, options?: any) => {
-    return toast.warning(message, {
-      ...toastConfig,
-      icon: React.createElement(AlertCircle, { className: "w-5 h-5 text-yellow-400" }),
-      className: 'border-yellow-500/20 bg-yellow-500/10',
-      duration: 5000,
-      ...options,
-    });
+    return toast.custom((id) => 
+      React.createElement(PremiumToastRenderer, {
+        toast: { type: 'warning', duration: 5000, ...options },
+        title: message,
+        id: id
+      })
+    , { duration: 5000, ...options });
   },
 
   info: (message: string, options?: any) => {
-    return toast.info(message, {
-      ...toastConfig,
-      icon: React.createElement(Info, { className: "w-5 h-5 text-blue-400" }),
-      className: 'border-blue-500/20 bg-blue-500/10',
-      duration: 4000,
-      ...options,
-    });
+    return toast.custom((id) => 
+      React.createElement(PremiumToastRenderer, {
+        toast: { type: 'info', duration: 4000, ...options },
+        title: message,
+        id: id
+      })
+    , { duration: 4000, ...options });
   },
 
   loading: (message: string, options?: any) => {
-    return toast.loading(message, {
-      ...toastConfig,
-      icon: React.createElement(Loader2, { className: "w-5 h-5 text-blue-400 animate-spin" }),
-      className: 'border-blue-500/20 bg-blue-500/10',
-      duration: Infinity, // Loading toasts stay until dismissed
-      ...options,
-    });
+    return toast.custom((id) => 
+      React.createElement(PremiumToastRenderer, {
+        toast: { type: 'loading', duration: Infinity, ...options },
+        title: message,
+        id: id
+      })
+    , { duration: Infinity, ...options });
   },
 
   // Promise-based toast for async operations
@@ -93,7 +184,6 @@ export const glassToast = {
       loading: messages.loading,
       success: messages.success,
       error: messages.error,
-      ...toastConfig,
     });
   },
 

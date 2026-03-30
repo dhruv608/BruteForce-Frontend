@@ -89,7 +89,6 @@ export default function CitiesPage() {
     setSubmitting(true);
     try {
       await deleteCity(targetCity.id);
-      showDeleteSuccess('City');
       setDelOpen(false);
       fetchData();
     }finally {

@@ -312,17 +312,7 @@ export default function AdminClassDetailsPage() {
                         return (
                            <TableRow
                               key={q.id}
-                              className="
-            group border-0
-
-            bg-accent/30
-            hover:bg-accent/50
-
-            backdrop-blur-md
-
-            rounded-xl
-            transition-all duration-200
-          "
+                              className="group border-0  bg-accent/30  hover:bg-accent/50   backdrop-blur-md   rounded-xl  transition-all duration-200   "
                            >
 
                               {/* QUESTION */}
@@ -422,7 +412,7 @@ export default function AdminClassDetailsPage() {
 
 
          <Dialog open={isAssignOpen} onOpenChange={setIsAssignOpen}>
-            <DialogContent className="max-w-[760px] max-h-[90vh] flex flex-col p-0 rounded-2xl border border-border bg-background/95 backdrop-blur-xl">
+            <DialogContent className="max-w-[760px] max-h-[90vh] overflow-auto no-scrollbar flex flex-col p-0 rounded-2xl border border-border bg-background/95 backdrop-blur-xl">
 
                {/* Header */}
                <div className="p-6 border-border shrink-0 space-y-4">
@@ -489,7 +479,7 @@ export default function AdminClassDetailsPage() {
                </div>
 
                {/* List */}
-               <div className="flex-1 overflow-y-auto min-h-[320px]">
+               <div className="flex-1 overflow-y-auto no-scrollbar min-h-[320px]">
                   <div className="grid gap-3 p-4">
 
                      {bankLoading ? (

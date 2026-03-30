@@ -229,6 +229,14 @@ export const bulkUploadStudents = async (formData: FormData) => {
   return response.data;
 };
 
+export const bulkUploadQuestions = async (formData: FormData) => {
+  const response = await api.post('/api/admin/questions/bulk-upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  showSuccess('File Uploaded', 'Questions uploaded successfully!');
+  return response.data;
+};
+
 export const getAdminStudentProfile = async (username: string) => {
   // Using the public profiling route due to internal restructuring
   const response = await api.get(`/api/students/profile/${username}`);
