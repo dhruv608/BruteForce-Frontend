@@ -7,6 +7,7 @@ import { studentAuthService } from '@/services/student/auth.service';
 import { isStudentToken, clearAuthTokens } from '@/lib/auth-utils';
 import { RecentQuestionsSidebar } from '@/components/student/RecentQuestionsSidebar';
 import { RecentQuestionsProvider } from '@/contexts/RecentQuestionsContext';
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { handleToastError } from "@/utils/toast-system";
 
 export default function StudentLayout({
@@ -75,7 +76,7 @@ export default function StudentLayout({
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <BruteForceLoader size="md" />
       </div>
     );
   }

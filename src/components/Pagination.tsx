@@ -20,24 +20,40 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
   // Shimmer loading state
   if (loading) {
     return (
-      <div className="flex items-center justify-between px-4 py-3 border-t ">
-        <div className="flex items-center gap-4">
-          <Skeleton className="h-4 w-32" />
+      <div className="flex items-center justify-between px-6 py-2 bg-[var(--glass-bg)] backdrop-blur-md border-t border-[var(--glass-border)] rounded-2xl">
+        {/* LEFT INFO SHIMMER */}
+        <div className="flex items-center gap-6">
+          <div className="space-y-1">
+            <div className="h-2 w-16 bg-muted/30 rounded animate-pulse"></div>
+            <div className="h-2 w-8 bg-muted/20 rounded animate-pulse"></div>
+            <div className="h-2 w-16 bg-muted/30 rounded animate-pulse"></div>
+            <div className="h-2 w-8 bg-muted/20 rounded animate-pulse"></div>
+            <div className="h-2 w-12 bg-muted/30 rounded animate-pulse"></div>
+          </div>
+
           {showLimitSelector && (
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-8 w-[70px] rounded-full" />
-              <Skeleton className="h-4 w-12" />
+            <div className="flex items-center gap-3">
+              <div className="h-2 w-4 bg-muted/20 rounded animate-pulse"></div>
+              <div className="h-6 w-[90px] bg-muted/30 rounded-full animate-pulse"></div>
+              <div className="h-2 w-12 bg-muted/20 rounded animate-pulse"></div>
             </div>
           )}
         </div>
-        <div className="flex items-center space-x-2">
-          <Skeleton className="h-8 w-8 rounded" />
+
+        {/* RIGHT CONTROLS SHIMMER */}
+        <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-accent/20 border border-border">
+          {/* PREV BUTTON SHIMMER */}
+          <div className="h-5 w-5 rounded-full bg-muted/20 animate-pulse"></div>
+          
+          {/* PAGE NUMBERS SHIMMER */}
           <div className="flex items-center space-x-1">
             {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-8 w-8 rounded" />
+              <div key={i} className="h-5 min-w-[24px] px-1 rounded-full bg-muted/30 animate-pulse"></div>
             ))}
           </div>
-          <Skeleton className="h-8 w-8 rounded" />
+          
+          {/* NEXT BUTTON SHIMMER */}
+          <div className="h-5 w-5 rounded-full bg-muted/20 animate-pulse"></div>
         </div>
       </div>
     );

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 
 export default function AuthCallbackPage() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function AuthCallbackPage() {
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-background">
       <div className="flex flex-col items-center gap-4">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+        <BruteForceLoader size="md" />
         <p className="text-muted-foreground font-medium animate-pulse">Authenticating...</p>
       </div>
     </div>

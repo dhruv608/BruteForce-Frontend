@@ -126,6 +126,7 @@ export default function ClassDetailsPage() {
           onPageChange={handlePageChange}
           onLimitChange={handleLimitChange}
           showLimitSelector={true}
+          loading={loading}
         />
       )}
     </div>

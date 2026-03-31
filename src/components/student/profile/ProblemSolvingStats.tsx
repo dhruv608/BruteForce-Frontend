@@ -110,7 +110,7 @@ export function ProblemSolvingStats({ codingStats }: ProblemSolvingStatsProps) {
         </div>
 
         <div className="text-right">
-          <div className="font-black text-[var(--text-7xl)] text-[var(--accent-primary)]">
+          <div className="font-black text-[40px] text-primary">
             {codingStats?.totalSolved || 0}
           </div>
           <div className="font-mono mt-1 text-[var(--text-xs)] text-[var(--text-secondary)] uppercase tracking-[0.1em]">

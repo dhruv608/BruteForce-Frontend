@@ -69,18 +69,20 @@ export default function TopicsPage() {
           <TopicsGrid
             topics={paginatedTopics}
             searchQuery={searchQuery}
+            pagination={
+              (totalItems > 0 || loading) && (
+                <Pagination 
+                  currentPage={page}
+                  totalItems={totalItems}
+                  limit={itemsPerPage || 10}
+                  onPageChange={setPage}
+                  onLimitChange={setItemsPerPage}
+                  showLimitSelector={true}
+                  loading={loading}
+                />
+              )
+            }
           />
-
-          {totalItems > 0 && (
-            <Pagination 
-              currentPage={page}
-              totalItems={totalItems}
-              limit={itemsPerPage || 10}
-              onPageChange={setPage}
-              onLimitChange={setItemsPerPage}
-              showLimitSelector={true}
-            />
-          )}
         </>
       )}
       

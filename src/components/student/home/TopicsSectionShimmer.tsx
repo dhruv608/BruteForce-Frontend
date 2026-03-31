@@ -5,18 +5,7 @@ import React from 'react';
 export function TopicsSectionShimmer() {
   return (
     <section className="mx-auto max-w-[1200px] w-full px-6 lg:px-10 py-16">
-      {/* Section Header Shimmer */}
-      <div className="glass rounded-2xl border-0 p-5 mb-8">
-        <div className="flex justify-between items-center">
-          <div>
-            <div className="h-7 w-48 bg-muted/50 rounded-lg mb-2 animate-pulse"></div>
-            <div className="h-4 w-64 bg-muted/30 rounded animate-pulse"></div>
-          </div>
-          <div className="h-5 w-20 bg-muted/40 rounded animate-pulse hidden sm:block"></div>
-        </div>
-      </div>
-
-      {/* Topics Grid Shimmer */}
+      {/* Topics Grid Shimmer Only - Header is handled by TopicsSection */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {Array.from({ length: 8 }).map((_, idx) => (
           <div 
@@ -57,11 +46,6 @@ export function TopicsSectionShimmer() {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Mobile View All Button Shimmer */}
-      <div className="mt-8 text-center sm:hidden">
-        <div className="h-10 w-full bg-muted/40 rounded-lg animate-pulse"></div>
       </div>
     </section>
   );

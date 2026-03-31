@@ -339,7 +339,7 @@ export default function AdminTopicsPage() {
                setPage(1);
             }}
             showLimitSelector={true}
-            
+            loading={loading}
          />
 
          {/* ================= CREATE MODAL ================= */}

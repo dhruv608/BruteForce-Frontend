@@ -428,6 +428,7 @@ return (
             setPage(1);
           }}
           showLimitSelector={true}
+          loading={loading}
         />
       </div>
 

@@ -17,9 +17,10 @@ interface Topic {
 interface TopicsGridProps {
   topics: Topic[];
   searchQuery: string;
+  pagination?: React.ReactNode;
 }
 
-export function TopicsGrid({ topics, searchQuery }: TopicsGridProps) {
+export function TopicsGrid({ topics, searchQuery, pagination }: TopicsGridProps) {
   if (topics.length === 0) {
     return (
       <div className="col-span-full py-16 text-center text-muted-foreground bg-card rounded-2xl border-border border-border border-dashed">
@@ -29,9 +30,9 @@ export function TopicsGrid({ topics, searchQuery }: TopicsGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-      {topics.map((t: Topic, idx: number) => {
-        return (
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+        {topics.map((t: Topic, idx: number) => (
           <div className="animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: `${idx * 40}ms`, animationFillMode: 'both' }} key={t.slug}>
             <TopicCard
               topicSlug={t.slug}
@@ -42,8 +43,14 @@ export function TopicsGrid({ topics, searchQuery }: TopicsGridProps) {
               totalClasses={t.batchSpecificData?.totalClasses || 0}
             />
           </div>
-        );
-      })}
-    </div>
+        ))}
+      </div>
+      
+      {pagination && (
+        <div className="mt-8">
+          {pagination}
+        </div>
+      )}
+    </>
   );
 }

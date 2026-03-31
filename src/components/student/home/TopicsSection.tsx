@@ -4,12 +4,14 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { TopicCard } from '@/components/student/topics/TopicCard';
 import { BookOpen } from 'lucide-react';
+import { TopicsSectionShimmer } from '@/components/student/home/TopicsSectionShimmer';
 
 interface TopicsSectionProps {
   topics: any[];
+  loading?: boolean;
 }
 
-export function TopicsSection({ topics }: TopicsSectionProps) {
+export function TopicsSection({ topics, loading = false }: TopicsSectionProps) {
   const displayTopics = topics.slice(0, 8);
 
   return (
@@ -32,7 +34,9 @@ export function TopicsSection({ topics }: TopicsSectionProps) {
         </div>
       </div>
 
-      {displayTopics.length > 0 ? (
+      {loading ? (
+        <TopicsSectionShimmer />
+      ) : displayTopics.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {displayTopics.map((topic: any, idx) => (
             <div key={topic.slug} className="animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: `${idx * 50}ms`, animationFillMode: 'both' }}>

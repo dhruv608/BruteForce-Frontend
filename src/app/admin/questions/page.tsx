@@ -793,6 +793,7 @@ export default function AdminQuestionsBankPage() {
               setPage(1);
             }}
             showLimitSelector={true}
+            loading={loading}
           />
         </div>
 

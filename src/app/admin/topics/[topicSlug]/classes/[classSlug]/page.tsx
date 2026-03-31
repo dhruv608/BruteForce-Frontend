@@ -51,6 +51,7 @@ import {
    DialogFooter,
    DialogDescription,
 } from "@/components/ui/dialog";
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { handleToastError } from "@/utils/toast-system";
 
 function BadgeByLevel({ level }: { level: string }) {
@@ -484,7 +485,7 @@ export default function AdminClassDetailsPage() {
 
                      {bankLoading ? (
                         <div className="flex items-center justify-center h-32">
-                           <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                           <BruteForceLoader size="sm" />
                            <span className="ml-2 text-sm text-muted-foreground">
                               Loading questions...
                            </span>

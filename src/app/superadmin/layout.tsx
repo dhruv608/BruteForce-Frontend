@@ -8,6 +8,7 @@ import { getCurrentSuperAdmin } from '@/services/superadmin.service';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { isAdminToken, clearAuthTokens } from '@/lib/auth-utils';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { handleToastError } from "@/utils/toast-system";
 
 export default function SuperAdminLayout({ children }: { children: React.ReactNode }) {
@@ -67,7 +68,7 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
   if (loading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2"></div>
+        <BruteForceLoader size="md" />
       </div>
     );
   }

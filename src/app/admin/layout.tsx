@@ -11,6 +11,7 @@ import { getCurrentAdmin } from '@/services/admin.service';
 import { useAdminStore } from '@/store/adminStore';
 import { getAdminCities, getAdminBatches } from '@/services/admin.service';
 import { isAdminToken, clearAuthTokens } from '@/lib/auth-utils';
+import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { handleToastError } from "@/utils/toast-system";
 
 function decodeJwt(token: string) {
@@ -270,7 +271,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <BruteForceLoader size="md" />
           <p className="text-muted-foreground">Authenticating...</p>
         </div>
       </div>

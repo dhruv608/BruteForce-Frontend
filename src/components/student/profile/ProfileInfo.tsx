@@ -19,7 +19,7 @@ export function ProfileInfo({ student }: ProfileInfoProps) {
 
       <div className="space-y-4">
         <div 
-          className="flex items-center gap-4 p-4 hover-glow transition-all duration-200 rounded-[var(--radius-lg)] border border-[var(--border)]"
+          className="flex items-center gap-4 p-2 hover-glow transition-all duration-200 rounded-[var(--radius-lg)] border border-[var(--border)]"
           style={{
             backgroundColor: student.leetcode ? 'var(--accent-secondary)' : 'var(--muted)'
           }}
@@ -31,7 +31,7 @@ export function ProfileInfo({ student }: ProfileInfoProps) {
               color: student.leetcode ? 'var(--primary-foreground)' : 'var(--text-secondary)'
             }}
           >
-            <Code className="w-6 h-6" />
+            <Code className="w-6 h-6 " />
           </div>
           <div className="flex-1">
             <div className="font-bold text-[var(--text-sm)] text-[var(--foreground)]">LeetCode</div>
@@ -54,7 +54,7 @@ export function ProfileInfo({ student }: ProfileInfoProps) {
         </div>
 
         <div 
-          className="flex items-center gap-4 p-4 hover-glow transition-all duration-200 rounded-[var(--radius-lg)] border border-[var(--border)]"
+          className="flex items-center gap-4 p-2 hover-glow transition-all duration-200 rounded-[var(--radius-lg)] border border-[var(--border)]"
           style={{
             backgroundColor: student.gfg ? 'var(--accent-secondary)' : 'var(--muted)'
           }}

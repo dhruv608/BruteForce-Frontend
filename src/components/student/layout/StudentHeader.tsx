@@ -186,7 +186,7 @@ export default function StudentHeader() {
               variant="ghost"
               size="sm"
               onClick={toggleSidebar}
-              className="glass hover-glow rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200"
+              className="glass hover-glow rounded-2xl px-3 py-1.5 text-sm font-medium transition-all duration-200"
               style={{ padding: 'var(--spacing-xs) var(--spacing-sm)', borderRadius: 'var(--radius-full)' }}
             >
               <Activity className="w-4 h-4 mr-2" style={{ fontSize: 'var(--text-sm)' }} />
@@ -247,7 +247,7 @@ export default function StudentHeader() {
 
                     <DropdownMenuSeparator className="bg-border/30 my-1" />
 
-                    <DropdownMenuItem asChild className="cursor-pointer rounded-lg text-sm font-medium focus:bg-accent-primary/10 focus:text-accent-primary py-2 transition-all duration-200" style={{ borderRadius: 'var(--radius-md)', padding: 'var(--spacing-xs) var(--spacing-sm)' }}>
+                    <DropdownMenuItem asChild className="cursor-pointer rounded-2xl  text-sm font-medium focus:bg-accent-primary/10 focus:text-accent-primary py-2 transition-all duration-200" style={{ borderRadius: 'var(--radius-md)', padding: 'var(--spacing-xs) var(--spacing-sm)' }}>
                       <Link href={profile.data.username ? `/profile/${profile.data.username}` : '/profile'} className="flex items-center gap-2">
                         <User className="w-4 h-4" style={{ fontSize: 'var(--text-sm)' }} />
                         My Profile

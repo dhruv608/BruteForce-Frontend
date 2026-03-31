@@ -176,12 +176,8 @@ export default function StudentHomePage() {
         {/* HERO SECTION - Always render immediately */}
         <HeroSection />
         
-        {/* TOPICS SECTION - Show loading state only for topics */}
-        {loading ? (
-          <TopicsSectionShimmer />
-        ) : (
-          <TopicsSection topics={topics} />
-        )}
+        {/* TOPICS SECTION - Always render header, show shimmer only for topic cards */}
+        <TopicsSection topics={topics} loading={loading} />
       </div>
 
 

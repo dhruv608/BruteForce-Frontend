@@ -137,7 +137,7 @@ export default function PracticePage() {
       />
 
       {/* Pagination */}
-      {!loading && questions.length > 0 && (
+      {(questions.length > 0 || loading) && (
         <div className="mt-8">
           <Pagination
             currentPage={filters.page || 1}
@@ -146,6 +146,7 @@ export default function PracticePage() {
             onPageChange={(page) => handleFilterChange('page', page)}
             onLimitChange={(limit) => handleFilterChange('limit', limit)}
             showLimitSelector={true}
+            loading={loading}
           />
         </div>
       )}

@@ -135,6 +135,7 @@ return (
           onPageChange={handlePageChange}
           onLimitChange={handleLimitChange}
           showLimitSelector={true}
+          loading={loading}
         />
       )}
     </div>
