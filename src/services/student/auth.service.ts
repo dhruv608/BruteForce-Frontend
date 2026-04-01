@@ -52,7 +52,6 @@ export const studentAuthService = {
 
   resetPassword: async (data: any) => {
     const res = await api.post('/api/auth/reset-password', data);
-    showSuccess('Password Reset');
     return res.data;
   },
 

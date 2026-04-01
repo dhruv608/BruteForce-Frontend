@@ -17,11 +17,11 @@ export function AdminTable({ admins, loading, onEdit, onDelete }: AdminTableProp
 
   return (
     <div className="
-      glass hover-glow
+       hover-glow
       rounded-2xl
       border border-border/30
       overflow-hidden
-      relative group
+      relative
     ">
 
       {/* ✨ Ambient Glow */}

@@ -13,6 +13,19 @@ interface ForgotPasswordModalProps {
   onClose: () => void;
 }
 
+// Email domain validation - only allow @pwioi.com
+const validateEmailDomain = (email: string): boolean => {
+  const allowedDomain = "pwioi.com";
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  if (!emailRegex.test(email)) {
+    return false;
+  }
+  
+  const domain = email.split('@')[1];
+  return domain === allowedDomain;
+};
+
 export function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProps) {
   const { email, setEmail, loading, error, handleSendOtp } = useForgotPassword();
   const router = useRouter();
@@ -88,7 +101,7 @@ export function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProp
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/5 border border-red-500/20 shadow-sm"
+                      className="flex items-center  gap-3 px-4 py-3 rounded-2xl bg-red-500/5 border border-red-500/20 shadow-sm"
                     >
                       <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
                       <p className="text-xs text-red-400 font-medium leading-tight">{error}</p>

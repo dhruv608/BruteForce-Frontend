@@ -40,7 +40,7 @@ export const QuestionRow: React.FC<QuestionRowProps> = ({
   };
 
   return (
-    <div className={`group flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 ${
+    <div className={` flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 ${
       isSolved 
         ? 'bg-emerald-500/5 border-emerald-500/20'
         : 'bg-card border-border/60 hover:border-primary/30 hover:shadow-md'

@@ -8,12 +8,12 @@ import { loginSuperAdmin } from '@/services/auth.service';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { handleToastError } from "@/utils/toast-system";
 import { Input } from '@/components/ui/input'; // Assuming you have your custom Input component
-import { PasswordInputWithValidation } from '@/components/ui/PasswordStrengthIndicator';
 
 export default function SuperAdminLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -99,17 +99,23 @@ export default function SuperAdminLoginPage() {
                Password
               </label>
               <div className="relative">
-            {/* PASSWORD FIELD */}
-            <PasswordInputWithValidation
-              password={password}
-              onPasswordChange={setPassword}
-              disabled={loading}
-              showStrengthIndicator={false}
-              showChecklist={false}
-              className="space-y-2"
-            />
-                
-                
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-logo transition-colors" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  placeholder="Enter your password"
+                  required
+                   className="w-full h-12 pl-11 pr-4  border border-border rounded-xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-logo/40 transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
 

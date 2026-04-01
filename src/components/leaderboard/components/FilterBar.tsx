@@ -64,9 +64,9 @@ export function FilterBar({
           className="w-[120px] h-9 text-sm"
           icon={<CalendarDays className="w-3.5 h-3.5" />}
           placeholder="Year"
-          disabled={allYears.length === 0}
+          disabled={!allYears || allYears.length === 0}
         />
-        {!isLoading && allYears.length === 0 && (
+        {!isLoading && (!allYears || allYears.length === 0) && (
           <span className="text-xs text-muted-foreground">No years available</span>
         )}
       </div>

@@ -150,7 +150,7 @@ export default function DownloadReportModal({
 
  return (
   <Dialog open={open} onOpenChange={handleClose}>
-    <DialogContent className="w-[95vw] max-w-[520px] p-0 overflow-hidden flex flex-col rounded-2xl glass card-premium">
+    <DialogContent className="w-[95vw] max-w-[520px] p-0 overflow-hidden flex flex-col rounded-2xl glass group">
 
       {/* HEADER */}
       <DialogHeader className="px-6 py-5 border-b border-border/40">

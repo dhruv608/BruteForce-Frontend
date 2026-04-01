@@ -282,7 +282,7 @@ return (
   <>
     {/* MAIN MODAL */}
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="w-[95vw] max-w-[700px] p-0 overflow-hidden flex flex-col rounded-2xl glass card-premium">
+      <DialogContent className="w-[95vw] max-w-[700px] p-0 overflow-hidden flex flex-col rounded-2xl glass group">
 
         {/* HEADER */}
         <DialogHeader className="px-6 py-5 border-b border-border/40">
@@ -443,7 +443,83 @@ return (
       </DialogContent>
     </Dialog>
 
-    {/* GUIDELINES MODAL SAME */}
+    {/* GUIDE MODAL */}
+    <Dialog open={showGuide} onOpenChange={setShowGuide}>
+      <DialogContent className="w-[95vw] max-w-[920px] p-0 overflow-hidden rounded-2xl">
+
+        {/* HEADER */}
+        <DialogHeader className="px-6 py-4 bg-muted/40">
+          <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
+            <FileText className="w-5 h-5 text-primary" />
+            CSV Format Guide
+          </DialogTitle>
+        </DialogHeader>
+
+        {/* BODY */}
+        <div className="p-6 space-y-6">
+
+          {/* REQUIRED COLUMNS */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+              Required Columns
+            </p>
+
+            <div className="bg-background rounded-lg p-4 text-sm font-mono overflow-x-auto">
+              name, email, enrollment_id
+            </div>
+          </div>
+
+          {/* RULES */}
+          <div className="grid grid-cols-3 gap-4">
+
+            <div className="rounded-xl p-4 bg-muted/30 space-y-1">
+              <p className="text-xs text-muted-foreground">Name</p>
+              <p className="text-sm font-semibold">Student's full name</p>
+            </div>
+
+            <div className="rounded-xl p-4 bg-muted/30 space-y-1">
+              <p className="text-xs text-muted-foreground">Email</p>
+              <p className="text-sm font-semibold">Must contain @pwioi.com</p>
+            </div>
+
+            <div className="rounded-xl p-4 bg-muted/30 space-y-1">
+              <p className="text-xs text-muted-foreground">Enrollment ID</p>
+              <p className="text-sm font-semibold">Unique identifier</p>
+            </div>
+
+          </div>
+
+          {/* EXAMPLE */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+              Example Row
+            </p>
+
+            <div className="bg-background rounded-lg p-4 text-sm font-mono overflow-x-auto">
+              "John Doe", "john.doe@pwioi.com", "EN2024001"
+            </div>
+          </div>
+
+          {/* WARNING */}
+          <div className="flex items-start gap-3 rounded-lg border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-400">
+            <AlertCircle className="w-4 h-4 mt-0.5" />
+            <p>
+              Do <span className="font-semibold">NOT</span> include city, year, or batch in CSV.
+              Always select batch using dropdown.
+            </p>
+          </div>
+
+        </div>
+
+        {/* FOOTER */}
+        <div className="px-6 py-4 border-t flex justify-end">
+          <Button variant="ghost" onClick={() => setShowGuide(false)}>
+            Close
+          </Button>
+        </div>
+
+      </DialogContent>
+    </Dialog>
   </>
 );
 }

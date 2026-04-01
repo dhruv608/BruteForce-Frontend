@@ -8,7 +8,6 @@ import { loginAdmin } from '@/services/auth.service';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { handleToastError } from "@/utils/toast-system";
-import { PasswordInputWithValidation } from '@/components/ui/PasswordStrengthIndicator';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -90,24 +89,31 @@ export default function AdminLoginPage() {
                 />
               </div>
             </div>
+            {/* Password? */}
             <div className="space-y-2 group">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 group-focus-within:text-logo transition-colors">
-                Email Id
+                Password
               </label>
               <div className="relative">
-            {/* PASSWORD FIELD */}
-            <PasswordInputWithValidation
-              password={password}
-              onPasswordChange={setPassword}
-              disabled={loading}
-              showStrengthIndicator={false}
-              showChecklist={false}
-              className="space-y-2"
-            />
-                
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-logo transition-colors" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  placeholder="Enter your password"
+                  required
+                   className="w-full h-12 pl-11 pr-4  border border-border rounded-xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-logo/40 transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
-
 
             {/* SUBMIT BUTTON */}
             <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>

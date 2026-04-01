@@ -228,8 +228,6 @@ function ResetPasswordModalContent({ isOpen, onClose }: ResetPasswordModalProps)
           </form>
         </div>
         
-        {/* FOOTER SCANLINE DECORATION */}
-        <div className="h-1 w-full bg-gradient-to-r from-transparent via-[#CCFF00]/30 to-transparent" />
       </motion.div>
     </div>
   );

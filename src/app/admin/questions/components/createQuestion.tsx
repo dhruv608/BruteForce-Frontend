@@ -101,8 +101,6 @@ export default function CreateQuestion({
       onSuccess();
       onOpenChange(false);
     } catch (err: any) {
-      handleToastError(err);
-      setError(err.response?.data?.error || err.message);
     } finally {
       setLoading(false);
     }
@@ -134,14 +132,6 @@ export default function CreateQuestion({
 
         {/* BODY */}
         <div className="p-6 space-y-6">
-
-          {/* ERROR */}
-          {error && (
-            <div className="flex items-center gap-2 text-sm px-3 py-2 rounded-2xl border border-red-500/30 bg-red-500/10 text-red-400">
-              <AlertTriangle className="w-4 h-4" />
-              {error}
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
 

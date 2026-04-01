@@ -48,7 +48,7 @@ api.interceptors.response.use(
     // If 401 and we haven't already tried to refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Don't refresh on login failures
-      if (originalRequest.url?.includes('/auth/admin/login') || originalRequest.url?.includes('/auth/student/login') || originalRequest.url?.includes('/auth/google-login')|| originalRequest.url?.includes('/api/students/profile')) {
+      if (originalRequest.url?.includes('/auth/admin/login') || originalRequest.url?.includes('/auth/student/login') || originalRequest.url?.includes('/auth/google-login') || originalRequest.url?.includes('/api/students/profile')) {
         return Promise.reject(error);
       }
 
@@ -76,16 +76,16 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // Refresh failed - handle silently without console errors
         // This can happen when tokens are invalid/expired, which is normal
-        
+
         if (typeof window !== 'undefined') {
           localStorage.removeItem('accessToken');
           document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
 
           // Only redirect if we're not on a public page or leaderboard
           const currentPath = window.location.pathname;
-          const isPublicPage = currentPath.startsWith('/profile/') && 
-                              currentPath !== '/profile' && 
-                              currentPath.split('/').length === 3;
+          const isPublicPage = currentPath.startsWith('/profile/') &&
+            currentPath !== '/profile' &&
+            currentPath.split('/').length === 3;
           const isLeaderboard = currentPath === '/leaderboard';
 
           if (!isPublicPage && !isLeaderboard) {
@@ -105,7 +105,7 @@ api.interceptors.response.use(
             }
           }
         }
-        
+
         // Create a silent error that won't be logged
         const silentError = new Error('Token refresh failed');
         (silentError as any).silent = true;
@@ -114,25 +114,33 @@ api.interceptors.response.use(
     }
 
     // Check for profile not found error BEFORE normalization to avoid duplicate toasts
-    const isProfileNotFoundError = error.response?.status === 404 && 
+    const isProfileNotFoundError = error.response?.status === 404 &&
       error.response?.data?.message === "Student not found";
+
+    // Check if this is a forgot password request - we handle errors manually in the hook
+    const isForgotPasswordRequest = originalRequest.url?.includes('/auth/forgot-password');
+
+    // Check if this is an admin student creation request - service handles success/error manually  
+    const isAdminStudentCreateRequest = originalRequest.url?.includes('/admin/students') && originalRequest.method === 'post';
+
+    // Handle ALL errors with toast system (except silent errors, 404 profile errors, forgot password requests, and admin student creation requests)
 
     // Normalize error message based on our new backend API structure
     if (error.response?.data) {
       const errObj = error.response.data;
       if (errObj.message && !error.message) {
-         error.message = errObj.message;
+        error.message = errObj.message;
       } else if (errObj.error && !error.message) {
-         error.message = errObj.error;
+        error.message = errObj.error;
       }
     }
+    if (!error.silent && !error.isSilent && !isProfileNotFoundError && !isForgotPasswordRequest && !isAdminStudentCreateRequest) {
+  handleToastError(error);
+}
 
-    // Handle ALL errors with toast system (except silent errors and 404 profile errors)
-    if (!error.silent && !error.isSilent && !isProfileNotFoundError) {
-      handleToastError(error);
-    }
+    
 
-return Promise.reject(error);
+    return Promise.reject(error);
   }
 );
 

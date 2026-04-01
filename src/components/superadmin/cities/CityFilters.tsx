@@ -26,7 +26,7 @@ export function CityFilters({
       rounded-2xl p-5 mb-6
       border border-border/30
       relative overflow-hidden
-      group
+      
     ">
 
       {/* ✨ Ambient Glow */}

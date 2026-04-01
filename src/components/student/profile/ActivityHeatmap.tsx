@@ -5,13 +5,15 @@ import { HeatmapData } from '@/types/student';
 
 interface ActivityHeatmapProps {
   heatmap?: HeatmapData[];
+  freezeInfo?: { date: string; hasQuestion: boolean }[];
 }
 
-export function ActivityHeatmap({ heatmap }: ActivityHeatmapProps) {
+export function ActivityHeatmap({ heatmap, freezeInfo }: ActivityHeatmapProps) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const getLevelColor = (count: number) => {
+  const getLevelColor = (count: number, isFreezeDay: boolean = false) => {
+    if (isFreezeDay && count === 0) return 'bg-blue-100/50 border border-blue-200/50'; // Light blue for freeze days
     if (count === 0) return 'bg-[var(--muted)] border border-[var(--border)]';
     if (count === 1) return 'bg-[var(--primary)]/20 border border-[var(--primary)]/30';
     if (count === 2) return 'bg-[var(--primary)]/40 border border-[var(--primary)]/50';
@@ -29,7 +31,11 @@ export function ActivityHeatmap({ heatmap }: ActivityHeatmapProps) {
     const dateStr = date.toISOString().split('T')[0];
     const dayData = heatmap?.find((h: HeatmapData) => new Date(h.date).toISOString().split('T')[0] === dateStr);
     
-    return dayData ? { count: dayData.count, date: dateStr } : { count: 0, date: dateStr };
+    // Check if this is a freeze day (no questions uploaded)
+    const freezeData = freezeInfo?.find(f => f.date === dateStr);
+    const isFreezeDay = freezeData ? !freezeData.hasQuestion : false;
+    
+    return dayData ? { count: dayData.count, date: dateStr, isFreezeDay } : { count: 0, date: dateStr, isFreezeDay };
   };
 
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -142,8 +148,8 @@ export function ActivityHeatmap({ heatmap }: ActivityHeatmapProps) {
                     return (
                       <div
                         key={`${weekIndex}-${dayIndex}`}
-                        className={`w-3 h-3 ${getLevelColor(dayData.count)} transition-all duration-200 hover:scale-110 cursor-pointer`}
-                        title={`${dayData.count} submissions on ${new Date(dayData.date).toLocaleDateString()}`}
+                        className={`w-3 h-3 ${getLevelColor(dayData.count, dayData.isFreezeDay)} transition-all duration-200 hover:scale-110 cursor-pointer`}
+                        title={`${dayData.count} submissions on ${new Date(dayData.date).toLocaleDateString()}${dayData.isFreezeDay ? ' (Freeze day - no questions uploaded)' : ''}`}
                       />
                     );
                   })}
@@ -157,16 +163,22 @@ export function ActivityHeatmap({ heatmap }: ActivityHeatmapProps) {
       {/* Legend and stats - aligned with container */}
       <div className="flex justify-center mt-4 pt-3 border-t border-[var(--border)]" style={{ maxWidth: '1000px', margin: '0 auto' }}>
         <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
-            <span>Less</span>
-            <div className="flex gap-1">
-              <div className="w-3 h-3 bg-[var(--muted)] border border-[var(--border)]"></div>
-              <div className="w-3 h-3 border border-[var(--primary)] overflow-hidden" style={{backgroundColor: 'var(--primary)', opacity: 0.2}}></div>
-              <div className="w-3 h-3 border border-[var(--primary)] overflow-hidden" style={{backgroundColor: 'var(--primary)', opacity: 0.4}}></div>
-              <div className="w-3 h-3 border border-[var(--primary)] overflow-hidden" style={{backgroundColor: 'var(--primary)', opacity: 0.6}}></div>
-              <div className="w-3 h-3 bg-[var(--primary)] border border-[var(--primary)] overflow-hidden"></div>
+          <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)]">
+            <div className="flex items-center gap-2">
+              <span>Less</span>
+              <div className="flex gap-1">
+                <div className="w-3 h-3 bg-[var(--muted)] border border-[var(--border)]"></div>
+                <div className="w-3 h-3 border border-[var(--primary)] overflow-hidden" style={{backgroundColor: 'var(--primary)', opacity: 0.2}}></div>
+                <div className="w-3 h-3 border border-[var(--primary)] overflow-hidden" style={{backgroundColor: 'var(--primary)', opacity: 0.4}}></div>
+                <div className="w-3 h-3 border border-[var(--primary)] overflow-hidden" style={{backgroundColor: 'var(--primary)', opacity: 0.6}}></div>
+                <div className="w-3 h-3 bg-[var(--primary)] border border-[var(--primary)] overflow-hidden"></div>
+              </div>
+              <span>More</span>
             </div>
-            <span>More</span>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 bg-blue-100/50 border border-blue-200/50"></div>
+              <span>Freeze day</span>
+            </div>
           </div>
           
           <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)]">

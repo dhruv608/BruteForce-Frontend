@@ -4,7 +4,8 @@ import Script from 'next/script';
 import { useRouter } from 'next/navigation';
 import { studentAuthService } from '@/services/student/auth.service';
 import { useLocalStorage } from '../../shared/hooks/useLocalStorage';
-import { AlertTriangle, Loader2 } from 'lucide-react';
+import { AlertCircle, AlertTriangle, Loader2 } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export function GoogleAuthButton() {
   const router = useRouter();
@@ -12,14 +13,14 @@ export function GoogleAuthButton() {
   const [error, setError] = useState('');
   const [, setOnboardingUser] = useLocalStorage('onboardingUser', null);
 
-const processPostLogin = (u: any) => {
-  if (!u.leetcode_id || !u.gfg_id || !u.username) {
-    localStorage.setItem('onboardingUser', JSON.stringify(u));
-    router.push('/onboarding');
-    return;
-  }
-  router.push('/');
-};
+  const processPostLogin = (u: any) => {
+    if (!u.leetcode_id || !u.gfg_id || !u.username) {
+      localStorage.setItem('onboardingUser', JSON.stringify(u));
+      router.push('/onboarding');
+      return;
+    }
+    router.push('/');
+  };
 
   const handleGoogleCallback = async (idToken: string) => {
     setLoading(true);
@@ -44,7 +45,7 @@ const processPostLogin = (u: any) => {
         setError('Login failed: No token received.');
       }
     } catch (err: any) {
-      
+
       setError(
         err.response?.data?.error ||
         err.response?.data?.message ||
@@ -77,11 +78,11 @@ const processPostLogin = (u: any) => {
 
       if (btnContainer) {
         // Check if dark mode is enabled
-       
+
         (window as any).google.accounts.id.renderButton(
           btnContainer,
           {
-            theme: "outline" ,
+            theme: "outline",
             size: "large",
             text: "continue_with",
             width: 350,
@@ -105,17 +106,11 @@ const processPostLogin = (u: any) => {
         onLoad={initGoogleLogin}
       />
 
-      {/* ERROR */}
-      {error && (
-        <div className="mb-5 flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl justify-center">
-          <AlertTriangle className="w-4 h-4" />
-          {error}
-        </div>
-      )}
+      
 
       {/* BUTTON CONTAINER */}
-      <div className="w-full  flex flex-col items-center gap-3 mb-6 ">
-        
+      <div className="w-full  flex flex-col items-center gap-3 mb-3 ">
+
         {/* GOOGLE BUTTON */}
         <div
           id="googleSignInDiv"
@@ -126,10 +121,23 @@ const processPostLogin = (u: any) => {
         {loading && (
           <div className="flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
             <Loader2 className="w-4 h-4 animate-spin" />
-            Authenticating securely...
+            Authenticating...
           </div>
         )}
       </div>
+       <AnimatePresence mode="wait">
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="flex items-center  mb-3  gap-3 px-4 py-3 rounded-2xl bg-red-500/5 border border-red-500/20 shadow-sm"
+          >
+            <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+            <p className="text-xs text-red-400 font-medium leading-tight">{error}</p>
+          </motion.div>
+        )}
+      </AnimatePresence> 
     </div>
   );
 }

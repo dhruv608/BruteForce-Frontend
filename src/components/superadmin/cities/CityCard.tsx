@@ -27,7 +27,7 @@ export function CityCard({ city, batches, onEdit, onDelete }: CityCardProps) {
       rounded-2xl p-5
       border border-border/30
       relative overflow-hidden
-      group
+      
     ">
 
       {/* ✨ Ambient Glow */}

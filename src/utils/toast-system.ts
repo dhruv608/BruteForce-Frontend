@@ -5,8 +5,6 @@ import { toast, ToasterProps } from 'sonner';
 import {
   CheckCircle,
   XCircle,
-  AlertCircle,
-  Info,
   Loader2,
   X
 } from 'lucide-react';
@@ -36,48 +34,36 @@ export const toastConfig: ToasterProps = {
 const PremiumToastRenderer = ({ toast: toastObj, title, description, icon, id }: any) => {
   const isSuccess = toastObj.type === 'success';
   const isError = toastObj.type === 'error';
-  const isWarning = toastObj.type === 'warning';
-  const isInfo = toastObj.type === 'info';
   const isLoading = toastObj.type === 'loading';
 
   const getIcon = () => {
     if (isLoading) return React.createElement(Loader2, { className: "w-5 h-5 animate-spin text-blue-400" });
     if (isSuccess) return React.createElement(CheckCircle, { className: "w-5 h-5 text-lime-400" });
     if (isError) return React.createElement(XCircle, { className: "w-5 h-5 text-red-400" });
-    if (isWarning) return React.createElement(AlertCircle, { className: "w-5 h-5 text-yellow-400" });
-    if (isInfo) return React.createElement(Info, { className: "w-5 h-5 text-blue-400" });
     return icon;
   };
 
   const getBorderColor = () => {
     if (isSuccess) return 'border-lime-500/30';
     if (isError) return 'border-red-500/30';
-    if (isWarning) return 'border-yellow-500/30';
-    if (isInfo) return 'border-blue-500/30';
     return 'border-gray-500/30';
   };
 
   const getProgressBarColor = () => {
     if (isSuccess) return 'bg-gradient-to-r from-lime-500 to-lime-400';
     if (isError) return 'bg-gradient-to-r from-red-500 to-red-400';
-    if (isWarning) return 'bg-gradient-to-r from-yellow-500 to-yellow-400';
-    if (isInfo) return 'bg-gradient-to-r from-blue-500 to-blue-400';
     return 'bg-gradient-to-r from-gray-500 to-gray-400';
   };
 
   const getTitleColor = () => {
     if (isSuccess) return 'text-lime-400';
     if (isError) return 'text-red-400';
-    if (isWarning) return 'text-yellow-400';
-    if (isInfo) return 'text-blue-400';
     return 'text-gray-300';
   };
 
   const getIconGlow = () => {
     if (isSuccess) return 'shadow-lime-500/25';
     if (isError) return 'shadow-red-500/25';
-    if (isWarning) return 'shadow-yellow-500/25';
-    if (isInfo) return 'shadow-blue-500/25';
     return 'shadow-gray-500/25';
   };
 
@@ -141,25 +127,6 @@ export const glassToast = {
       , { duration: 6000, ...options });
   },
 
-  warning: (message: string, options?: any) => {
-    return toast.custom((id) =>
-      React.createElement(PremiumToastRenderer, {
-        toast: { type: 'warning', duration: 5000, ...options },
-        title: message,
-        id: id
-      })
-      , { duration: 5000, ...options });
-  },
-
-  info: (message: string, options?: any) => {
-    return toast.custom((id) =>
-      React.createElement(PremiumToastRenderer, {
-        toast: { type: 'info', duration: 4000, ...options },
-        title: message,
-        id: id
-      })
-      , { duration: 4000, ...options });
-  },
 
   loading: (message: string, options?: any) => {
     return toast.custom((id) =>
@@ -198,12 +165,16 @@ export const glassToast = {
   },
 };
 
-// User-friendly error messages (no raw backend errors)
+// User-friendly error messages (updated for new backend error codes)
 export const userFriendlyMessages = {
   // Authentication errors
   INVALID_CREDENTIALS: 'Invalid email or password. Please try again.',
   TOKEN_EXPIRED: 'Your session has expired. Please log in again.',
+  TOKEN_MISSING: 'Authentication token is required.',
+  INVALID_TOKEN: 'Invalid or corrupted authentication token.',
   ACCESS_DENIED: 'You do not have permission to perform this action.',
+  UNAUTHORIZED: 'Authentication required.',
+  FORBIDDEN: 'Access denied.',
 
   // User/Student errors
   USER_NOT_FOUND: 'User not found.',
@@ -211,6 +182,11 @@ export const userFriendlyMessages = {
   STUDENT_NOT_FOUND: 'Student not found.',
   STUDENT_EXISTS: 'This student already exists.',
   USERNAME_TAKEN: 'This username is already taken.',
+  EMAIL_EXISTS: 'Email already exists.',
+  EMAIL_ALREADY_EXISTS: 'Email already exists.',
+  ENROLLMENT_ID_EXISTS: 'Enrollment ID already exists.',
+  DUPLICATE_ENTRY: 'This record already exists.',
+  DUPLICATE_FIELD: 'Duplicate field detected.',
 
   // Validation errors
   VALIDATION_ERROR: 'Please check your input and try again.',
@@ -218,8 +194,10 @@ export const userFriendlyMessages = {
   REQUIRED_FIELD: 'This field is required.',
   INVALID_EMAIL: 'Please enter a valid email address.',
   INVALID_PASSWORD: 'Password does not meet requirements.',
+  INVALID_REFERENCE: 'Invalid reference provided.',
 
   // Resource errors
+  NOT_FOUND: 'Resource not found.',
   NOT_FOUND_ERROR: 'Resource not found.',
   TOPIC_NOT_FOUND: 'Topic not found.',
   CLASS_NOT_FOUND: 'Class not found.',
@@ -228,7 +206,7 @@ export const userFriendlyMessages = {
 
   // Database errors
   DATABASE_ERROR: 'Database operation failed. Please try again.',
-  DUPLICATE_ENTRY: 'This record already exists.',
+  INTERNAL_SERVER_ERROR: 'Internal server error. Please try again.',
 
   // Network/Server errors
   NETWORK_ERROR: 'Network error. Please check your connection.',
@@ -240,19 +218,28 @@ export const userFriendlyMessages = {
   FILE_TOO_LARGE: 'File size exceeds the limit.',
   INVALID_FILE_TYPE: 'Invalid file type.',
   UPLOAD_FAILED: 'File upload failed.',
+  FILE_UPLOAD_ERROR: 'File upload failed.',
 
   // Rate limiting
   RATE_LIMIT_EXCEEDED: 'Too many requests. Please wait and try again.',
 
-  // Authorization errors
-  UNAUTHORIZED: 'You are not authorized to perform this action.',
-  FORBIDDEN: 'Access denied.',
+  // Conflict errors
+  CONFLICT: 'Resource conflict detected.',
+  QUESTION_LINK_EXISTS: 'Question link already exists.',
+  STUDENT_NOT_REGISTERED: 'Student not registered by admin.',
+  INVALID_STATE: 'Invalid operation state.',
+  UNPROCESSABLE_ENTITY: 'Request could not be processed.',
+
+  // External service errors
+  EXTERNAL_SERVICE_ERROR: 'External service error. Please try again.',
+  EMAIL_SEND_ERROR: 'Failed to send email. Please try again.',
 
   // Generic fallback
   ERROR: 'Something went wrong. Please try again.',
+  BAD_REQUEST: 'Bad request.',
 
-  // Student Profile
-  STUDENT_PROFILE_NOT_FOUND: "Student not found"
+  // Legacy mappings
+  STUDENT_PROFILE_NOT_FOUND: 'Student not found'
 };
 
 // Helper function to get user-friendly message
@@ -262,34 +249,83 @@ export const getUserFriendlyMessage = (error: any): string => {
     status: error?.response?.status,
     data: error?.response?.data,
     message: error?.response?.data?.message,
-    error: error?.response?.data?.error
+    error: error?.response?.data?.error,
+    code: error?.response?.data?.code
   });
+  
   const errorCode = error?.response?.data?.code || error?.code;
   if (errorCode && userFriendlyMessages[errorCode as keyof typeof userFriendlyMessages]) {
     return userFriendlyMessages[errorCode as keyof typeof userFriendlyMessages];
   }
 
-  // Handle specific HTTP status codes
+  // Handle specific HTTP status codes with detailed conditions
   const status = error?.response?.status;
+  const errorMessage = error?.response?.data?.message;
+  
   switch (status) {
     case 400:
-      return userFriendlyMessages.VALIDATION_ERROR;
-    case 401:
-      return userFriendlyMessages.TOKEN_EXPIRED;
-    case 403:
-      return userFriendlyMessages.FORBIDDEN;
-    case 404:
-      const errorMessage = error?.response?.data?.message;
-      if (errorMessage === "Student not found" ||
-        errorMessage?.includes("Student not found") ||
-        errorMessage?.includes("not found")) {
-        return userFriendlyMessages.STUDENT_PROFILE_NOT_FOUND;
+      // Check for specific 400 error scenarios
+      if (errorMessage?.includes('already exists')) {
+        return userFriendlyMessages.DUPLICATE_ENTRY;
       }
-      return userFriendlyMessages.NOT_FOUND_ERROR;
+      if (errorMessage?.includes('not found')) {
+        return userFriendlyMessages.NOT_FOUND;
+      }
+      if (errorMessage?.includes('Invalid') || errorMessage?.includes('invalid')) {
+        return userFriendlyMessages.INVALID_INPUT;
+      }
+      if (errorMessage?.includes('required') || errorMessage?.includes('Required')) {
+        return userFriendlyMessages.REQUIRED_FIELD;
+      }
+      return userFriendlyMessages.BAD_REQUEST;
+      
+    case 401:
+      // Check for specific 401 error scenarios
+      if (errorMessage?.includes('credentials') || errorMessage?.includes('Invalid credentials')) {
+        return userFriendlyMessages.INVALID_CREDENTIALS;
+      }
+      if (errorMessage?.includes('authenticated') || errorMessage?.includes('authentication')) {
+        return userFriendlyMessages.UNAUTHORIZED;
+      }
+      if (errorMessage?.includes('token') || errorMessage?.includes('Token')) {
+        return userFriendlyMessages.TOKEN_MISSING;
+      }
+      return userFriendlyMessages.TOKEN_EXPIRED;
+      
+    case 403:
+      if (errorMessage?.includes('token') || errorMessage?.includes('Token')) {
+        return userFriendlyMessages.INVALID_TOKEN;
+      }
+      if (errorMessage?.includes('permission') || errorMessage?.includes('Permission')) {
+        return userFriendlyMessages.ACCESS_DENIED;
+      }
+      return userFriendlyMessages.FORBIDDEN;
+      
+    case 404:
+      // Check for specific 404 error scenarios
+      if (errorMessage?.includes('Student not found') || errorMessage?.includes('student not found')) {
+        return userFriendlyMessages.STUDENT_NOT_FOUND;
+      }
+      if (errorMessage?.includes('Topic')) {
+        return userFriendlyMessages.TOPIC_NOT_FOUND;
+      }
+      if (errorMessage?.includes('Question')) {
+        return userFriendlyMessages.QUESTION_NOT_FOUND;
+      }
+      if (errorMessage?.includes('Batch')) {
+        return userFriendlyMessages.BATCH_NOT_FOUND;
+      }
+      return userFriendlyMessages.NOT_FOUND;
+      
+    case 409:
+      
+      return userFriendlyMessages.CONFLICT;
+    case 422:
+      return userFriendlyMessages.UNPROCESSABLE_ENTITY;
     case 429:
       return userFriendlyMessages.RATE_LIMIT_EXCEEDED;
     case 500:
-      return userFriendlyMessages.SERVER_ERROR;
+      return userFriendlyMessages.INTERNAL_SERVER_ERROR;
     case 502:
     case 503:
     case 504:
@@ -347,15 +383,6 @@ export const showLoading = (action: string) => {
   glassToast.loading(`${action}...`);
 };
 
-// Info notification helper
-export const showInfo = (message: string) => {
-  glassToast.info(message);
-};
-
-// Warning notification helper
-export const showWarning = (message: string) => {
-  glassToast.warning(message);
-};
 
 // Login flow with promise toast
 export const showLoginPromise = (loginPromise: Promise<any>) => {
@@ -393,8 +420,6 @@ export default {
   showSuccess,
   showDeleteSuccess,
   showLoading,
-  showInfo,
-  showWarning,
   showLoginPromise,
   showSignupPromise,
   showFormPromise,

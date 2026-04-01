@@ -10,8 +10,6 @@ import { glassToast } from './toast-system';
 export const toast = {
   success: glassToast.success,
   error: glassToast.error,
-  warning: glassToast.warning,
-  info: glassToast.info,
   loading: glassToast.loading,
   promise: glassToast.promise,
   dismiss: glassToast.dismiss,

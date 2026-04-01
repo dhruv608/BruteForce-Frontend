@@ -37,7 +37,7 @@ export function Select({ value, options, onChange, placeholder = 'Select...', di
         </div>
       </SelectTrigger>
       <SelectContent>
-        {options.length === 0 ? (
+        {!options || options.length === 0 ? (
           <div className="py-6 text-center text-sm text-muted-foreground">No options found</div>
         ) : (
           options.map((opt) => (

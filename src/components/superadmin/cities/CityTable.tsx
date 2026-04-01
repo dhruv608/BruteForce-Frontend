@@ -21,11 +21,11 @@ export function CityTable({ cities, batches, loading, onEdit, onDelete }: CityTa
 
   return (
     <div className="
-      glass hover-glow
+       hover-glow bg-transparent
       rounded-2xl
       border border-border/30
       overflow-hidden
-      relative group
+      relative
     ">
 
       {/* ✨ Ambient Glow */}

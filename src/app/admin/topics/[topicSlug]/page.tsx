@@ -207,12 +207,12 @@ export default function AdminClassesPage() {
         </Link>
       </div>
 
-      <div className="flex items-end justify-between">
+      <div className="flex items-end glass rounded-2xl p-5 justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-3">
             <BookOpen className="w-6 h-6 text-primary" /> Classes
           </h2>
-          <p className="text-muted-foreground mt-1 text-sm font-mono bg-muted inline-block px-2 py-0.5 rounded-md border border-border mt-2">
+          <p className="text-muted-foreground mt-1 text-sm font-mono bg-muted inline-block px-3 py-1 rounded border border-border mt-2">
             {selectedBatch.name} / {topicSlug}
           </p>
         </div>
@@ -223,7 +223,7 @@ export default function AdminClassesPage() {
 
       <div className="bg-card border border-border  shadow-sm rounded-xl overflow-hidden">
         <div className="
-  glass rounded-xl overflow-hidden
+  glass rounded-2xl overflow-hidden
   shadow-md
 ">
 
@@ -233,7 +233,7 @@ export default function AdminClassesPage() {
   ">
 
             {/* SEARCH */}
-            <div className="relative flex-1 max-w-sm group">
+            <div className="relative flex-1 max-w-sm ">
 
               <Search className="
         absolute left-3 top-1/2 -translate-y-1/2
@@ -261,7 +261,6 @@ export default function AdminClassesPage() {
         "
               />
             </div>
-
             {/* COUNT BADGE */}
             <div className="
       text-xs font-semibold tracking-wide
@@ -279,7 +278,7 @@ export default function AdminClassesPage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto ">
           <Table >
             <TableHeader>
               <TableRow className="bg-muted/50 hover:bg-muted/50">

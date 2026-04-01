@@ -516,7 +516,7 @@ export default function AdminQuestionsBankPage() {
     <div className="flex flex-col space-y-6">
 
       {/* ================= HEADER ================= */}
-      <div className="glass card-premium rounded-2xl p-6 flex items-center justify-between">
+      <div className="glass  rounded-2xl p-6 flex items-center justify-between">
 
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -536,7 +536,7 @@ export default function AdminQuestionsBankPage() {
         </div>
       </div>
 
-      <div className="glass card-premium rounded-2xl p-4 flex flex-col gap-4">
+      <div className="glass  rounded-2xl p-4 flex flex-col gap-4">
 
         {/* TOP ROW → SEARCH + BUTTONS */}
         <div className="flex flex-col sm:flex-row  justify-between items-center">
@@ -641,9 +641,9 @@ export default function AdminQuestionsBankPage() {
       </div>
 
       {/* ================= TABLE ================= */}
-      <div className="glass card-premium rounded-2xl overflow-hidden">
+      <div className="glass  rounded-2xl overflow-hidden">
 
-        <div className="glass card-premium rounded-2xl overflow-hidden">
+        <div className="  rounded-2xl overflow-hidden">
 
           <ScrollArea className="max-h-[600px]">
 

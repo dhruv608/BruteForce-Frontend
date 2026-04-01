@@ -13,7 +13,7 @@ export function BatchHeader({ totalBatches }: BatchHeaderProps) {
       rounded-2xl p-5 mb-8
       border border-border/30
       relative overflow-hidden
-      group
+      
     ">
 
       {/* ✨ Ambient Glow */}

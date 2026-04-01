@@ -37,7 +37,7 @@ export function TopicsSection({ topics, loading = false }: TopicsSectionProps) {
       {loading ? (
         <TopicsSectionShimmer />
       ) : displayTopics.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {displayTopics.map((topic: any, idx) => (
             <div key={topic.slug} className="animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: `${idx * 50}ms`, animationFillMode: 'both' }}>
               <TopicCard

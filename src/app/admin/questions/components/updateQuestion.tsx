@@ -70,7 +70,7 @@ export default function UpdateQuestion({
       }));
       setTopics(formattedTopics);
     } catch (err) {
-      handleToastError(err);
+      // handleToastError(err);
       console.error(err);
     }
   };

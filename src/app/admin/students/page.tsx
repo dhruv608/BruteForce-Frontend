@@ -43,6 +43,7 @@ import { Pagination } from '@/components/Pagination';
 import BulkUploadModal from './components/BulkUploadModal';
 import DownloadReportModal from './components/DownloadReportModal';
 import { Avatar } from '@/components/ui/Avatar';
+import { PasswordInputWithValidation } from '@/components/ui/PasswordStrengthIndicator';
 import { AdminStudent } from '@/types/student';
 import { handleToastError, showSuccess, showDeleteSuccess } from "@/utils/toast-system";
 
@@ -135,7 +136,6 @@ export default function AdminStudentsPage() {
         leetcode_id: formLeetcodeId || undefined,
         gfg_id: formGfgId || undefined
       });
-      showSuccess('STUDENT_CREATED');
       setIsCreateOpen(false);
       resetForms();
       fetchStudents();
@@ -159,7 +159,6 @@ export default function AdminStudentsPage() {
         leetcode_id: formLeetcodeId || undefined,
         gfg_id: formGfgId || undefined
       });
-      showSuccess('STUDENT_UPDATED');
       setIsEditOpen(false);
       resetForms();
       fetchStudents();
@@ -175,7 +174,6 @@ export default function AdminStudentsPage() {
     setFormError(''); setSubmitting(true);
     try {
       await deleteAdminStudent(selectedStudent.id);
-      showDeleteSuccess('Student');
       setIsDeleteOpen(false);
       resetForms();
       fetchStudents();
@@ -230,7 +228,8 @@ return (
   <div className="flex flex-col space-y-6">
 
     {/* ================= HEADER ================= */}
-    <div className="glass card-premium rounded-2xl p-6 flex items-center justify-between">
+    <div className="glass  rounded-2xl p-6 flex items-center justify-between">
+  
 
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -251,7 +250,7 @@ return (
     </div>
 
     {/* ================= SEARCH + ACTION ================= */}
-    <div className="glass card-premium rounded-2xl p-4 flex flex-col sm:flex-row gap-4 justify-between items-center">
+    <div className="glass  rounded-2xl p-4 flex flex-col sm:flex-row gap-4 justify-between items-center">
 
       {/* SEARCH */}
       <div className="relative w-full sm:max-w-md">
@@ -297,7 +296,7 @@ return (
     </div>
 
     {/* ================= TABLE ================= */}
-    <div className="glass card-premium rounded-2xl overflow-hidden">
+    <div className="glass  rounded-2xl overflow-hidden">
 
       <div className="overflow-x-auto">
 
@@ -332,7 +331,7 @@ return (
               students.map((student) => (
                 <TableRow
                   key={student.id}
-                  className="group border-b border-border/20 hover:bg-muted/30 transition"
+                  className=" border-b border-border/20 hover:bg-muted/30 transition"
                 >
 
                   {/* STUDENT */}
@@ -340,7 +339,7 @@ return (
                     <Link
                       href={`/profile/${student.username}`}
                       target="_blank"
-                      className="flex items-center gap-3 group/link"
+                      className="flex items-center gap-3 /link"
                     >
                       <Avatar
                         name={student.name}
@@ -350,9 +349,9 @@ return (
                       />
 
                       <div className="flex flex-col">
-                        <span className="font-medium group-hover/link:text-primary transition flex items-center gap-1">
+                        <span className="font-medium -hover/link:text-primary transition flex items-center gap-1">
                           {student.name}
-                          <ExternalLink className="w-3 h-3 opacity-40 group-hover/link:opacity-100" />
+                          <ExternalLink className="w-3 h-3 opacity-40 -hover/link:opacity-100" />
                         </span>
 
                         <span className="text-xs text-muted-foreground">
@@ -379,7 +378,7 @@ return (
 
                   {/* ACTIONS */}
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2 opacity-70 group-hover:opacity-100 transition">
+                    <div className="flex justify-end gap-2 opacity-70 -hover:opacity-100 transition">
 
                       <Button
                         size="icon"
@@ -492,6 +491,19 @@ return (
               />
             </div>
 
+            {/* ENROLLMENT */}
+            <div className="grid grid-cols-3  items-center">
+              <label className="text-s text-muted-foreground font-medium">
+                Enrollment ID <span className="text-destructive">*</span>
+              </label>
+              <Input
+                value={formEnrollmentId} required
+                onChange={(e) => setFormEnrollmentId(e.target.value)}
+                placeholder="ENR123456"
+                disabled={submitting}
+                className="col-span-2 h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+              />
+            </div>
             {/* USERNAME */}
             <div className="grid grid-cols-3  items-center">
               <label className="text-s text-muted-foreground font-medium">
@@ -502,41 +514,30 @@ return (
                 onChange={(e) => setFormUsername(e.target.value)}
                 placeholder="username"
                 disabled={submitting}
-                className="col-span-2 h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
+                className="col-span-2 h-11 rounded-xl bg-transparent border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
               />
             </div>
 
-            {/* ENROLLMENT */}
-            <div className="grid grid-cols-3  items-center">
-              <label className="text-s text-muted-foreground font-medium">
-                Enrollment ID
-              </label>
-              <Input
-                value={formEnrollmentId}
-                onChange={(e) => setFormEnrollmentId(e.target.value)}
-                placeholder="ENR123456"
-                disabled={submitting}
-                className="col-span-2 h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
-              />
-            </div>
 
             {/* PASSWORD */}
-            <div className="grid grid-cols-3  items-center">
-              <label className="text-s text-muted-foreground font-medium">
+            <div className="grid grid-cols-3 items-start">
+              <label className="text-sm text-muted-foreground font-medium">
                 Password
               </label>
-              <Input
-                type="password"
-                value={formPassword}
-                onChange={(e) => setFormPassword(e.target.value)}
-                placeholder="Enter password (optional)"
-                disabled={submitting}
-                className="col-span-2 h-11 rounded-xl bg-background/60 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/40"
-              />
+              <div className="col-span-2">
+                <PasswordInputWithValidation
+                  password={formPassword}
+                  onPasswordChange={setFormPassword}
+                  disabled={submitting}
+                  showStrengthIndicator={true}
+                  showChecklist={false}
+                  className="space-y-2"
+                />
+              </div>
             </div>
 
             {/* PLATFORM IDs */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 ">
               <div className="space-y-2">
                 <label className="text-s text-muted-foreground font-medium">
                   LeetCode ID
@@ -727,7 +728,7 @@ return (
 
     {/* ================= DELETE MODAL ================= */}
     <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-      <DialogContent className="glass card-premium rounded-2xl p-0 overflow-hidden shadow-xl max-w-[480px] z-50">
+      <DialogContent className="glass  rounded-2xl p-0 overflow-hidden shadow-xl max-w-[480px] z-50">
 
         {/* HEADER */}
         <DialogHeader className="px-6 py-5 border-b border-red-500/20">

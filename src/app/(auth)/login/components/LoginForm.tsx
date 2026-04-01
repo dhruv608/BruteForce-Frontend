@@ -21,15 +21,15 @@ export function LoginForm() {
   const [, setOnboardingUser] = useLocalStorage('onboardingUser', null);
 
   const processPostLogin = (u: any) => {
-  if (!u.leetcode_id || !u.gfg_id || !u.username) {
-    // Store user data for onboarding page
-    localStorage.setItem('onboardingUser', JSON.stringify(u));
-    // Redirect immediately to onboarding
-    router.push('/onboarding');
-    return; // Don't go to home page
-  }
-  router.push('/'); // Only go to home if no onboarding needed
-};
+    if (!u.leetcode_id || !u.gfg_id || !u.username) {
+      // Store user data for onboarding page
+      localStorage.setItem('onboardingUser', JSON.stringify(u));
+      // Redirect immediately to onboarding
+      router.push('/onboarding');
+      return; // Don't go to home page
+    }
+    router.push('/'); // Only go to home if no onboarding needed
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +37,7 @@ export function LoginForm() {
 
     if (emailOrUsername.includes('@')) {
       if (!emailOrUsername.endsWith('@pwioi.com')) {
-        setEmailError('Use @pwioi.com email');
+        setEmailError("Please sign in with your PW email.");
         return;
       }
     }
@@ -46,7 +46,7 @@ export function LoginForm() {
       setLoading(true);
       const isEmail = emailOrUsername.includes('@');
       const payload = isEmail ? { email: emailOrUsername, password } : { username: emailOrUsername, password };
-      
+
       const data = await studentAuthService.login(payload);
       if (data?.accessToken) {
         localStorage.setItem('accessToken', data.accessToken);
@@ -78,7 +78,19 @@ export function LoginForm() {
             className="w-full h-12 pl-12 pr-4  border border-border rounded-2xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:border-logo/50 focus:ring-1 focus:ring-logo/20 transition-all"
           />
         </div>
-        {emailError && <p className="text-[#CCFF00] text-[10px] font-bold uppercase ml-1 tracking-tighter">{emailError}</p>}
+        <AnimatePresence mode="wait">
+          {emailError && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="flex items-center  gap-3 px-4 py-3 rounded-2xl bg-red-500/5 border border-red-500/20 shadow-sm"
+            >
+              <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+              <p className="text-xs text-red-400 font-medium leading-tight">{emailError}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* PASSWORD INPUT */}
@@ -128,7 +140,7 @@ export function LoginForm() {
 export function AuthSection({ GoogleAuthButton }: any) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-black p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-[440px] bg-[#0D0E12] border border-white/[0.03] rounded-[40px] p-10 shadow-2xl"
@@ -136,8 +148,8 @@ export function AuthSection({ GoogleAuthButton }: any) {
         {/* LOGO AREA */}
         <div className="text-center mb-10">
           <h1 className="font-serif italic text-5xl font-bold bg-gradient-to-r from-white via-white to-slate-500 bg-clip-text text-transparent tracking-tighter">
-              Brute<span className="text-primary">Force</span>
-            </h1>
+            Brute<span className="text-primary">Force</span>
+          </h1>
           <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.4em] mt-4">
             Student Portal
           </p>
@@ -158,9 +170,9 @@ export function AuthSection({ GoogleAuthButton }: any) {
         <LoginForm />
 
         <div className="mt-8 text-center">
-            <button className="text-[10px] font-bold text-slate-500 hover:text-[#CCFF00] uppercase tracking-widest transition-colors">
-              Request Access
-            </button>
+          <button className="text-[10px] font-bold text-slate-500 hover:text-[#CCFF00] uppercase tracking-widest transition-colors">
+            Request Access
+          </button>
         </div>
       </motion.div>
     </div>

@@ -26,7 +26,7 @@ export function TopicCard({
 
   return (
     <Link href={`/topics/${topicSlug}`}>
-      <div className="group relative glass hover-glow overflow-hidden cursor-pointer rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+      <div className="relative glass hover-glow overflow-hidden cursor-pointer rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
         
         {/* Image Section */}
         <div className="h-[140px] relative">

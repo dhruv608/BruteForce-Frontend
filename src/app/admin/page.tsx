@@ -113,7 +113,7 @@ export default function AdminDashboardPage() {
 
 function StatCard({ title, value, icon }: any) {
   return (
-    <div className="glass card-premium hover-glow rounded-2xl p-6 flex items-center gap-4">
+    <div className="glass  hover-glow rounded-2xl p-6 flex items-center gap-4">
 
       <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
         {icon}
@@ -130,7 +130,7 @@ function StatCard({ title, value, icon }: any) {
 
 function Card({ title, icon, children }: any) {
   return (
-    <div className="glass card-premium hover-glow rounded-2xl overflow-hidden">
+    <div className="glass  hover-glow rounded-2xl overflow-hidden">
 
       <div className="px-6 py-4 flex items-center gap-3 border-b border-border/40">
         <div className="text-primary">{icon}</div>

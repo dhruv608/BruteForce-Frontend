@@ -96,7 +96,7 @@ export default function StudentHeader() {
       <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
 
         {/* Logo - Clean text-only branding */}
-        <Link href="/" className="group">
+        <Link href="/" >
           <h1
             className="font-sans italic text-xl font-bold text-logo transition-all duration-300 group-hover:shadow-[0_0_20px_var(--hover-glow)]"
             style={{ fontSize: 'var(--text-lg)', letterSpacing: '-0.025em' }}
@@ -111,9 +111,9 @@ export default function StudentHeader() {
         {/* Pill Navigation */}
         <nav
           className="
-    flex items-center gap-1 px-3 py-2 rounded-full
-    bg-[var(--glass-bg)] backdrop-blur-md
-    border border-[var(--glass-border)]
+    flex items-center gap-1 px-3 py-2 rounded-2xl 
+    glass  backdrop-blur-md
+    border border-border
     transition-all duration-200
   "
         >

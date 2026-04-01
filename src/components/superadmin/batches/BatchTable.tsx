@@ -21,12 +21,11 @@ export function BatchTable({ batches, loading, cities, onEdit, onDelete }: Batch
     cities.find(c => c.id === id)?.city_name || "Unknown";
 
   return (
-    <div className="
-      glass hover-glow
+    <div className=" hover-glow
       rounded
       border border-border/30
       overflow-hidden
-      relative group
+      relative
     ">
 
       {/* ✨ Ambient Glow */}

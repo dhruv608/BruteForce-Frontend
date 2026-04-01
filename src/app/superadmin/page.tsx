@@ -163,7 +163,7 @@ export default function SuperAdminDashboard() {
         {/* Cities */}
         <div
           onClick={() => router.push('/superadmin/cities')}
-          className="cursor-pointer glass card-premium p-6 rounded-2xl group  transition-all duration-300 border border-border/20  relative overflow-hidden"
+          className="cursor-pointer glass  p-6 rounded-2xl   transition-all duration-300 border border-border/20  relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-chart-2/5 rounded-full -mr-10 -mt-10  transition-transform duration-500"></div>
 
@@ -187,7 +187,7 @@ export default function SuperAdminDashboard() {
         {/* Batches */}
         <div
           onClick={() => router.push('/superadmin/batches')}
-          className="cursor-pointer glass card-premium p-6 rounded-2xl group transition-all duration-300 border border-border/20 relative overflow-hidden"
+          className="cursor-pointer glass  p-6 rounded-2xl  transition-all duration-300 border border-border/20 relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-chart-3/5 rounded-full -mr-10 -mt-10  transition-transform duration-500"></div>
 
@@ -211,7 +211,7 @@ export default function SuperAdminDashboard() {
         {/* Admins */}
         <div
           onClick={() => router.push('/superadmin/admins')}
-          className="cursor-pointer glass card-premium p-6 rounded-2xl group transition-all duration-300 border border-border/20 relative overflow-hidden"
+          className="cursor-pointer glass  p-6 rounded-2xl  transition-all duration-300 border border-border/20 relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-chart-5/5 rounded-full -mr-10 -mt-10  transition-transform duration-500"></div>
 
@@ -240,7 +240,7 @@ export default function SuperAdminDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-          className="md:col-span-2 glass card-premium rounded-2xl p-6 border border-border/20"
+          className="md:col-span-2 glass  rounded-2xl p-6 border border-border/20"
         >
           {/* Header */}
           <div className="flex items-center justify-between mb-7">
@@ -352,7 +352,7 @@ export default function SuperAdminDashboard() {
         </motion.div>
 
         {/* Quick Actions Panel */}
-        <div className="glass h-96 card-premium rounded-2xl p-6 border border-border/20 ">
+        <div className="glass h-96  rounded-2xl p-6 border border-border/20 ">
 
           <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-chart-1 animate-pulse"></div>
@@ -363,7 +363,7 @@ export default function SuperAdminDashboard() {
           <div className="space-y-3  pt-3">
             <button
               onClick={() => router.push('/superadmin/admins')}
-              className="w-full mb-4 group relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-5/10 to-transparent border border-chart-5/20 hover:border-chart-5/40 px-4 py-5 text-left transition-all duration-300"
+              className="w-full mb-4  relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-5/10 to-transparent border border-chart-5/20 hover:border-chart-5/40 px-4 py-5 text-left transition-all duration-300"
             >
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -381,7 +381,7 @@ export default function SuperAdminDashboard() {
 
             <button
               onClick={() => router.push('/superadmin/cities')}
-              className="w-full mb-4 group relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-2/10 to-transparent border border-chart-2/20 hover:border-chart-2/40 px-4 py-5 text-left transition-all duration-300"
+              className="w-full mb-4  relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-2/10 to-transparent border border-chart-2/20 hover:border-chart-2/40 px-4 py-5 text-left transition-all duration-300"
             >
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -399,7 +399,7 @@ export default function SuperAdminDashboard() {
 
             <button
               onClick={() => router.push('/superadmin/batches')}
-              className="w-full group relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-3/10 to-transparent border border-chart-3/20 hover:border-chart-3/40 px-4 py-5 text-left transition-all duration-300"
+              className="w-full  relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-3/10 to-transparent border border-chart-3/20 hover:border-chart-3/40 px-4 py-5 text-left transition-all duration-300"
             >
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-3">

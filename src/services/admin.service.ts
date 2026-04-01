@@ -82,9 +82,21 @@ export const getAdminCities = async () => {
   return response.data;
 };
 
+export const createAdminCity = async (data: any) => {
+  const response = await api.post('/api/admin/cities', data);
+  showSuccess('City Created');
+  return response.data;
+};
+
 export const getAdminBatches = async (cityName?: string) => {
   const params = cityName ? { city: cityName } : {};
   const response = await api.get('/api/batches', { params });
+  return response.data;
+};
+
+export const createAdminBatch = async (data: any) => {
+  const response = await api.post('/api/admin/batches', data);
+  showSuccess('Batch Created');
   return response.data;
 };
 

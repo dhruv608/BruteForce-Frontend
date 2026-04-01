@@ -239,7 +239,7 @@ export default function AdminTopicsPage() {
       <div className="flex flex-col space-y-8">
 
          {/* HEADER */}
-         <div className="glass card-premium rounded-2xl p-6 flex items-center justify-between">
+         <div className="glass  rounded-2xl p-6 flex items-center justify-between">
 
             <div className="flex items-center gap-4">
                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -306,7 +306,7 @@ export default function AdminTopicsPage() {
          {loading ? (
             <TopicsGridShimmer />
          ) : topics.length === 0 ? (
-            <div className="glass card-premium rounded-2xl p-12 text-center flex flex-col items-center">
+            <div className="glass  rounded-2xl p-12 text-center flex flex-col items-center">
                <Search className="w-10 h-10 text-muted-foreground/30 mb-4" />
                <h3 className="text-lg font-semibold">No topics found</h3>
                <p className="text-muted-foreground text-sm mt-1">
@@ -314,7 +314,7 @@ export default function AdminTopicsPage() {
                </p>
             </div>
          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                {topics.map((topic: Topic) => (
                   <TopicCard
                      key={topic.id}

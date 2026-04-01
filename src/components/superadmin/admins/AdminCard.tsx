@@ -19,7 +19,7 @@ export function AdminCard({ admin, onEdit, onDelete }: AdminCardProps) {
     rounded-2xl p-5
     border border-border/30
     relative overflow-hidden
-    group
+    
   ">
     
     {/* ✨ Top Glow Effect */}

@@ -55,8 +55,7 @@ export function useResetPassword() {
       console.log('✅ API Response received:', response);
       console.log('📊 Response status:', response);
       
-      glassToast.success("Password reset successful ✅");
-      setTimeout(() => router.push('/login'), 1500);
+      setTimeout(() => router.push('/login'), 1000);
     } catch (err: any) {
       handleToastError(err);
       console.log('❌ API Error occurred:', err);

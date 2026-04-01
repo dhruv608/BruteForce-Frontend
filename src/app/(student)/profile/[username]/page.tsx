@@ -428,7 +428,7 @@ export default function PublicProfilePage() {
           <ProblemSolvingStats codingStats={codingStats} />
 
           {/* ACTIVITY HEATMAP */}
-          <ActivityHeatmap heatmap={heatmap} />
+          <ActivityHeatmap heatmap={heatmap} freezeInfo={[]} />
 
           {/* RECENT ACTIVITY */}
           <RecentActivity recentActivity={recentActivity} />

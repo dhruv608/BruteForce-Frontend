@@ -54,13 +54,13 @@ export default function BulkUploadModal({
     const fetchTopics = async () => {
       if (!open) return;
       
-      console.log('🔍 Fetching topics...');
+      console.log('Fetching topics...');
       setTopicsLoading(true);
       
       try {
-        console.log('📡 Calling getAllTopics API...');
+        console.log('Calling getAllTopics API...');
         const topicsData = await getAllTopics();
-        console.log('✅ Topics received:', topicsData);
+        console.log('Topics received:', topicsData);
         
         // Format topics for Select component
         const formattedTopics = topicsData.map((topic: any) => ({
@@ -68,7 +68,7 @@ export default function BulkUploadModal({
           value: topic.id.toString()
         }));
         
-        console.log('📋 Formatted topics for dropdown:', formattedTopics);
+        console.log('Formatted topics for dropdown:', formattedTopics);
         setTopics(formattedTopics);
         
       } catch (error: any) {
@@ -368,8 +368,8 @@ export default function BulkUploadModal({
                   <div className="space-y-2">
                     <p className="font-medium">
                       {validationResult.isValid 
-                        ? `✅ CSV Valid - ${validationResult.validRows.length} questions ready to upload`
-                        : '❌ CSV Validation Failed'
+                        ? `CSV Valid - ${validationResult.validRows.length} questions ready to upload`
+                        : 'CSV Validation Failed'
                       }
                     </p>
                     
@@ -392,7 +392,7 @@ export default function BulkUploadModal({
                     {validationResult.isValid && validationResult.validRows.length > 0 && (
                       <div className="mt-3 pt-3 border-t border-current/20">
                         <p className="text-sm">
-                          📊 Ready to create {validationResult.validRows.length} questions
+                          Ready to create {validationResult.validRows.length} questions
                         </p>
                       </div>
                     )}

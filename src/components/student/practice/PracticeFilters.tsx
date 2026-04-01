@@ -34,11 +34,11 @@ export function PracticeFilters({
   clearFilters,
 }: PracticeFiltersProps) {
   return (
-    <div className="bg-card border border-border/60 p-5 rounded-2xl mb-6">
+    <div className="glass bg-card border border-border/60 p-5 rounded-2xl mb-6">
 
       {/* 🔍 SEARCH */}
-      <div className="relative mb-5">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
+      <div className="relative mb-5 border border-border rounded-2xl">
+        <Search className=" absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
 
         <input
           type="text"
