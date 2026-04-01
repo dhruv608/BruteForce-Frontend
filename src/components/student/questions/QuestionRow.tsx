@@ -40,39 +40,38 @@ export const QuestionRow: React.FC<QuestionRowProps> = ({
   };
 
   return (
+<<<<<<< Updated upstream
     <div className={` flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 ${
       isSolved 
+=======
+    <div className={`group flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 ${isSolved
+>>>>>>> Stashed changes
         ? 'bg-emerald-500/5 border-emerald-500/20'
         : 'bg-card border-border/60 hover:border-primary/30 hover:shadow-md'
-    }`}>
+      }`}>
 
       {/* LEFT */}
       <div className="flex items-start gap-4">
-
-        {/* STATUS */}
-        {isSolved ? (
-          <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-1" />
-        ) : (
-          <Circle className="w-5 h-5 text-muted-foreground/30 mt-1 group-hover:text-primary/40" />
-        )}
 
         {/* TEXT BLOCK */}
         <div>
 
           {/* TITLE */}
           <div className="flex items-center gap-2 mb-1">
-            <h4 className={`text-sm font-semibold ${
-              isSolved ? 'line-through text-muted-foreground' : 'text-foreground'
-            }`}>
+            <h4 className="text-sm font-semibold text-foreground">
               {questionName}
             </h4>
 
+            {/* CHECKMARK FOR SOLVED */}
+            {isSolved && (
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            )}
+
             {/* HW / CW */}
-            <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${
-              isHomework
+            <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${isHomework
                 ? 'bg-primary/15 text-primary border border-primary/30'
                 : 'bg-muted text-muted-foreground border border-border'
-            }`}>
+              }`}>
               {isHomework ? 'HW' : 'CW'}
             </span>
           </div>
@@ -107,11 +106,10 @@ export const QuestionRow: React.FC<QuestionRowProps> = ({
           href={link}
           target="_blank"
           rel="noopener noreferrer"
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all ${
-            isSolved
-              ? 'bg-muted text-muted-foreground'
+          className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-medium transition-all ${isSolved
+              ? 'bg-muted text-muted-foreground '
               : 'bg-primary text-primary-foreground hover:opacity-90'
-          }`}
+            }`}
         >
           {isSolved ? 'Solution' : 'Solve'}
           <ExternalLink className="w-3.5 h-3.5" />
