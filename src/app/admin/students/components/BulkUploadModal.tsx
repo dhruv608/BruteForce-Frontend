@@ -378,7 +378,7 @@ return (
               CSV File
             </Label>
 
-            <label className="flex items-center justify-between border border-border rounded-xl px-4 py-3 cursor-pointer bg-background/40 hover:border-primary/40 transition">
+            <label className="flex items-center justify-between border border-border rounded-2xl px-4 py-3 cursor-pointer bg-background/40 hover:border-primary/40 transition">
 
               <span className="text-sm text-muted-foreground truncate">
                 {file ? file.name : "Choose CSV file"}
@@ -399,7 +399,7 @@ return (
           </div>
 
           {/* GUIDE */}
-          <div className="flex justify-between items-center border border-border/40 rounded-xl px-4 py-3 bg-muted/20">
+          <div className="flex justify-between items-center border border-border/40 rounded-2xl px-4 py-3 bg-muted/20">
             <p className="text-sm text-muted-foreground">
               Need CSV format help?
             </p>
@@ -470,6 +470,7 @@ return (
           </div>
 
           {/* RULES */}
+<<<<<<< Updated upstream
           <div className="grid grid-cols-3 gap-4">
 
             <div className="rounded-xl p-4 bg-muted/30 space-y-1">
@@ -485,6 +486,13 @@ return (
             <div className="rounded-xl p-4 bg-muted/30 space-y-1">
               <p className="text-xs text-muted-foreground">Enrollment ID</p>
               <p className="text-sm font-semibold">Unique identifier</p>
+=======
+          <div className="grid grid-cols-1 gap-4">
+
+            <div className="rounded-xl p-4 bg-muted/30 space-y-1">
+              <p className="text-xs text-muted-foreground">Email Domain</p>
+              <p className="text-sm font-semibold">Must contain pwioi.com</p>
+>>>>>>> Stashed changes
             </div>
 
           </div>
@@ -496,7 +504,11 @@ return (
             </p>
 
             <div className="bg-background rounded-lg p-4 text-sm font-mono overflow-x-auto">
+<<<<<<< Updated upstream
               "John Doe", "john.doe@pwioi.com", "EN2024001"
+=======
+              "Dhruv", "dhruv.sot2428@pwioi.com", "2401010031"
+>>>>>>> Stashed changes
             </div>
           </div>
 
@@ -504,8 +516,12 @@ return (
           <div className="flex items-start gap-3 rounded-lg border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-400">
             <AlertCircle className="w-4 h-4 mt-0.5" />
             <p>
+<<<<<<< Updated upstream
               Do <span className="font-semibold">NOT</span> include city, year, or batch in CSV.
               Always select batch using dropdown.
+=======
+              Make sure all email addresses contain the <span className="font-semibold">pwioi.com</span> domain.
+>>>>>>> Stashed changes
             </p>
           </div>
 

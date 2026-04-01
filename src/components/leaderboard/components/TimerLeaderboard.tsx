@@ -12,7 +12,7 @@ interface TimerLeaderboardProps {
 export const TimerLeaderboard: React.FC<TimerLeaderboardProps> = ({ lastUpdated, refreshInterval, onRefresh }) => {
   // Format last updated time
   const formatLastUpdated = (): string => {
-    if (!lastUpdated) return "Unknown";
+    if (!lastUpdated) return "";
 
     return new Date(lastUpdated).toLocaleString("en-US", {
       month: "short",

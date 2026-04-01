@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { studentAuthService } from '@/services/student/auth.service';
 import { isStudentToken } from '@/lib/auth-utils';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { useTheme } from 'next-themes';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,7 +15,7 @@ import {
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { LogOut, User, Home, BookOpen, PenTool, Trophy, Lock, Activity } from 'lucide-react';
+import { LogOut, User, Home, BookOpen, PenTool, Trophy, Lock, Activity, ChevronRight, Menu } from 'lucide-react';
 import { useRecentQuestions } from '@/contexts/RecentQuestionsContext';
 import { handleToastError } from "@/utils/toast-system";
 
@@ -23,7 +24,15 @@ export default function StudentHeader() {
   const router = useRouter();
   const [profile, setProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toggleSidebar } = useRecentQuestions();
+  const { theme, systemTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     // Check if we have a student token before making API calls
@@ -284,6 +293,21 @@ export default function StudentHeader() {
 
             return null;
           })()}
+
+          {/* PWIO Logo - Theme-aware */}
+          {mounted && (
+            <div className="ml-3">
+              <img
+                src={
+                  theme === 'dark' || (theme === 'system' && systemTheme === 'dark')
+                    ? '/pwioi_dark.jpg'
+                    : '/pwioi_light.png'
+                }
+                alt="PWIO Logo"
+                className="h-8 w-auto object-contain"
+              />
+            </div>
+          )}
         </div>
       </div>
     </header>
