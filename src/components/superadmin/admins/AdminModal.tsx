@@ -104,6 +104,13 @@ export function AdminModal({
     await onSubmit(payload);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !submitting && isFormValid) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   const isFormValid = mode === 'create'
     ? formData.name && formData.email && formData.password && formData.role
     : formData.role;
@@ -119,7 +126,7 @@ export function AdminModal({
         : "Name and email are read-only when editing."
     }
   >
-    <div className="space-y-6">
+    <div className="space-y-6" onKeyDown={handleKeyDown}>
 
       {/* 🔹 FORM GRID */}
       <div className="space-y-4">

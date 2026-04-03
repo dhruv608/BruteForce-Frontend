@@ -40,6 +40,13 @@ export function CityModal({
     await onSubmit(payload);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !submitting && isFormValid) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   const isFormValid = cityName.trim();
 
   return (
@@ -54,7 +61,7 @@ export function CityModal({
   }
   icon={<Building2 className="text-chart-2 w-7 h-7" />}
 >
-  <div className="space-y-6">
+  <div className="space-y-6" onKeyDown={handleKeyDown}>
 
     {/* 🔹 FORM */}
     <div className="space-y-4">

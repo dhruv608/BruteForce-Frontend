@@ -120,7 +120,7 @@ export function ProblemSolvingStats({ codingStats }: ProblemSolvingStatsProps) {
       </div>
 
       {/* Gauges */}
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <SegmentedGauge
           value={codingStats?.easy?.solved}
           total={codingStats?.easy?.assigned}

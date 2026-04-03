@@ -158,12 +158,17 @@ export default function SuperAdminDashboard() {
 
   return (
     <div className="space-y-8 pb-10  min-h-screen p-6">
-
       <div className="grid gap-6 md:grid-cols-3">
         {/* Cities */}
         <div
           onClick={() => router.push('/superadmin/cities')}
-          className="cursor-pointer glass  p-6 rounded-2xl   transition-all duration-300 border border-border/20  relative overflow-hidden"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              router.push('/superadmin/cities');
+            }
+          }}
+          tabIndex={0}
+          className="cursor-pointer glass  p-6 rounded-2xl   transition-all duration-300 border border-border/20  relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-chart-2/50"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-chart-2/5 rounded-full -mr-10 -mt-10  transition-transform duration-500"></div>
 
@@ -187,7 +192,13 @@ export default function SuperAdminDashboard() {
         {/* Batches */}
         <div
           onClick={() => router.push('/superadmin/batches')}
-          className="cursor-pointer glass  p-6 rounded-2xl  transition-all duration-300 border border-border/20 relative overflow-hidden"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              router.push('/superadmin/batches');
+            }
+          }}
+          tabIndex={0}
+          className="cursor-pointer glass  p-6 rounded-2xl  transition-all duration-300 border border-border/20 relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-chart-3/50"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-chart-3/5 rounded-full -mr-10 -mt-10  transition-transform duration-500"></div>
 
@@ -211,7 +222,13 @@ export default function SuperAdminDashboard() {
         {/* Admins */}
         <div
           onClick={() => router.push('/superadmin/admins')}
-          className="cursor-pointer glass  p-6 rounded-2xl  transition-all duration-300 border border-border/20 relative overflow-hidden"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              router.push('/superadmin/admins');
+            }
+          }}
+          tabIndex={0}
+          className="cursor-pointer glass  p-6 rounded-2xl  transition-all duration-300 border border-border/20 relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-chart-5/50"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-chart-5/5 rounded-full -mr-10 -mt-10  transition-transform duration-500"></div>
 
@@ -363,7 +380,12 @@ export default function SuperAdminDashboard() {
           <div className="space-y-3  pt-3">
             <button
               onClick={() => router.push('/superadmin/admins')}
-              className="w-full mb-4  relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-5/10 to-transparent border border-chart-5/20 hover:border-chart-5/40 px-4 py-5 text-left transition-all duration-300"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  router.push('/superadmin/admins');
+                }
+              }}
+              className="w-full mb-4  relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-5/10 to-transparent border border-chart-5/20 hover:border-chart-5/40 px-4 py-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-chart-5/50"
             >
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -381,7 +403,12 @@ export default function SuperAdminDashboard() {
 
             <button
               onClick={() => router.push('/superadmin/cities')}
-              className="w-full mb-4  relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-2/10 to-transparent border border-chart-2/20 hover:border-chart-2/40 px-4 py-5 text-left transition-all duration-300"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  router.push('/superadmin/cities');
+                }
+              }}
+              className="w-full mb-4  relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-2/10 to-transparent border border-chart-2/20 hover:border-chart-2/40 px-4 py-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-chart-2/50"
             >
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -399,7 +426,12 @@ export default function SuperAdminDashboard() {
 
             <button
               onClick={() => router.push('/superadmin/batches')}
-              className="w-full  relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-3/10 to-transparent border border-chart-3/20 hover:border-chart-3/40 px-4 py-5 text-left transition-all duration-300"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  router.push('/superadmin/batches');
+                }
+              }}
+              className="w-full  relative overflow-hidden rounded-xl bg-gradient-to-r from-chart-3/10 to-transparent border border-chart-3/20 hover:border-chart-3/40 px-4 py-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-chart-3/50"
             >
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-3">

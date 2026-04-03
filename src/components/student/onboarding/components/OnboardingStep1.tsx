@@ -39,7 +39,7 @@ export function OnboardingStep1({
   const existingUsername =
     onboardingUser?.username || data.username || "";
 
-  // 🔥 FIX 1: INITIAL STATE SET ON LOAD
+  //  FIX 1: INITIAL STATE SET ON LOAD
   useEffect(() => {
     if (existingUsername && existingUsername.trim().length >= 3) {
       setUsernameStatus("same");
@@ -47,7 +47,7 @@ export function OnboardingStep1({
     }
   }, [existingUsername]);
 
-  // 🔥 MAIN VALIDATION EFFECT
+  //  MAIN VALIDATION EFFECT
   useEffect(() => {
     const username = debouncedUsername.trim();
     const original = existingUsername.trim();
@@ -163,7 +163,7 @@ export function OnboardingStep1({
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 ">
       <form
         onSubmit={(e) => {
           e.preventDefault();

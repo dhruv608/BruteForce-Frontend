@@ -60,6 +60,13 @@ export function BatchModal({
     await onSubmit(payload);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !submitting && isFormValid) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   const isFormValid = formData.batch_name && formData.year && formData.city_id;
 
   return (
@@ -70,7 +77,7 @@ export function BatchModal({
   subtitle="Batch will be linked to the selected city and year"
   icon={<Layers className="text-chart-3 w-7 h-7" />}
 >
-  <div className="space-y-6">
+  <div className="space-y-6" onKeyDown={handleKeyDown}>
 
     {/* 🔹 FORM */}
     <div className="space-y-4">

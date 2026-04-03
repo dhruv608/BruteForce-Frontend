@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, CheckCircle, XCircle, User, AlertCircle, Shield } from 'lucide-react';
-import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { UsernameForm } from '@/types/student';
 import { useUsernameCheck } from '@/components/student/onboarding/hooks/useUsernameCheck';
 import { toast } from '@/utils/toast';
@@ -29,6 +28,7 @@ export function EditUsernameModal({
 }: EditUsernameModalProps) {
   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
   const [debouncedUsername, setDebouncedUsername] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const { mutate: checkUsername, isPending } = useUsernameCheck();
 
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -102,6 +102,13 @@ export function EditUsernameModal({
     }, 500);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && canSave && !isSaving) {
+      e.preventDefault();
+      handleSaveWithToast();
+    }
+  };
+
   const canSave = (usernameStatus === "available" || usernameStatus === "same") && usernameForm.username?.trim().length >= 3;
 
   // STATUS MESSAGE - Same logic as OnboardingStep1
@@ -112,7 +119,6 @@ export function EditUsernameModal({
       case "typing":
         return (
           <div className={`${base} text-muted-foreground`}>
-            <BruteForceLoader size="sm" />
             <span>Typing...</span>
           </div>
         );
@@ -182,6 +188,7 @@ export function EditUsernameModal({
       return;
     }
     
+    setIsSaving(true);
     try {
       await handleSaveUsername();
       toast.success('Username updated successfully!');
@@ -189,6 +196,8 @@ export function EditUsernameModal({
     } catch (error) {
       toast.error('Failed to update username');
       console.log(error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -244,6 +253,7 @@ export function EditUsernameModal({
                 type="text"
                 value={usernameForm.username}
                 onChange={handleUsernameChange}
+                onKeyDown={handleKeyDown}
                 placeholder="Enter new username"
                 className={`${getInputStyles()} group-focus-within:shadow-lg pl-10`}
               />
@@ -267,12 +277,6 @@ export function EditUsernameModal({
                 />
               )}
 
-              {usernameStatus === "typing" && (
-                <BruteForceLoader
-                  size="sm"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-blue-400"
-                />
-              )}
             </div>
             
             {/* STATUS MESSAGE */}
@@ -292,11 +296,10 @@ export function EditUsernameModal({
             <Button 
               onClick={handleSaveWithToast} 
               className="flex-1"
-              disabled={!canSave || isPending}
+              disabled={!canSave || isPending || isSaving}
             >
-              {isPending ? (
+              {isSaving ? (
                 <>
-                  <BruteForceLoader size="sm" className="mr-2" />
                   Saving...
                 </>
               ) : (

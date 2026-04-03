@@ -222,7 +222,7 @@ export default function PublicProfilePage() {
         tokenUsername = decoded.email?.split('@')[0];
       } catch (e) {
         handleToastError(e);
-        console.log('🔍 Token decode failed:', e);
+        console.log('Token decode failed:', e);
       }
     }
 
@@ -270,9 +270,9 @@ export default function PublicProfilePage() {
       if (needsImageDelete) updates.push('Profile image removed');
       if (needsProfileUpdate) updates.push('Profile details');
 
-      if (updates.length > 0) {
-        showSuccess(`${updates.join(', ')} updated successfully!`);
-      }
+      // if (updates.length > 0) {
+      //   showSuccess(`${updates.join(', ')} updated successfully!`);
+      // }
 
     } catch (error) {
       handleToastError(error);
@@ -315,7 +315,6 @@ export default function PublicProfilePage() {
       if (newUsername !== username) {
         window.location.href = `/profile/${newUsername}`;
       }
-      showSuccess('Username updated successfully!');
     } catch (error: unknown) {
       handleToastError(error);
       if (error instanceof Error) {
@@ -428,7 +427,7 @@ export default function PublicProfilePage() {
           <ProblemSolvingStats codingStats={codingStats} />
 
           {/* ACTIVITY HEATMAP */}
-          <ActivityHeatmap heatmap={heatmap} freezeInfo={[]} />
+          <ActivityHeatmap heatmap={heatmap} />
 
           {/* RECENT ACTIVITY */}
           <RecentActivity recentActivity={recentActivity} />

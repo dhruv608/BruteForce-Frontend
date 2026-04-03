@@ -13,6 +13,7 @@ import { getAdminCities, getAdminBatches } from '@/services/admin.service';
 import { isAdminToken, clearAuthTokens } from '@/lib/auth-utils';
 import { BruteForceLoader } from '@/components/ui/BruteForceLoader';
 import { handleToastError } from "@/utils/toast-system";
+import { cn } from '@/lib/utils';
 
 function decodeJwt(token: string) {
   try {
@@ -62,7 +63,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [authLoading, setAuthLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const { 
     selectedCity, 
@@ -306,58 +307,112 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex h-screen bg-background text-foreground selection:bg-primary/20">
-      {/* Mobile Menu Toggle */}
-      <button
-        onClick={() => setIsMobileSidebarOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-30 p-2 rounded-md bg-card border border-border hover:bg-muted"
-      >
-        <Menu className="w-5 h-5" />
-      </button>
-
-      {/* Reusable Sidebar Component */}
-      <Sidebar
-        role="admin"
-        isOpen={true}
-        onClose={() => setIsMobileSidebarOpen(false)}
-        user={user}
-        navItems={navItems}
-        onLogout={handleLogout}
-        portalLabel="Admin Portal"
-        isCollapsed={isSidebarCollapsed}
-        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-      />
-
-      {/* Mobile Sidebar Overlay */}
-      {isMobileSidebarOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-30"
-          onClick={() => setIsMobileSidebarOpen(false)}
-        />
-      )}
-
-      {/* Mobile Sidebar */}
-      <div className={`
-        lg:hidden fixed top-0 left-0 h-full z-40 transition-transform duration-300
-        ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}>
+      {/* Desktop Sidebar - Hidden on Mobile */}
+      <div className="hidden md:block">
         <Sidebar
           role="admin"
-          isOpen={isMobileSidebarOpen}
-          onClose={() => setIsMobileSidebarOpen(false)}
+          isOpen={true}
+          onClose={() => {}}
           user={user}
           navItems={navItems}
           onLogout={handleLogout}
           portalLabel="Admin Portal"
-          isCollapsed={false}
-          onToggleCollapse={() => {}}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
       </div>
 
-      {/* Main Content Area with Dynamic Spacing */}
-      <main className={`
-        flex-1 flex flex-col relative z-20 min-w-0 transition-all duration-300 ease-in-out ps-3  mt-3
-        ${isSidebarCollapsed ? 'ml-0' : 'ml-0 lg:ml-0'}
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(true)}
+        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-card border border-border hover:bg-muted transition-colors"
+      >
+        <Menu className="w-5 h-5" />
+      </button>
+
+      {/* Mobile Menu Backdrop */}
+      {isMobileMenuOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile Menu Drawer */}
+      <div className={`
+        md:hidden fixed inset-y-0 left-0 z-50 w-[80%] max-w-75
+        transition-transform duration-300 ease-in-out
+        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
+        <div className="h-full glass border-r border-border/20 backdrop-blur-md">
+          {/* Mobile Menu Header */}
+          <div className="p-4 border-b border-border/20 flex items-center justify-between">
+            <h1 className="font-serif text-2xl font-bold text-logo tracking-tight">
+              <span className="text-2xl font-bold leading-[1.05] tracking-tight">
+                <span className="text-foreground">Brute</span>
+                <span className="text-(--accent-primary)">Force</span>
+              </span>
+            </h1>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="p-2 rounded-md hover:bg-muted transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Mobile Menu Navigation */}
+          <nav className="flex-1 overflow-y-auto py-4">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
+              return (
+                <button
+                  key={item.href}
+                  onClick={() => {
+                    router.push(item.href);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`
+                    w-full flex items-center gap-3 px-4 py-3 transition-colors
+                    ${isActive 
+                      ? 'bg-(--accent-primary)/10 text-(--accent-primary) border-l-4 border-(--accent-primary)' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-[rgba(204,255,0,0.05)]'
+                    }
+                  `}
+                >
+                  <Icon className="w-5 h-5 shrink-0" />
+                  <span className="font-medium">{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Mobile Menu User Section */}
+          <div className="border-t border-border/20 p-4">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-[rgba(204,255,0,0.05)] transition-colors"
+            >
+              <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center font-bold text-sm uppercase">
+                {user.name?.charAt(0) || "A"}
+              </div>
+              <div className="text-left flex-1">
+                <div className="text-sm font-medium text-foreground">
+                  {user.name || "Admin"}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Logout Session
+                </div>
+              </div>
+              <LogOut className="w-5 h-5 opacity-70" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col relative z-20 min-w-0 transition-all duration-300 ease-in-out ps-3 mt-3">
         {/* Topbar */}
         <header className="h-14 glass border rounded-2xl border-border/20 backdrop-blur-md flex items-center justify-between px-6 shrink-0 z-30 w-full">
           {/* Dropdown Selectors */}

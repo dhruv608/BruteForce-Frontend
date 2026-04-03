@@ -67,7 +67,7 @@ export function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProp
               <motion.div 
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-logo/10 border border-border mb-6 group"
+                className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-logo/10 border border-border mb-6 "
               >
                 <Mail className="text-logo group-hover:scale-110 transition-transform duration-300" size={30} />
               </motion.div>
@@ -111,7 +111,7 @@ export function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProp
                 </AnimatePresence>
 
                 {/* INPUT FIELD */}
-                <div className="space-y-2 group">
+                <div className="space-y-2 ">
                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 transition-colors group-focus-within:text-logo">
                     Email Address
                   </label>

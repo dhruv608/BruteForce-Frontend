@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { LogOut, LucideIcon, ChevronRight } from "lucide-react";
+import { LogOut, LucideIcon, ChevronRight, Link } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SidebarItem } from "./SidebarItem";
 
@@ -71,8 +71,8 @@ export function Sidebar({
         `}
       >
         {/* GLASS CONTAINER */}
-        <motion.div 
-          layout 
+        <motion.div
+          layout
           className="relative h-full w-full flex flex-col rounded-2xl glass overflow-hidden no-scrollbar  "
         >
 
@@ -93,9 +93,12 @@ export function Sidebar({
                 width: isCollapsed ? 0 : "auto",
               }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="font-serif italic text-2xl font-bold text-logo tracking-tight whitespace-nowrap"
+              className="font-serif  text-2xl font-bold text-logo tracking-tight whitespace-nowrap"
             >
-              BruteForce
+              <motion.span className="text-2xl md:text-2xl font-bold leading-[1.05] tracking-tight">
+                <motion.span className="text-foreground">Brute</motion.span>
+                <motion.span className="text-[var(--accent-primary)] ">Force</motion.span>
+              </motion.span>
             </motion.h1>
 
             {/* TOGGLE BUTTON */}

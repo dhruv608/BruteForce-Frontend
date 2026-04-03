@@ -90,32 +90,49 @@ export function LoginForm() {
           )}
         </AnimatePresence>
       </div>
-
       {/* PASSWORD INPUT */}
-      <div className="space-y-2">
-        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 group-focus-within:text-logo transition-colors">
-          Password
-        </label>
-        <div className="relative">
-          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-logo transition-colors" />
-          <input
-            type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={loading}
-            placeholder="Enter your password"
-            required
-            className="w-full h-12 pl-11 pr-4  border border-border rounded-xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-logo/40 transition-all"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
-          >
-            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-          </button>
-        </div>
-      </div>
+   <div className="space-y-2">
+  
+  {/* LABEL + FORGOT PASSWORD IN SAME ROW */}
+  <div className="flex items-center justify-between">
+    <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1 group-focus-within:text-logo transition-colors">
+      Password
+    </label>
+
+    <button
+      type="button"
+      className="text-[10px] font-bold text-slate-500 hover:text-[#CCFF00] uppercase tracking-widest transition-colors"
+      onClick={() => router.push('/forgot-password')}
+    >
+      Forgot Password?
+    </button>
+  </div>
+
+  {/* INPUT */}
+  <div className="relative">
+    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-logo transition-colors" />
+    
+    <input
+      type={showPassword ? "text" : "password"}
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      disabled={loading}
+      placeholder="Enter your password"
+      required
+      className="w-full h-12 pl-11 pr-4 border border-border rounded-xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-logo/40 transition-all"
+    />
+
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
+    >
+      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+    </button>
+  </div>
+</div>
+
+     
 
       {/* LOG IN BUTTON */}
       <button

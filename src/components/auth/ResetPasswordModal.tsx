@@ -139,7 +139,7 @@ function ResetPasswordModalContent({ isOpen, onClose }: ResetPasswordModalProps)
             </div>
 
             {/* CONFIRM PASSWORD */}
-            <div className="space-y-2 group">
+            <div className="space-y-2 ">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-logo">
                 Confirm Password
               </label>

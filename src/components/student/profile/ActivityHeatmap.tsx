@@ -5,15 +5,14 @@ import { HeatmapData } from '@/types/student';
 
 interface ActivityHeatmapProps {
   heatmap?: HeatmapData[];
-  freezeInfo?: { date: string; hasQuestion: boolean }[];
 }
 
-export function ActivityHeatmap({ heatmap, freezeInfo }: ActivityHeatmapProps) {
+export function ActivityHeatmap({ heatmap }: ActivityHeatmapProps) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const getLevelColor = (count: number, isFreezeDay: boolean = false) => {
-    if (isFreezeDay && count === 0) return 'bg-blue-100/50 border border-blue-200/50'; // Light blue for freeze days
+  const getLevelColor = (count: number) => {
+    if (count === -1) return 'bg-blue-100/50 border border-blue-200/50'; // Freeze day
     if (count === 0) return 'bg-[var(--muted)] border border-[var(--border)]';
     if (count === 1) return 'bg-[var(--primary)]/20 border border-[var(--primary)]/30';
     if (count === 2) return 'bg-[var(--primary)]/40 border border-[var(--primary)]/50';
@@ -31,11 +30,13 @@ export function ActivityHeatmap({ heatmap, freezeInfo }: ActivityHeatmapProps) {
     const dateStr = date.toISOString().split('T')[0];
     const dayData = heatmap?.find((h: HeatmapData) => new Date(h.date).toISOString().split('T')[0] === dateStr);
     
-    // Check if this is a freeze day (no questions uploaded)
-    const freezeData = freezeInfo?.find(f => f.date === dateStr);
-    const isFreezeDay = freezeData ? !freezeData.hasQuestion : false;
+    // Get the actual count from backend
+    const count = dayData ? dayData.count : 0;
     
-    return dayData ? { count: dayData.count, date: dateStr, isFreezeDay } : { count: 0, date: dateStr, isFreezeDay };
+    // Check if this is a freeze day (count = -1)
+    const isFreezeDay = count === -1;
+    
+    return { count, date: dateStr, isFreezeDay };
   };
 
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -148,7 +149,7 @@ export function ActivityHeatmap({ heatmap, freezeInfo }: ActivityHeatmapProps) {
                     return (
                       <div
                         key={`${weekIndex}-${dayIndex}`}
-                        className={`w-3 h-3 ${getLevelColor(dayData.count, dayData.isFreezeDay)} transition-all duration-200 hover:scale-110 cursor-pointer`}
+                        className={`w-3 h-3 ${getLevelColor(dayData.count)} transition-all duration-200 hover:scale-110 cursor-pointer`}
                         title={`${dayData.count} submissions on ${new Date(dayData.date).toLocaleDateString()}${dayData.isFreezeDay ? ' (Freeze day - no questions uploaded)' : ''}`}
                       />
                     );

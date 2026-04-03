@@ -50,6 +50,13 @@ export function EditProfileModal({
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSaveWithToast();
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-background rounded-2xl border border-border w-full max-w-md shadow-2xl overflow-hidden">
@@ -130,6 +137,7 @@ export function EditProfileModal({
               type="url"
               value={editForm.github}
               onChange={(e) => setEditForm({ ...editForm, github: e.target.value })}
+              onKeyDown={handleKeyDown}
               placeholder="https://github.com/username"
               className="w-full border border-border px-3 py-2 rounded-lg bg-background text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
             />
@@ -144,6 +152,7 @@ export function EditProfileModal({
               type="url"
               value={editForm.linkedin}
               onChange={(e) => setEditForm({ ...editForm, linkedin: e.target.value })}
+              onKeyDown={handleKeyDown}
               placeholder="https://linkedin.com/in/username"
               className="w-full border border-border px-3 py-2 rounded-lg bg-background text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
             />
