@@ -267,6 +267,9 @@ export default function StudentHeader() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                       align="end"
+                      side="bottom"
+                      sideOffset={4}
+                      alignOffset={-300}
                       className="w-56 p-2 rounded-2xl glass"
                     >
                       {/* PROFILE HEADER */}

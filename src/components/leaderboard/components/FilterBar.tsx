@@ -21,7 +21,7 @@ export function FilterBar({
               placeholder="Search by name and username..." 
               value={lSearch}
               onChange={(e) => { setLSearch(e.target.value); }}
-              className="!pl-9 h-9 bg-background focus-visible:ring-1 transition-all hover:bg-muted/50"
+              className="!pl-9 w-full h-9 bg-background focus-visible:ring-1 transition-all hover:bg-muted/50"
           />
         </div>
       </div>
