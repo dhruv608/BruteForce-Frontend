@@ -3,7 +3,7 @@ import { isStudentToken, clearAuthTokens } from '@/lib/auth-utils';
 import { handleToastError, showSuccess } from '@/utils/toast-system';
 
 export const studentTopicService = {
-  getTopics: async (params?: { page?: number; limit?: number; search?: string }) => {
+  getTopics: async (params?: { page?: number; limit?: number; search?: string; sortBy?: string }) => {
     // Check if we have a student token before making the request
     if (!isStudentToken()) {
       clearAuthTokens(); // Clear invalid tokens
@@ -17,6 +17,7 @@ export const studentTopicService = {
     if (params?.page) queryParams.append('page', params.page.toString());
     if (params?.limit) queryParams.append('limit', params.limit.toString());
     if (params?.search) queryParams.append('search', params.search);
+    if (params?.sortBy) queryParams.append('sortBy', params.sortBy);
 
     const queryString = queryParams.toString();
     const url = queryString ? `/api/students/topics?${queryString}` : '/api/students/topics';

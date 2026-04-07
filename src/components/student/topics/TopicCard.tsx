@@ -11,6 +11,7 @@ interface TopicCardProps {
   totalQuestions: number;
   solvedQuestions: number;
   totalClasses: number;
+  progressPercentage?: number;
 }
 
 export function TopicCard({
@@ -20,9 +21,11 @@ export function TopicCard({
   totalQuestions,
   solvedQuestions,
   totalClasses,
+  progressPercentage,
 }: TopicCardProps) {
-  const progress =
-    totalQuestions === 0 ? 0 : (solvedQuestions / totalQuestions) * 100;
+  const progress = progressPercentage !== undefined 
+    ? progressPercentage 
+    : (totalQuestions === 0 ? 0 : (solvedQuestions / totalQuestions) * 100);
 
   return (
     <Link href={`/topics/${topicSlug}`}>

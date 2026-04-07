@@ -13,20 +13,22 @@ export default function TopicsPage() {
   const [pagination, setPagination] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("recent");
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
   const isFetching = useRef(false);
-  const lastFetchParams = useRef({ page: 1, itemsPerPage: 8, searchQuery: '' });
+  const lastFetchParams = useRef({ page: 1, itemsPerPage: 8, searchQuery: '', sortBy: 'recent' });
 
   useEffect(() => {
-    const currentParams = { page, itemsPerPage, searchQuery };
+    const currentParams = { page, itemsPerPage, searchQuery, sortBy };
     
     // Skip if already fetching with same params
     if (isFetching.current) {
       const sameParams = 
         lastFetchParams.current.page === page &&
         lastFetchParams.current.itemsPerPage === itemsPerPage &&
-        lastFetchParams.current.searchQuery === searchQuery;
+        lastFetchParams.current.searchQuery === searchQuery &&
+        lastFetchParams.current.sortBy === sortBy;
       
       if (sameParams) {
         return;
@@ -42,7 +44,8 @@ export default function TopicsPage() {
         const response = await studentTopicService.getTopics({
           page,
           limit: itemsPerPage,
-          search: searchQuery.trim() || undefined
+          search: searchQuery.trim() || undefined,
+          sortBy
         });
         setTopicsData(response.topics || []);
         setPagination(response.pagination);
@@ -56,7 +59,7 @@ export default function TopicsPage() {
     };
 
     fetchTopics();
-  }, [page, itemsPerPage, searchQuery]);
+  }, [page, itemsPerPage, searchQuery, sortBy]);
 
 
   return (
@@ -67,6 +70,11 @@ export default function TopicsPage() {
           setSearchQuery={(query) => {
             setSearchQuery(query);
             setPage(1); // Reset to first page when searching
+          }}
+          sortBy={sortBy}
+          setSortBy={(newSortBy) => {
+            setSortBy(newSortBy);
+            setPage(1); // Reset to first page when sorting
           }}
         />
         

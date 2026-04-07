@@ -96,11 +96,11 @@ export default function ClassDetailsPage() {
       />
 
       {/* Filter and Controls */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 mb-6">
+      <div className="flex flex-col -mt-3 sm:flex-row items-start sm:items-center justify-between gap-5 mb-6">
         <div className="flex items-center gap-5">
           <span className="text-sm font-medium text-muted-foreground">Filter:</span>
           <Select value={filter} onValueChange={handleFilterChange}>
-            <SelectTrigger className="w-[150px] h-9">
+            <SelectTrigger className=" h-9">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

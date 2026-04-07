@@ -3,7 +3,7 @@
 import React from "react";
 import { Badge } from "../shared/Badge";
 import { ProgressBar } from "../shared/ProgressBar";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, FileText } from "lucide-react";
 
 interface ClassHeaderProps {
   classData: any;
@@ -56,23 +56,37 @@ export function ClassHeader({
         </p>
       )}
 
-      {/* 🔥 CONNECTED PROGRESS BLOCK */}
-      <div className="max-w-md">
+      {/* CONNECTED PROGRESS BLOCK */}
+      <div className="flex items-center justify-between gap-4">
+        <div className="max-w-md flex-1">
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+            <span className="uppercase tracking-wide">Progress</span>
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-          <span className="uppercase tracking-wide">Progress</span>
-
-          <div className="flex items-center gap-2">
-            <span>
-              {solvedQuestions}/{totalQuestions}
-            </span>
-            <span className="text-primary font-semibold">
-              {Math.round(progress)}%
-            </span>
+            <div className="flex items-center gap-2">
+              <span>
+                {solvedQuestions}/{totalQuestions}
+              </span>
+              <span className="text-primary font-semibold">
+                {Math.round(progress)}%
+              </span>
+            </div>
           </div>
+
+          <ProgressBar progress={progress} className="h-2" />
         </div>
 
-        <ProgressBar progress={progress} className="h-2" />
+        {classData.pdf_url && (
+          <a
+            href={classData.pdf_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center bg-primary/10 hover:bg-primary/20 text-primary transition-colors font-medium px-6 py-1.5 rounded text-xs gap-1.5 shrink-0"
+            title="View Class PDF"
+          >
+            <FileText className="w-3.5 h-3.5 shrink-0" />
+            View PDF
+          </a>
+        )}
       </div>
 
     </div>

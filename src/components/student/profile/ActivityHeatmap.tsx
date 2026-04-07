@@ -1,5 +1,3 @@
-// 🌟 Code by Ayush Chaurasiya — Eat 💻 Sleep 😴 Code ⚡ Repeat 💪
-
 import React, { useMemo, useState } from "react";
 import { Activity } from "lucide-react";
 import CustomTooltip from "./CustomTooltip";

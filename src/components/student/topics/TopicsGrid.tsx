@@ -12,6 +12,7 @@ interface Topic {
     solvedQuestions?: number;
     totalClasses?: number;
   };
+  progressPercentage?: number;
 }
 
 interface TopicsGridProps {
@@ -41,6 +42,7 @@ export function TopicsGrid({ topics, searchQuery, pagination }: TopicsGridProps)
               totalQuestions={t.batchSpecificData?.totalQuestions || 0}
               solvedQuestions={t.batchSpecificData?.solvedQuestions || 0}
               totalClasses={t.batchSpecificData?.totalClasses || 0}
+              progressPercentage={t.progressPercentage || 0}
             />
           </div>
         ))}
