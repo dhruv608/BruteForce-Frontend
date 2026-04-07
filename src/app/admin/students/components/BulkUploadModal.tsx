@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { Upload, FileText, AlertCircle, CheckCircle2, Info } from 'lucide-react';
+import { Upload, FileText, AlertCircle, CheckCircle2, Info, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from "@/components/ui/label";
@@ -29,6 +29,7 @@ export default function BulkUploadModal({
   const [selectedCity, setSelectedCity] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('');
   const [selectedBatch, setSelectedBatch] = useState<string>('');
+  const [defaultPassword, setDefaultPassword] = useState<string>('password123');
   const [loading, setLoading] = useState(false);
   const [csvData, setCsvData] = useState<any[]>([]);
   const [showGuide, setShowGuide] = useState(false);
@@ -95,6 +96,7 @@ export default function BulkUploadModal({
       setSelectedCity('');
       setSelectedYear('');
       setSelectedBatch('');
+      setDefaultPassword('password123');
       setCsvData([]);
     }
   };
@@ -244,9 +246,9 @@ export default function BulkUploadModal({
       formData.append('file', file);
       formData.append('batch_id', selectedBatch);
 
-      console.log('Uploading students...', { fileName: file.name, batchId: selectedBatch });
+      console.log('Uploading students...', { fileName: file.name, batchId: selectedBatch, defaultPassword });
       
-      const result = await bulkUploadStudents(formData);
+      const result = await bulkUploadStudents(formData, defaultPassword);
       
       console.log('Upload result:', result);
 
@@ -274,6 +276,28 @@ export default function BulkUploadModal({
       setLoading(false);
     }
   }, [file, selectedBatch, onSuccess, handleClose]);
+
+  // Download sample CSV function
+  const downloadSampleCSV = useCallback(() => {
+    const sampleData = [
+      'name,email,enrollment_id',
+      '"Dhruv Narang","dhruv.sot2428@pwioi.com","2401010031"',
+      '"Ayush Chaurasiya","ayush.sot2428@pwioi.com","2401010024"'
+    ];
+    
+    const csvContent = sampleData.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'sample_students.csv');
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, []);
 
   // Check if upload should be disabled
   const isUploadDisabled = !file || !selectedCity || !selectedYear || !selectedBatch || loading;
@@ -370,6 +394,24 @@ return (
               />
             </div>
 
+            {/* DEFAULT PASSWORD */}
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">
+                Default Password
+              </Label>
+
+              <Input
+                type="text"
+                value={defaultPassword}
+                onChange={(e) => setDefaultPassword(e.target.value)}
+                placeholder="Enter default password for all students"
+                className="h-11"
+              />
+              <p className="text-xs text-muted-foreground">
+                This password will be set for all uploaded students
+              </p>
+            </div>
+
           </div>
 
           {/* FILE INPUT */}
@@ -399,20 +441,34 @@ return (
           </div>
 
           {/* GUIDE */}
-          <div className="flex justify-between items-center border border-border/40 rounded-2xl px-4 py-3 bg-muted/20">
-            <p className="text-sm text-muted-foreground">
-              Need CSV format help?
-            </p>
+          <div className="rounded-2xl px-4 py-3 bg-muted/20 border border-border/40">
+            <div className="text-center mb-3">
+              <p className="text-sm text-muted-foreground">
+                Need CSV format help?
+              </p>
+            </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowGuide(true)}
-              className="rounded-lg"
-            >
-              <FileText className="w-4 h-4 mr-1" />
-              View Guide
-            </Button>
+            <div className="flex flex-col gap-2 items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={downloadSampleCSV}
+                className="rounded w-full max-w-xs"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download Sample CSV
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowGuide(true)}
+                className="rounded w-full max-w-xs"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                View Format Guide
+              </Button>
+            </div>
           </div>
 
           
@@ -513,7 +569,16 @@ return (
         </div>
 
         {/* FOOTER */}
-        <div className="px-6 py-4 border-t flex justify-end">
+        <div className="px-6 py-4 border-t flex justify-between">
+          <Button
+            variant="outline"
+            onClick={downloadSampleCSV}
+            className="rounded"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Download Sample CSV
+          </Button>
+          
           <Button variant="ghost" onClick={() => setShowGuide(false)}>
             Close
           </Button>

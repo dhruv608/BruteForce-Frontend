@@ -173,7 +173,10 @@ export const deleteAdminStudent = async (id: number) => {
   return response.data;
 };
 
-export const bulkUploadStudents = async (formData: FormData) => {
+export const bulkUploadStudents = async (formData: FormData, defaultPassword?: string) => {
+  if (defaultPassword) {
+    formData.append('default_password', defaultPassword);
+  }
   const response = await api.post('/api/admin/bulk-operations', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   });

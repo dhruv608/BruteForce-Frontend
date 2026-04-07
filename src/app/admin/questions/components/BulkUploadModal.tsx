@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { Upload, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Upload, FileText, AlertCircle, CheckCircle2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from "@/components/ui/label";
@@ -230,6 +230,32 @@ export default function BulkUploadModal({
     }
   }, [file, selectedTopic, validationResult, onSuccess, onOpenChange]);
   
+  // Download sample CSV function
+  const downloadSampleCSV = useCallback(() => {
+    const sampleData = [
+      'question_name,question_link,level,type',
+      '"Two Sum","https://leetcode.com/problems/two-sum/","EASY","HOMEWORK"',
+      '"Binary Search","https://leetcode.com/problems/binary-search/","EASY","CLASSWORK"',
+      '"Merge Sort","https://leetcode.com/problems/sort-an-array/","MEDIUM","HOMEWORK"',
+      '"Dynamic Programming - Fibonacci","https://leetcode.com/problems/fibonacci-number/","MEDIUM","CLASSWORK"',
+      '"Graph Traversal - BFS","https://leetcode.com/problems/binary-tree-level-order-traversal/","MEDIUM","HOMEWORK"',
+      '"Backtracking - N-Queens","https://leetcode.com/problems/n-queens/","HARD","CLASSWORK"'
+    ];
+    
+    const csvContent = sampleData.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'sample_questions.csv');
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, []);
+
   const handleClose = () => {
     if (!loading) onOpenChange(false);
   };
@@ -302,20 +328,34 @@ export default function BulkUploadModal({
             </div>
 
             {/* GUIDE BUTTON */}
-            <div className="flex items-center justify-between rounded-2xl px-4 py-3 bg-muted/30 border border-border/50">
-              <p className="text-sm text-muted-foreground">
-                Not sure about CSV format?
-              </p>
+            <div className="rounded-2xl px-4 py-3 bg-muted/30 border border-border/50">
+              <div className="text-center mb-3">
+                <p className="text-sm text-muted-foreground">
+                  Not sure about CSV format?
+                </p>
+              </div>
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowGuide(true)}
-                className="rounded"
-              >
-                <FileText className="w-4 h-4 mr-1" />
-                View Format Guide
-              </Button>
+              <div className="flex flex-col gap-2 items-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={downloadSampleCSV}
+                  className="rounded w-full max-w-xs"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Sample CSV
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowGuide(true)}
+                  className="rounded w-full max-w-xs"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  View Format Guide
+                </Button>
+              </div>
             </div>
 
             {/* CSV VALIDATION STATUS */}
@@ -450,7 +490,16 @@ export default function BulkUploadModal({
           </div>
 
           {/* FOOTER */}
-          <div className="px-6 py-4 border-t flex justify-end">
+          <div className="px-6 py-4 border-t flex justify-between">
+            <Button
+              variant="outline"
+              onClick={downloadSampleCSV}
+              className="rounded"
+            >
+              <Download className="w-4 h-4 mr-1" />
+              Download Sample CSV
+            </Button>
+            
             <Button variant="ghost" onClick={() => setShowGuide(false)}>
               Close
             </Button>

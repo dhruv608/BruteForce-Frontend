@@ -11,6 +11,7 @@ import {
   X,
   ChevronRight,
   Loader2,
+  Calendar,
 } from "lucide-react";
 import api from "@/lib/api";
 import { useRecentQuestions } from "@/contexts/RecentQuestionsContext";
@@ -27,18 +28,45 @@ interface RecentQuestion {
 
 export function RecentQuestionsSidebar() {
   const router = useRouter();
-  const { isOpen, setIsOpen } = useRecentQuestions();
+  const { isOpen, setIsOpen, selectedDate, setSelectedDate } = useRecentQuestions();
   const [questions, setQuestions] = useState<RecentQuestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Get date strings for today, yesterday, and ereyesterday
+  const getDateStrings = () => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const ereyesterday = new Date(today);
+    ereyesterday.setDate(ereyesterday.getDate() - 2);
+    
+    const formatDate = (date: Date) => {
+      return date.getFullYear() + '-' + 
+        String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+        String(date.getDate()).padStart(2, '0');
+    };
+    
+    return {
+      today: formatDate(today),
+      yesterday: formatDate(yesterday),
+      ereyesterday: formatDate(ereyesterday),
+      todayLabel: today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
+      yesterdayLabel: yesterday.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
+      ereyesterdayLabel: ereyesterday.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+    };
+  };
+
+  const dateStrings = getDateStrings();
+
   // Fetch
-  const fetchRecentQuestions = async () => {
+  const fetchRecentQuestions = async (date?: string) => {
     setLoading(true);
     setError(null);
     try {
+      const queryDate = date || selectedDate;
       const response = await api.get(
-        "/api/students/recent-questions?days=7"
+        `/api/students/recent-questions?date=${queryDate}`
       );
       setQuestions(response.data.questions);
     } catch (err: any) {
@@ -52,12 +80,12 @@ export function RecentQuestionsSidebar() {
     }
   };
 
-  // Fetch only when sidebar opens
+  // Fetch only when sidebar opens or date changes
   useEffect(() => {
     if (isOpen) {
       fetchRecentQuestions();
     }
-  }, [isOpen]);
+  }, [isOpen, selectedDate]);
 
   // Time formatting
   const formatTimeAgo = (assigned_at: string) => {
@@ -114,7 +142,7 @@ export function RecentQuestionsSidebar() {
             <Card className="h-full rounded-none border-none shadow-none bg-transparent">
 
               {/* Header */}
-              <CardHeader className="border-b border-white/5 bg-white/5 backdrop-blur-xl">
+              <CardHeader className="glass border-b border-white/5 bg-white/5 backdrop-blur-xl">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg font-semibold flex items-center gap-2">
                     <Clock className="w-5 h-5 text-primary" />
@@ -130,18 +158,60 @@ export function RecentQuestionsSidebar() {
                     <X className="w-4 h-4" />
                   </Button>
                 </div>
+
+                {/* Date Filter Buttons */}
+                <div className="flex flex-col gap-1 mt-3">
+                  <div className="grid grid-cols-3 gap-2">
+                    <Button
+                      variant={selectedDate === dateStrings.today ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setSelectedDate(dateStrings.today)}
+                      className="flex flex-col items-center gap-0.5 h-auto py-0.5 px-2 text-xs font-medium border-1 border-gray-200 dark:border-gray-300"
+                    >
+                      <div className="flex items-center justify-center w-full gap-1">
+                        <Calendar className="w-3 h-3" />
+                        <span className="font-semibold">Today</span>
+                      </div>
+                      <span className="text-xs opacity-70 leading-tight">{dateStrings.todayLabel}</span>
+                    </Button>
+                    <Button
+                      variant={selectedDate === dateStrings.yesterday ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setSelectedDate(dateStrings.yesterday)}
+                      className="flex flex-col items-center gap-0.5 h-auto py-0.5 px-2 text-xs font-medium border-2 border-gray-300 dark:border-gray-600"
+                    >
+                      <div className="flex items-center justify-center w-full gap-1">
+                        <Calendar className="w-3 h-3" />
+                        <span className="font-semibold">Yesterday</span>
+                      </div>
+                      <span className="text-xs opacity-70 leading-tight">{dateStrings.yesterdayLabel}</span>
+                    </Button>
+                    <Button
+                      variant={selectedDate === dateStrings.ereyesterday ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setSelectedDate(dateStrings.ereyesterday)}
+                      className="flex flex-col items-center gap-0.5 h-auto py-0.5 px-2 text-xs font-medium border-2 border-gray-300 dark:border-gray-600"
+                    >
+                      <div className="flex items-center justify-center w-full gap-1">
+                        <Calendar className="w-3 h-3" />
+                        <span className="font-semibold">Ereyesterday</span>
+                      </div>
+                      <span className="text-xs opacity-70 leading-tight">{dateStrings.ereyesterdayLabel}</span>
+                    </Button>
+                  </div>
+                </div>
               </CardHeader>
 
               {/* Content */}
               <CardContent className="p-0">
-                <ScrollArea className="h-[calc(100vh-80px)] px-4 py-4">
+                <ScrollArea className="h-[calc(100vh-140px)] px-4 py-4">
 
                   {loading ? (
                     <div className="space-y-4">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <Card
                           key={i}
-                          className="group glass rounded-2xl animate-in fade-in slide-in-from-right-2"
+                          className=" glass rounded-2xl animate-in fade-in slide-in-from-right-2"
                           style={{ animationDelay: `${i * 50}ms`, animationFillMode: 'both' }}
                         >
                           <CardContent className="p-4">
@@ -170,7 +240,7 @@ export function RecentQuestionsSidebar() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={fetchRecentQuestions}
+                        onClick={() => fetchRecentQuestions()}
                         className="mt-3"
                       >
                         Retry
@@ -189,7 +259,7 @@ export function RecentQuestionsSidebar() {
                       {questions.map((question, index) => (
                         <Card
                           key={question.question_id}
-                          className="group glass rounded-2xl hover:border-primary/30 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.01]"
+                          className=" glass rounded-2xl hover:border-primary/30 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.01]"
                           style={{
                             animationDelay: `${index * 60}ms`,
                             animation: "slideIn 0.35s ease forwards",
@@ -217,12 +287,7 @@ export function RecentQuestionsSidebar() {
                                     {question.difficulty}
                                   </Badge>
 
-                                  {/* ✅ FIXED TIME COLOR */}
-                                  <span className="text-xs font-medium text-muted-foreground">
-                                    {formatTimeAgo(
-                                      question.assigned_at
-                                    )}
-                                  </span>
+
 
                                 </div>
                               </div>

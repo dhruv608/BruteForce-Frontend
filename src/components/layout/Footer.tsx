@@ -8,7 +8,7 @@ export function Footer() {
     <footer className="border-t border-border/40 bg-background/95 backdrop-blur-sm">
       <div className="mx-auto max-w-7xl px-6 lg:px-12 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          
+
           {/* Brand Section */}
           <div className="space-y-4">
             <div>
@@ -21,7 +21,7 @@ export function Footer() {
                 Stay Ahead.
               </p>
             </div>
-            
+
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin className="w-4 h-4" />
               <span>PW Institute of Innovation</span>
@@ -44,9 +44,7 @@ export function Footer() {
               <Link href="/profile" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                 Profile
               </Link>
-              <Link href="/about" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
-                About
-              </Link>
+
             </nav>
           </div>
 
@@ -87,8 +85,26 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-border/40 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2026 BruteForce. All rights reserved.
+            © 2026
+
+            <span className='text-primary p-1 '>
+
+              BruteForce.
+            </span>
+
+            All rights reserved.
           </p>
+          <p className="text-sm text-muted-foreground">
+            Made By
+            <span className='text-primary p-1'>
+              Dhruv Narang
+            </span>
+            &&
+            <span className='text-primary p-1'>
+              Ayush Chaurasiya
+            </span>
+          </p>
+
           <p className="flex items-center gap-1 text-sm text-muted-foreground">
             Built with <Heart className="w-4 h-4 text-primary fill-primary" /> at PW Institute of Innovation
           </p>
