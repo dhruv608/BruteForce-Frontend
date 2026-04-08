@@ -64,9 +64,8 @@ export function HeroSection() {
 
             <Button
               asChild
-              variant="outline"
               size="lg"
-              className="h-12 px-8 font-semibold rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all"
+              className="h-12 px-8 font-semibold rounded-2xl border border-white/10 bg-primary/10! text-primary!  hover:bg-white/10 transition-all"
             >
               <Link href="/practice">
                 <PenTool className="w-5 h-5 mr-2" />

@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Calendar, CheckCircle2 } from "lucide-react";
+import { Calendar, CheckCircle2, Lock } from "lucide-react";
 
 interface TopicCardProps {
   topicSlug: string;
@@ -27,9 +27,21 @@ export function TopicCard({
     ? progressPercentage 
     : (totalQuestions === 0 ? 0 : (solvedQuestions / totalQuestions) * 100);
 
-return (
-  <Link href={`/topics/${topicSlug}`} className="glass rounded-2xl block">
+  const isLocked = totalClasses === 0;
+
+  const CardContent = () => (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl transition-all duration-300 glass  hover:shadow-primary/10">
+
+      {/* LOCK OVERLAY */}
+      {isLocked && (
+        <div className="absolute inset-0 bg-black/70 border border-border/70 backdrop-blur-sm z-10 flex items-center justify-center rounded-2xl">
+          <div className="flex flex-col items-center gap-2 text-white">
+            <Lock className="w-8 h-8 text-primary " />
+            <span className="text-sm font-medium">{topicName}</span>
+            <span className="text-xs opacity-80">Locked</span>
+          </div>
+        </div>
+      )}
 
       {/* IMAGE */}
       <div className="relative h-[150px] overflow-hidden border-b border-border/50">
@@ -37,20 +49,22 @@ return (
           <img
             src={photoUrl}
             alt={topicName}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className={`w-full h-full object-cover transition-transform duration-500 ${isLocked ? 'opacity-50' : 'group-hover:scale-105'}`}
           />
         ) : (
-          <div className="w-full h-full bg-muted" />
+          <div className={`w-full h-full ${isLocked ? 'bg-muted/50' : 'bg-muted'}`} />
         )}
 
-      
+        
       </div>
 
       {/* CONTENT */}
       <div className="p-4 flex flex-col gap-3">
 
         {/* TITLE */}
-        <h3 className="text-base font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+        <h3 className={`text-base font-semibold line-clamp-1 transition-colors ${
+          isLocked ? 'text-muted-foreground' : 'text-foreground group-hover:text-primary'
+        }`}>
           {topicName}
         </h3>
 
@@ -73,20 +87,33 @@ return (
         <div>
           <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full rounded-full transition-all duration-500 ease-out 
-                         bg-primary 
-                         shadow-[0_0_6px_rgba(34,197,94,0.4)]"
-              style={{ width: `${progress}%` }}
+              className={`h-full rounded-full transition-all duration-500 ease-out ${
+                isLocked ? 'bg-muted-foreground/30' : 'bg-primary shadow-[0_0_6px_rgba(34,197,94,0.4)]'
+              }`}
+              style={{ width: `${isLocked ? 0 : progress}%` }}
             />
           </div>
 
           <div className="mt-1 text-right text-[11px] text-muted-foreground">
-            {Math.round(progress)}%
+            {isLocked ? '0%' : `${Math.round(progress)}%`}
           </div>
         </div>
 
       </div>
     </div>
-  </Link>
-);
+  );
+
+  return (
+    <>
+      {isLocked ? (
+        <div className="glass rounded-2xl block cursor-not-allowed opacity-75">
+          <CardContent />
+        </div>
+      ) : (
+        <Link href={`/topics/${topicSlug}`} className="glass rounded-2xl block">
+          <CardContent />
+        </Link>
+      )}
+    </>
+  );
 }

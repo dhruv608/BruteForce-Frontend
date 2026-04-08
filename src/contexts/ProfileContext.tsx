@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { studentAuthService } from '@/services/student/auth.service';
 import { isStudentToken } from '@/lib/auth-utils';
 import { handleToastError } from "@/utils/toast-system";
@@ -35,6 +35,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
+  const isFetching = useRef(false);
 
   const fetchProfile = async () => {
     // Check if we have a student token before making API calls
@@ -44,8 +45,15 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    // Skip if already fetching
+    if (isFetching.current) {
+      console.log("Already fetching profile, skipping duplicate call");
+      return;
+    }
+
     setProfileLoading(true);
     setProfileError(null);
+    isFetching.current = true;
     
     try {
       const data = await studentAuthService.getCurrentStudent();
@@ -71,6 +79,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       }
     } finally {
       setProfileLoading(false);
+      isFetching.current = false;
     }
   };
 

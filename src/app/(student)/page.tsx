@@ -2,7 +2,7 @@
 
 
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import Link from 'next/link';
 
@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { studentTopicService } from '@/services/student/topic.service';
 
 import { studentAuthService } from '@/services/student/auth.service';
+import { useProfile } from '@/contexts/ProfileContext';
 
 import { isStudentToken } from '@/lib/auth-utils';
 
@@ -76,7 +77,7 @@ export default function StudentHomePage() {
 
   const [topics, setTopics] = useState([]);
 
-  const [user, setUser] = useState<User | null>(null);
+  const { profile, profileLoading } = useProfile();
 
   const [studentResponse, setStudentResponse] = useState<StudentDataResponse | null>(null);
 
@@ -91,6 +92,8 @@ export default function StudentHomePage() {
   });
 
   const [loading, setLoading] = useState(true);
+  const isFetching = useRef(false);
+  const lastFetchParams = useRef({});
 
 
 
@@ -98,7 +101,7 @@ export default function StudentHomePage() {
 
 
 
-  const refreshUserData = async () => {
+  const fetchTopicsOnly = async () => {
 
     // Check if we have a student token before making API calls
 
@@ -110,29 +113,20 @@ export default function StudentHomePage() {
 
     }
 
+    // Skip if already fetching
+    if (isFetching.current) {
+      console.log("Already fetching topics, skipping duplicate call");
+      return;
+    }
+
 
 
     try {
+      isFetching.current = true;
 
-      // Use lightweight /me endpoint for basic student info
+      // Only fetch topics, profile data comes from ProfileContext
 
-      console.log("Calling getCurrentStudent...");
-
-      const studentData = await studentAuthService.getCurrentStudent().catch((e: any) => {
-
-        console.error("Failed to fetch student data", e);
-
-        console.error("Error details:", e.response?.data, e.response?.status);
-
-        return null;
-
-      });
-
-
-
-      console.log("Student data from /me:", studentData);
-
-
+      console.log("Fetching topics only...");
 
       const topicsData = await studentTopicService.getTopics({ limit: 8 }).catch((e: any) => {
 
@@ -143,10 +137,6 @@ export default function StudentHomePage() {
       });
 
 
-
-      setStudentResponse(studentData);
-
-      setUser(studentData?.data);
 
       setTopics(topicsData.topics || []);
 
@@ -174,6 +164,8 @@ export default function StudentHomePage() {
 
       console.error("Error refreshing user data", e);
 
+    } finally {
+      isFetching.current = false;
     }
 
   };
@@ -198,7 +190,7 @@ export default function StudentHomePage() {
 
 
 
-        await refreshUserData();
+        await fetchTopicsOnly();
 
       } catch (e) {
 
@@ -232,9 +224,9 @@ export default function StudentHomePage() {
 
     // Listen to profile updates (e.g., from onboarding) to refresh dashboard stats dynamically
 
-    window.addEventListener('profileUpdated', refreshUserData);
+    window.addEventListener('profileUpdated', fetchTopicsOnly);
 
-    return () => window.removeEventListener('profileUpdated', refreshUserData);
+    return () => window.removeEventListener('profileUpdated', fetchTopicsOnly);
 
   }, []);
 
@@ -260,7 +252,7 @@ export default function StudentHomePage() {
 
         {/* TOPICS SECTION - Always render header, show shimmer only for topic cards */}
 
-        <TopicsSection topics={topics} loading={loading} />
+        <TopicsSection topics={topics} loading={profileLoading} />
 
       </div>
 
