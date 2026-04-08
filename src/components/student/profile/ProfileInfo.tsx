@@ -13,7 +13,7 @@ interface ProfileInfoProps {
 
 export function ProfileInfo({ student }: ProfileInfoProps) {
   return (
-    <div className="border border-border/40 backdrop-blur-sm p-6 rounded-[var(--radius-lg)]">
+    <div className="glass backdrop-blur-sm p-6 rounded-[var(--radius-lg)]">
       <h3 className="font-bold mb-6 flex items-center gap-2 text-[var(--text-base)] text-[var(--foreground)]">
         <Code className="w-5 h-5 text-[var(--accent-primary)]" />
         Platform Links
@@ -24,7 +24,9 @@ export function ProfileInfo({ student }: ProfileInfoProps) {
         {/*  LeetCode */}
         <div 
           className="flex items-center gap-4 p-3 hover-glow transition-all duration-200 rounded-2xl "
-          
+          style={{
+            backgroundColor: student.gfg ? 'var(--accent-secondary)' : 'var(--muted)'
+          }}
         >
           <div 
             className="w-11 h-11 flex items-center justify-center rounded-2xl"

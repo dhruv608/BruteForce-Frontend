@@ -158,7 +158,7 @@ export default function StudentHeader() {
               >
                 <span className="text-2xl md:text-2xl font-bold leading-[1.05] tracking-tight">
                   <span className="text-foreground">Brute</span>
-                  <span className="text-[var(--accent-primary)] ">Force</span>
+                  <span className="text-(--accent-primary) ">Force</span>
                 </span>
               </h1>
             </Link>
@@ -169,7 +169,7 @@ export default function StudentHeader() {
             className="
     hidden md:flex items-center gap-1 px-3 py-2 rounded-2xl 
       backdrop-blur-md
-    border border-border/40
+    border border-border
     transition-all duration-200
   "
           >
@@ -222,7 +222,7 @@ export default function StudentHeader() {
             {profile?.data && !profileLoading && (
               <button
                 onClick={() => toggleSidebar()}
-                className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/40 transition-all duration-200"
+                className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-2xl border border-border/40 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/40 transition-all duration-200"
                 title="Recent Questions"
               >
                 <Activity className="w-4 h-4" />
@@ -244,11 +244,10 @@ export default function StudentHeader() {
                     <Button
                       asChild
                       size="sm"
-                      className="glass hover-glow rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200"
+                      className="backdrop-blur-sm border border-border/40 hover-glow rounded-2xl px-4 py-1.5 text-sm font-medium transition-all duration-200"
                       style={{ padding: 'var(--spacing-sm) var(--spacing-xs)', borderRadius: 'var(--radius-full)' }}
                     >
                       <Link href="/login" className="flex items-center gap-2">
-                        <Lock className="w-4 h-4" style={{ fontSize: 'var(--text-sm)' }} />
                         Login
                       </Link>
                     </Button>
@@ -262,14 +261,14 @@ export default function StudentHeader() {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
-                        className="relative w-10 h-10 rounded-full border-2 border-border/50 hover:border-accent-primary/50 focus:outline-none transition-all duration-200 hover:scale-105  overflow-hidden"
+                        className=" relative w-10 h-10 rounded-full border-2 border-border/50 hover:border-accent-primary/50 focus:outline-none transition-all duration-200 hover:scale-105  overflow-hidden"
                         style={{ borderRadius: 'var(--radius-full)', borderColor: 'var(--border)' }}
                       >
                         {profile.data.profileImageUrl ? (
                           <img src={profile.data.profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
                           <div
-                            className="w-full h-full bg-gradient-to-br from-accent-primary to-accent-primary text-primary-foreground flex items-center justify-center text-sm font-bold"
+                            className="w-full h-full bg-linear-to-br from-accent-primary to-accent-primary text-primary-foreground flex items-center justify-center text-sm font-bold"
                             style={{ borderRadius: 'var(--radius-full)' }}
                           >
                             {profile.data.name ? profile.data.name.charAt(0).toUpperCase() : 'U'}
@@ -280,17 +279,17 @@ export default function StudentHeader() {
                     <DropdownMenuContent
                       align="end"
                       side="bottom"
-                      className="w-56 p-2 rounded-2xl group "
+                      className="w-56 p-2 rounded-2xl  backdrop-blur-2xl "
                     >
                       {/* PROFILE HEADER */}
-                      <div className="px-3 py-2 mb-1 rounded-lg border border-border/50">
+                      <div className="px-3 py-2 mb-1 rounded-2xl">
                         <div className="flex flex-col">
 
-                          <p className="text-sm font-semibold text-foreground truncate leading-[1] m-0 p-1">
+                          <p className="text-sm font-semibold text-foreground truncate leading-none m-0 p-1">
                             {profile.data.name}
                           </p>
 
-                          <p className="text-[10px] text-muted-foreground font-mono truncate leading-[1] m-0 p-1 -mt-[2px]">
+                          <p className="text-[10px] text-muted-foreground font-mono truncate leading-none m-0 p-1 -mt-0.5">
                             @{profile.data.username}
                           </p>
 
@@ -300,7 +299,7 @@ export default function StudentHeader() {
                       <DropdownMenuSeparator className="bg-border/30 my-1" />
 
                       {/* PROFILE BUTTON */}
-                      <DropdownMenuItem asChild className="cursor-pointer rounded-lg text-sm py-2">
+                      <DropdownMenuItem asChild className="cursor-pointer rounded-2xl text-sm p-3">
                         <Link
                           href={profile.data.username ? `/profile/${profile.data.username}` : '/profile'}
                           className="flex items-center gap-2"
@@ -311,7 +310,7 @@ export default function StudentHeader() {
                       </DropdownMenuItem>
 
                       {/* BOOKMARKS BUTTON */}
-                      <DropdownMenuItem asChild className="cursor-pointer rounded-lg text-sm py-2">
+                      <DropdownMenuItem asChild className="cursor-pointer rounded-2xl text-sm p-3">
                         <Link href="/bookmarks" className="flex items-center gap-2">
                           <Bookmark className="w-4 h-4" />
                           My Bookmarks
@@ -323,7 +322,7 @@ export default function StudentHeader() {
                       {/* LOGOUT */}
                       <DropdownMenuItem
                         onClick={handleLogout}
-                        className="cursor-pointer rounded-lg text-sm text-destructive py-2"
+                        className="cursor-pointer rounded-2xl p-3 text-sm text-destructive "
                       >
                         <LogOut className="w-4 h-4 mr-2" />
                         Log out
@@ -337,8 +336,8 @@ export default function StudentHeader() {
               if (isAuthenticated && profileLoading) {
                 return (
                   <div className="relative w-10 h-10 rounded-full glass overflow-hidden" style={{ borderRadius: 'var(--radius-full)' }}>
-                    <div className="w-full h-full bg-gradient-to-r from-muted via-muted-foreground/20 to-muted animate-pulse" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-muted-foreground/10 to-transparent animate-pulse" />
+                    <div className="w-full h-full bg-linear-to-r from-muted via-muted-foreground/20 to-muted animate-pulse" />
+                    <div className="absolute inset-0 bg-linear-to-r from-transparent via-muted-foreground/10 to-transparent animate-pulse" />
                   </div>
                 );
               }

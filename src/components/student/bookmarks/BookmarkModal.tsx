@@ -30,6 +30,16 @@ export const BookmarkModal: React.FC<BookmarkModalProps> = ({
     onSubmit(description);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!loading) {
+        onSubmit(description);
+      }
+    }
+  };
+
   const handleClose = () => {
     setDescription('');
     onClose();
@@ -42,7 +52,7 @@ export const BookmarkModal: React.FC<BookmarkModalProps> = ({
       case 'EASY': return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
       case 'MEDIUM': return 'text-amber-400 bg-amber-500/10 border-amber-500/20';
       case 'HARD': return 'text-red-400 bg-red-500/10 border-red-500/20';
-      default: return 'text-muted-foreground bg-muted border-border';
+      default: return 'text-muted-foreground bg-muted border-border/40';
     }
   };
 
@@ -62,11 +72,11 @@ export const BookmarkModal: React.FC<BookmarkModalProps> = ({
       />
       
       {/* MODAL */}
-      <div className="relative bg-background border border-border rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
+      <div className="relative bg-background glass rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
         {/* HEADER */}
-        <div className="flex items-center justify-between p-6 border-b border-border">
+        <div className="flex items-center justify-between p-6 border border-border/40">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
+            <div className="p-2 rounded-2xl bg-primary/10">
               <Bookmark className="w-5 h-5 text-primary" />
             </div>
             <h2 className="text-lg font-semibold text-foreground">Add Bookmark</h2>
@@ -82,7 +92,7 @@ export const BookmarkModal: React.FC<BookmarkModalProps> = ({
         {/* CONTENT */}
         <div className="p-6">
           {/* QUESTION INFO */}
-          <div className="mb-6 p-4 rounded-xl bg-accent/20 border border-border">
+          <div className="mb-6 p-4 rounded-2xl bg-accent/20 border border-border/40">
             <div className="flex items-start justify-between mb-2">
               <h3 className="font-medium text-foreground">{question.name}</h3>
               <span className={`px-2 py-1 rounded border text-xs font-semibold ${getLevelColor(question.level)}`}>
@@ -105,20 +115,21 @@ export const BookmarkModal: React.FC<BookmarkModalProps> = ({
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder="Why did you bookmark this question? Add your notes here..."
-                className="min-h-[100px] resize-none w-full p-3 border border-border rounded-2xl bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="min-h-[100px] resize-none w-full p-3 border border-border/40 rounded-2x  text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
                 disabled={loading}
               />
             </div>
 
             {/* ACTIONS */}
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-3 pt-4 ">
               <Button
                 type="button"
-                variant="outline"
+                
                 onClick={handleClose}
                 disabled={loading}
-                className="flex-1"
+                className="bg-transparent! text-white! hover:bg-muted hover:text-foreground  aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 flex-1"
               >
                 Cancel
               </Button>

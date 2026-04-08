@@ -65,7 +65,7 @@ export const PodiumCard = ({ student, rank, isCenter }: any) => {
             animate={{ x: 0, y: 0 }}
             transition={{ type: "spring", stiffness: 250, damping: 18 }}
             className={`
-        relative group cursor-grab active:cursor-grabbing
+        relative backdrop-blur-sm cursor-grab active:cursor-grabbing
         ${isCenter ? "scale-110 z-20" : "scale-95 opacity-80 z-20"}
       `}
         >

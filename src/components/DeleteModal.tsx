@@ -28,7 +28,7 @@ export function DeleteModal({ isOpen, onClose, onConfirm, submitting, title, ite
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[420px] p-0 overflow-hidden border-border/40 shadow-2xl rounded-2xl gap-0" onKeyDown={handleKeyDown}>
+      <DialogContent className="glass sm:max-w-[420px] p-0 overflow-hidden border-border/40 shadow-2xl rounded-2xl gap-0" onKeyDown={handleKeyDown}>
         <div className="p-8 pb-6 flex flex-col items-center text-center">
           <div className="flex-shrink-0 w-14 h-14 mb-5 rounded-full bg-red-50 dark:bg-red-500/10 flex items-center justify-center border border-red-100 dark:border-red-500/20 shadow-sm">
             <Trash2 className="w-6 h-6 text-red-600 dark:text-red-500" />
@@ -52,7 +52,7 @@ export function DeleteModal({ isOpen, onClose, onConfirm, submitting, title, ite
           </div>
         </div>
 
-        <div className="px-6 py-4 bg-muted/30 border-t flex flex-col-reverse sm:flex-row justify-center sm:justify-end items-center gap-3">
+        <div className="px-6 py-4 border-t border-border/60 flex flex-col-reverse sm:flex-row justify-center sm:justify-end items-center gap-3">
           <Button 
             variant="outline" 
             onClick={onClose} 

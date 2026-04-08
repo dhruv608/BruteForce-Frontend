@@ -29,7 +29,7 @@ export function TopicCard({
 
 return (
   <Link href={`/topics/${topicSlug}`} className="glass rounded-2xl block">
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl transition-all duration-300  hover:shadow-primary/10">
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl transition-all duration-300 glass  hover:shadow-primary/10">
 
       {/* IMAGE */}
       <div className="relative h-[150px] overflow-hidden border-b border-border/50">

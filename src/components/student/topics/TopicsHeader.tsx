@@ -23,8 +23,8 @@ return (
   <div className="mb-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
 
     {/* 🔥 HEADER */}
-    <div className="mb-6 p-5 rounded-2xl backdrop-blur-sm border border-border/40">
-      <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+    <div className="mb-6 px-5 py-3 glass   rounded-2xl backdrop-blur-sm ">
+      <h1 className="text-3xl sm:text-3xl font-bold text-foreground mb-2">
         Learning <span className="text-primary">Modules</span>
       </h1>
 
@@ -35,14 +35,14 @@ return (
     </div>
 
     {/* 🔥 FILTER BAR */}
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-background/40 glass backdrop-blur-xl">
 
       {/* LEFT → LABEL */}
       <div className="flex items-center gap-3">
         
 
         <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="h-9 rounded-2xl  bg-background/50 border border-border/40 px-3 min-w-[140px]">
+          <SelectTrigger className="h-9 rounded-2xl glass  bg-background/50 border border-border/40 px-3 min-w-[140px]">
             <SelectValue placeholder="Sort" />
           </SelectTrigger>
           <SelectContent>
@@ -62,7 +62,7 @@ return (
           placeholder="Search topics..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9! pr-3! h-9! rounded-2xl w-full bg-transparent!  border-border/40! focus:ring-2 focus:ring-primary/30 placeholder:text-white"
+          className="pl-9! pr-3! h-9! rounded-2xl w-full   border-border/40! focus:ring-2 focus:ring-primary/30 placeholder:text-white"
         />
       </div>
 

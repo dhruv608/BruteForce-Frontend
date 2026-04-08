@@ -5,15 +5,15 @@ import { SubtopicBackNav } from './SubtopicBackNav';
 
 export function TopicDetailsShimmer() {
   return (
-    <div className="flex flex-col mx-auto max-w-[1400px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
+    <div className="flex flex-col  mx-auto max-w-325 xl:max-w-275 w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
       {/* Back Nav Button - Always Visible */}
       <SubtopicBackNav />
 
       {/* Topic Header Shimmer */}
-      <div className="mb-10 rounded-2xl border border-border/40 bg-linear-to-br from-background/80 to-background/40 backdrop-blur-xl overflow-hidden">
+      <div className="mb-10 rounded-2xl glass bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl overflow-hidden">
         <div className="flex flex-col md:flex-row">
           {/* LEFT VISUAL */}
-          <div className="relative md:w-[32%] h-45 md:h-auto overflow-hidden">
+          <div className="relative md:w-[32%] h-45 md:h-auto border border-border/60 overflow-hidden">
             <div className="w-full h-full bg-muted/30 animate-pulse" />
           </div>
 
@@ -33,13 +33,13 @@ export function TopicDetailsShimmer() {
               {/* STATS CARDS */}
               <div className="flex items-center gap-4">
                 {/* Classes */}
-                <div className="px-4 py-3 rounded-2xl bg-background/40 border border-border/40">
+                <div className="px-4 py-2 rounded-2xl bg-background/40 border border-border/40">
                   <div className="h-3 w-12 bg-muted/40 rounded mb-1 animate-pulse"></div>
                   <div className="h-6 w-6 bg-muted/50 rounded animate-pulse"></div>
                 </div>
 
                 {/* Questions */}
-                <div className="px-4 py-3 rounded-2xl bg-background/40 border border-border/40">
+                <div className="px-4 py-2 rounded-2xl bg-background/40 border border-border/40">
                   <div className="h-3 w-16 bg-muted/40 rounded mb-1 animate-pulse"></div>
                   <div className="h-6 w-8 bg-muted/50 rounded animate-pulse"></div>
                 </div>
@@ -51,8 +51,8 @@ export function TopicDetailsShimmer() {
                   <div className="h-3 w-12 bg-muted/40 rounded animate-pulse"></div>
                   <div className="h-3 w-16 bg-muted/30 rounded animate-pulse"></div>
                 </div>
-                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full rounded-full bg-muted/50 animate-pulse" style={{ width: '65%' }}></div>
+                <div className="w-full h-2 bg-muted/30 border border-border/50 rounded-full overflow-hidden">
+                  <div className="h-full bg-muted/50 animate-pulse" style={{ width: '65%' }}></div>
                 </div>
               </div>
             </div>
@@ -61,7 +61,7 @@ export function TopicDetailsShimmer() {
       </div>
 
       {/* CLASSES SECTION */}
-      <div className="mt-6 rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl p-5 sm:p-6">
+      <div className="mt-6 rounded-2xl border border-border/40 glass bg-background/40 backdrop-blur-xl p-5 sm:p-6">
         {/* HEADER */}
         <div className="flex items-center gap-3 mb-6">
           <div className="h-4 w-32 bg-muted/50 rounded animate-pulse"></div>
@@ -75,7 +75,7 @@ export function TopicDetailsShimmer() {
               className="animate-in fade-in slide-in-from-bottom-2"
               style={{ animationDelay: `${idx * 40}ms`, animationFillMode: 'both' }}
             >
-              <div className="group flex bg-card border border-border/70 rounded-2xl overflow-hidden transition-all duration-300 p-6">
+              <div className="group flex backdrop-blur-2xl border border-border/70 rounded-2xl overflow-hidden transition-all duration-300 p-6">
                 {/* Left side - Index and Icon */}
                 <div className="flex items-center gap-4 mr-6">
                   <div className="w-8 h-8 bg-muted/40 rounded-full animate-pulse"></div>
@@ -98,8 +98,8 @@ export function TopicDetailsShimmer() {
                   
                   {/* Progress Bar Shimmer */}
                   <div className="w-full max-w-md">
-                    <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                      <div className="h-full rounded-full bg-muted/40 animate-pulse" style={{ width: '45%' }}></div>
+                    <div className="w-full h-2 bg-muted/30 border border-border/50 rounded-full overflow-hidden">
+                      <div className="h-full bg-muted/40 animate-pulse" style={{ width: '45%' }}></div>
                     </div>
                   </div>
                 </div>

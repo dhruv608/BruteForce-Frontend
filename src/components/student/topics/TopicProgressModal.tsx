@@ -122,15 +122,15 @@ export default function TopicProgressModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className=" fixed inset-0 z-50 flex items-center justify-center">
       {/* BACKDROP */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute  inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* MODAL */}
-      <div className="relative w-[95vw] no-scrollbar max-w-[1000px] h-[85vh] bg-background rounded-2xl shadow-xl flex flex-col overflow-hidden">
+      <div className="relative w-[95vw] no-scrollbar max-w-250 h-[85vh] backdrop-blur-3xl rounded-2xl shadow-xl flex flex-col overflow-hidden">
 
         {/* HEADER */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border/50">
@@ -158,7 +158,7 @@ export default function TopicProgressModal({
 
           {/* STATS */}
           {data ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 ">
               <Stat icon={<BookOpen />} label="Topics" value={data.topics.length} />
               <Stat 
                 icon={<Target />} 
@@ -186,7 +186,7 @@ export default function TopicProgressModal({
           ) : loading ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {Array.from({ length: 4 }).map((_, index) => (
-                <div key={`stat-skeleton-${index}`} className="rounded-2xl p-4 flex items-center gap-3 bg-card border border-border/60">
+                <div key={`stat-skeleton-${index}`} className="rounded-2xl p-4 flex items-center gap-3 backdrop-blur-sm border border-border/60">
                   <Skeleton className="w-10 h-10 rounded-lg" />
                   <div className="space-y-2">
                     <Skeleton className="h-3 w-12 rounded-md" />
@@ -202,13 +202,12 @@ export default function TopicProgressModal({
             <Filter className="w-4 h-4 text-muted-foreground" />
 
             <Select value={sortBy} onValueChange={(v) => setSortBy(v as any)}>
-              <SelectTrigger className="w-[160px] h-10 px-4 rounded-xl bg-muted/40 border-border/50">
+              <SelectTrigger className=" h-10 px-4 rounded-2xl border border-border  ">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="weak">Weakest First</SelectItem>
                 <SelectItem value="strong">Strongest First</SelectItem>
-                <SelectItem value="name">A-Z</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -221,7 +220,7 @@ export default function TopicProgressModal({
               Array.from({ length: 8 }).map((_, index) => (
                 <div
                   key={`skeleton-${index}`}
-                  className="p-4 rounded-2xl bg-card border border-border/60"
+                  className="p-4 rounded-2xl backdrop-blur-sm border border-border/60"
                 >
                   {/* TOP SECTION - Icon, title, and percentage */}
                   <div className="flex items-center justify-between mb-3">
@@ -253,10 +252,10 @@ export default function TopicProgressModal({
                 return (
                   <div
                     key={topic.id}
-                    className="group p-4 rounded-2xl bg-card border border-border/60 hover:border-primary/30 transition-all hover:shadow-md"
+                    className="backdrop-blur-sm glass p-4 rounded-2xl   hover:border-primary/30 transition-all hover:shadow-md"
                   >
                     {/* TOP */}
-                    <div className="flex items-center justify-between mb-3">
+                    <div className=" flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-primary/10 text-primary">
                           {getTopicIcon(topic.topic_name)}
@@ -300,7 +299,7 @@ export default function TopicProgressModal({
 /* STAT CARD */
 function Stat({ icon, label, value }: any) {
   return (
-    <div className="rounded-2xl p-4 flex items-center gap-3 bg-card border border-border/60 hover:border-primary/30 transition-all">
+    <div className="rounded-2xl glass p-4 flex items-center gap-3 backdrop-blur-sm  hover:border-primary/30 transition-all">
       <div className="p-2 bg-primary/10 rounded text-primary">{icon}</div>
       <div>
         <p className="text-sm text-muted-foreground">{label}</p>

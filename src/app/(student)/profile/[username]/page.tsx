@@ -1,56 +1,25 @@
 "use client";
-
-
-
 import React, { useEffect, useState, useRef } from 'react';
-
 import { useParams } from 'next/navigation';
-
 import { studentProfileService } from '@/services/student/profile.service';
-
 import { studentAuthService } from '@/services/student/auth.service';
-
 import { ErrorHandler } from '@/lib/error-handler';
-
 import { Button } from '@/components/ui/button';
-
 import { X, Trash2 } from 'lucide-react';
-
-import {
-
-  ProfileDataState,
-
-  CurrentUserState,
-
-  ApiError
-
-} from '@/types/student';
-
+import {ProfileDataState, CurrentUserState, ApiError} from '@/types/student';
 import { EditProfileModal } from '@/components/student/profile/EditProfileModal';
-
 import { EditUsernameModal } from '@/components/student/profile/EditUsernameModal';
 import { ProfilePageShimmer } from '@/components/student/profile/shimmers';
-
 import { ProfileHeader } from '@/components/student/profile/ProfileHeader';
-
 import { ProfileNotFound } from '@/components/student/profile/ProfileNotFound';
-
 import { OverviewStats } from '@/components/student/profile/OverviewStats';
-
 import { ProfileInfo } from '@/components/student/profile/ProfileInfo';
-
 import { SocialLinks } from '@/components/student/profile/SocialLinks';
-
 import { ProblemSolvingStats } from '@/components/student/profile/ProblemSolvingStats';
-
 import ActivityHeatmap from '@/components/student/profile/ActivityHeatmap';
-
 import { RecentActivity } from '@/components/student/profile/RecentActivity';
-
 import TopicProgressModal from '@/components/student/topics/TopicProgressModal';
-
 import { handleToastError, showSuccess, showDeleteSuccess, glassToast } from '@/utils/toast-system';
-
 import { toast } from '@/utils/toast';
 
 
@@ -58,59 +27,33 @@ import { toast } from '@/utils/toast';
 export default function PublicProfilePage() {
 
   const params = useParams();
-
   const username = params?.username as string;
-
-
-
   const [profileData, setProfileData] = useState<ProfileDataState>(null);
-
   const [loading, setLoading] = useState(true);
-
   const [uploading, setUploading] = useState(false);
-
   const [savingProfile, setSavingProfile] = useState(false);
-
   const [showEditModal, setShowEditModal] = useState(false);
-
   const [showUsernameEditModal, setShowUsernameEditModal] = useState(false);
-
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
   const [profileError, setProfileError] = useState<string | null>(null);
-
   const [editForm, setEditForm] = useState({
-
     name: '',
-
     github: '',
-
     linkedin: '',
-
     leetcode: '',
-
     gfg: ''
-
   });
 
   const [originalEditForm, setOriginalEditForm] = useState({
-
     name: '',
-
     github: '',
-
     linkedin: '',
-
     leetcode: '',
-
     gfg: ''
-
   });
 
   const [usernameForm, setUsernameForm] = useState({
-
     username: ''
-
   });
 
   const [currentUser, setCurrentUser] = useState<CurrentUserState | null>(null);
@@ -297,20 +240,6 @@ export default function PublicProfilePage() {
         (err as any)?.code === 'STUDENT_PROFILE_NOT_FOUND' || // Custom error code from service
 
         userError.message === "Student not found";       // Fallback message
-
-
-
-      // Show toast for student not found using the user-friendly message
-
-      // if (isStudentNotFoundError) {
-
-      //   glassToast.error(userError.message); // Show the corrected "Student not found" message
-
-      // } else {
-
-      //   handleToastError(err); // Use regular error handling for other errors
-
-      // }
 
       setProfileError(userError.message);
 
@@ -537,17 +466,6 @@ export default function PublicProfilePage() {
       if (needsImageDelete) updates.push('Profile image removed');
 
       if (needsProfileUpdate) updates.push('Profile details');
-
-
-
-      // if (updates.length > 0) {
-
-      //   showSuccess(`${updates.join(', ')} updated successfully!`);
-
-      // }
-
-
-
     } catch (error) {
 
       handleToastError(error);
@@ -555,9 +473,7 @@ export default function PublicProfilePage() {
       ErrorHandler.showAlert(error, 'handleSaveProfile');
 
     } finally {
-
       setSavingProfile(false);
-
     }
 
   };
@@ -616,7 +532,6 @@ export default function PublicProfilePage() {
 
 
 
-      // Trigger StudentHeader refresh
 
       window.dispatchEvent(new CustomEvent('profileUpdated'));
 
@@ -784,7 +699,7 @@ export default function PublicProfilePage() {
 
   return (
 
-    <div className="w-full max-w-[1200px] mx-auto pb-16 mt-3">
+    <div className="w-full max-w-325 xl:max-w-275 2xl:max-w-325  mx-auto pb-16 mt-3">
 
       {/* PROFILE HEADER */}
 

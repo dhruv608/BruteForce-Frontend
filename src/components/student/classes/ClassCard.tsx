@@ -36,7 +36,7 @@ export const ClassCard: React.FC<ClassCardProps> = ({
 return (
   <Link
     href={`/topics/${topicSlug}/classes/${classSlug}`}
-    className="glass flex bg-card border border-border/60 hover:border-primary/40 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-[2px] hover:shadow-lg hover:shadow-primary/5"
+    className=" backdrop-blur-2xl flex border border-border/60 hover:border-primary/40 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-[2px] hover:shadow-lg hover:shadow-primary/5"
   >
 
     {/* LEFT NUMBER */}
@@ -49,16 +49,31 @@ return (
     {/* CONTENT */}
     <div className="flex-1 p-4 sm:p-5 flex flex-col gap-3">
 
-      {/* TITLE ROW */}
-      <div className="flex items-center justify-between gap-3">
+      {/* 🔥 TITLE + RIGHT PROGRESS */}
+      <div className="flex items-center justify-between gap-4">
+
+        {/* TITLE */}
         <h3 className="text-sm sm:text-base font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
           {classNameTitle}
         </h3>
 
-        {isCompleted && (
-          <div className="flex items-center gap-1 px-2 py-0.5 rounded-2xl text-[10px] font-semibold border border-emerald-400/30 bg-emerald-500/10 text-emerald-400 shadow-[0_0_10px_rgba(34,197,94,0.15)]">
-            <CheckCircle2 className="w-3 h-3" />
-            Done
+         {/* NOTES */}
+        {pdfUrl ? (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              window.open(pdfUrl, "_blank");
+            }}
+            className="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-2xl text-primary bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-all font-medium"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            Notes
+          </button>
+        ) : (
+          <div className="flex items-center text-xs gap-1.5 px-2 py-1 rounded-2xl bg-muted/40 border border-border/50 text-muted-foreground">
+            <FileText className="w-3.5 h-3.5 opacity-70" />
+            No notes
           </div>
         )}
       </div>
@@ -81,45 +96,29 @@ return (
         ) : (
           <span />
         )}
+        {/* RIGHT SIDE */}
+        <div className="flex items-center gap-3">
 
-        {/* NOTES */}
-        {pdfUrl ? (
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              window.open(pdfUrl, "_blank");
-            }}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-2xl text-primary bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-all font-medium"
-          >
-            <FileText className="w-3.5 h-3.5" />
-            Notes
-          </button>
-        ) : (
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-2xl bg-muted/40 border border-border/50 text-muted-foreground">
-            <FileText className="w-3.5 h-3.5 opacity-70" />
-            No notes
+          {/* PROGRESS BAR */}
+          <div className="w-20 sm:w-24">
+            <div className="h-2 bg-muted/30 border border-border/90 rounded-full overflow-hidden">
+              <div
+                className=" h-full bg-primary transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
           </div>
-        )}
-      </div>
 
-      {/* PROGRESS */}
-      <div className="flex items-center gap-3 pt-1">
+          {/* COUNT */}
+          <span className="text-[11px]  font-medium text-muted-foreground whitespace-nowrap">
+            {solvedQuestions}/{totalQuestions}
+          </span>
 
-        {/* BAR */}
-        <div className="flex-1">
-          <ProgressBar progress={progress} className="h-2 rounded-full" />
+          
+
         </div>
+       
 
-        {/* COUNT */}
-        <span className="text-[11px] font-medium text-muted-foreground min-w-[60px] text-right">
-          {solvedQuestions}/{totalQuestions}
-        </span>
-
-        {/* CTA */}
-        <div className="w-9 h-9 flex items-center justify-center rounded-2xl border border-border/50 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-105">
-          <ChevronRight className="w-4 h-4" />
-        </div>
       </div>
 
     </div>

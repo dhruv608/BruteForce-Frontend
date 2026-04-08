@@ -58,8 +58,8 @@ export function EditProfileModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-background rounded-2xl border border-border w-full max-w-md shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 glass backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-background rounded-2xl  w-full max-w-md shadow-2xl overflow-hidden">
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-border">
@@ -76,8 +76,8 @@ export function EditProfileModal({
 
           {/* Profile Image */}
           <div className="flex flex-col items-center gap-2">
-            <div className="relative group">
-              <div className="w-20 h-20 rounded-full border-2 border-border bg-muted overflow-hidden shadow-md">
+            <div className="relative  ">
+              <div className="w-20 h-20 rounded-full   overflow-hidden shadow-md">
                 {imagePreview ? (
                   <img src={imagePreview} alt="Profile Preview" className="w-full h-full object-cover" />
                 ) : imageRemoved ? (
@@ -95,7 +95,7 @@ export function EditProfileModal({
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading || savingProfile}
-                className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                className="absolute inset-0 rounded-2xl bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
               >
                 <Camera className="w-6 h-6 text-white" />
               </button>
@@ -131,7 +131,7 @@ export function EditProfileModal({
           {/* GitHub */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium flex items-center gap-1.5">
-              <Github className="w-3.5 h-3.5 text-muted-foreground" /> GitHub URL
+               GitHub URL
             </label>
             <input
               type="url"
@@ -139,14 +139,14 @@ export function EditProfileModal({
               onChange={(e) => setEditForm({ ...editForm, github: e.target.value })}
               onKeyDown={handleKeyDown}
               placeholder="https://github.com/username"
-              className="w-full border border-border px-3 py-2 rounded-lg bg-background text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+              className="w-full border border-border px-3 py-2 rounded-2xl bg-background text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
             />
           </div>
 
           {/* LinkedIn */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium flex items-center gap-1.5">
-              <Linkedin className="w-3.5 h-3.5 text-muted-foreground" /> LinkedIn URL
+              LinkedIn URL
             </label>
             <input
               type="url"
@@ -154,7 +154,7 @@ export function EditProfileModal({
               onChange={(e) => setEditForm({ ...editForm, linkedin: e.target.value })}
               onKeyDown={handleKeyDown}
               placeholder="https://linkedin.com/in/username"
-              className="w-full border border-border px-3 py-2 rounded-lg bg-background text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+              className="w-full border border-border px-3 py-2 rounded-2xl bg-background text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
             />
           </div>
 

@@ -137,12 +137,12 @@ export function RecentQuestionsSidebar() {
           />
 
           {/* Sidebar */}
-          <div className="absolute right-0 top-0 h-full w-[380px] md:w-[420px] bg-background border-l border-border shadow-2xl animate-in slide-in-from-right duration-300">
+          <div className="absolute  right-0 top-0 h-full w-[380px] md:w-[420px]  border border-border shadow-2xl animate-in slide-in-from-right duration-300">
             
             <Card className="h-full rounded-none border-none shadow-none bg-transparent">
 
               {/* Header */}
-              <CardHeader className="glass border-b border-white/5 bg-white/5 backdrop-blur-xl">
+              <CardHeader className="backdrop-blur-sm border-b border-border/40  ">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg font-semibold flex items-center gap-2">
                     <Clock className="w-5 h-5 text-primary" />
@@ -166,7 +166,7 @@ export function RecentQuestionsSidebar() {
                       variant={selectedDate === dateStrings.today ? "default" : "outline"}
                       size="sm"
                       onClick={() => setSelectedDate(dateStrings.today)}
-                      className="flex flex-col items-center gap-0.5 h-auto py-0.5 px-2 text-xs font-medium border-1 border-gray-200 dark:border-gray-300"
+                      className="flex flex-col items-center gap-0.5 h-auto py-0.5 px-2 text-xs font-medium border! border-border/40! dark:border-gray-300"
                     >
                       <div className="flex items-center justify-center w-full gap-1">
                         <Calendar className="w-3 h-3" />
@@ -178,7 +178,7 @@ export function RecentQuestionsSidebar() {
                       variant={selectedDate === dateStrings.yesterday ? "default" : "outline"}
                       size="sm"
                       onClick={() => setSelectedDate(dateStrings.yesterday)}
-                      className="flex flex-col items-center gap-0.5 h-auto py-0.5 px-2 text-xs font-medium border-2 border-gray-300 dark:border-gray-600"
+                      className="flex flex-col items-center gap-0.5 h-auto py-0.5 px-2 text-xs font-medium border! border-border/40! dark:border-gray-600"
                     >
                       <div className="flex items-center justify-center w-full gap-1">
                         <Calendar className="w-3 h-3" />
@@ -190,7 +190,7 @@ export function RecentQuestionsSidebar() {
                       variant={selectedDate === dateStrings.ereyesterday ? "default" : "outline"}
                       size="sm"
                       onClick={() => setSelectedDate(dateStrings.ereyesterday)}
-                      className="flex flex-col items-center gap-0.5 h-auto py-0.5 px-2 text-xs font-medium border-2 border-gray-300 dark:border-gray-600"
+                      className="flex flex-col items-center gap-0.5 h-auto py-0.5 px-2 text-xs font-medium  border! border-border/40!  dark:border-gray-600"
                     >
                       <div className="flex items-center justify-center w-full gap-1">
                         <Calendar className="w-3 h-3" />

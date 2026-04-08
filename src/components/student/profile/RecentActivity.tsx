@@ -38,7 +38,7 @@ export function RecentActivity({ recentActivity }: RecentActivityProps) {
   };
 
   return (
-    <div className="border border-border/40 backdrop-blur-sm p-10 rounded-[var(--radius-lg)]">
+    <div className="glass  backdrop-blur-sm p-10 rounded-(--radius-lg)">
       <h3 className="font-bold mb-8 flex items-center gap-3 text-[var(--text-lg)] text-[var(--foreground)]">
         <Clock className="w-6 h-6 text-[var(--accent-primary)]" />
         Recent Activity
@@ -52,15 +52,12 @@ export function RecentActivity({ recentActivity }: RecentActivityProps) {
             return (
               <div
                 key={idx}
-                className="flex items-center justify-between p-6 hover-glow transition-all duration-200 rounded-[var(--radius-lg)] border-border border-[var(--border)]"
+                className="flex items-center justify-between p-6 hover-glow transition-all duration-200 rounded-(--radius-lg) border-border "
                 style={{
                   backgroundColor: 'var(--background-secondary)',
                 }}
               >
                 <div className="flex items-center gap-6 flex-1">
-                  
-                  
-
                   {/* CONTENT */}
                   <div className="flex-1">
                     <div
@@ -81,17 +78,18 @@ export function RecentActivity({ recentActivity }: RecentActivityProps) {
                     </div>
                   </div>
                 </div>
-
                 {/* DIFFICULTY BADGE */}
-                <div
-                  className="font-bold uppercase tracking-wider px-4 py-2 rounded-[var(--radius-md)]"
-                  style={{
-                    fontSize: 'var(--text-sm)',
-                    backgroundColor: style.bg,
-                    color: style.color,
-                  }}
-                >
-                  {activity.difficulty}
+                <div className="w-27.5 flex justify-end">
+                  <div
+                    className="font-bold uppercase tracking-wider px-4 py-2 rounded-2xl text-center w-full"
+                    style={{
+                      fontSize: 'var(--text-sm)',
+                      backgroundColor: style.bg,
+                      color: style.color,
+                    }}
+                  >
+                    {activity.difficulty}
+                  </div>
                 </div>
               </div>
             );

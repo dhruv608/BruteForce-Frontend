@@ -35,11 +35,11 @@ export function PracticeFilters({
   clearFilters,
 }: PracticeFiltersProps) {
   return (
-   <div className="relative z-10 border border-border/60 p-5 rounded-2xl mb-6 
-bg-background/60 backdrop-blur-md">
+   <div className="relative z-10 p-3 rounded-2xl mb-6 
+bg-background/60 glass backdrop-blur-md">
 
       {/* 🔍 SEARCH */}
-      <div className="relative mb-5 border border-border/40 rounded-2xl">
+      <div className="relative mb-5  rounded-2xl">
         <Search className=" absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white " />
 
         <input
@@ -47,7 +47,7 @@ bg-background/60 backdrop-blur-md">
           placeholder="Search questions..."
           value={filters.search}
           onChange={(e) => handleFilterChange("search", e.target.value)}
-          className="w-full pl-10! pr-4! py-3! rounded-xl bg-transparent! border border-border/40 
+          className="w-full pl-10! pr-4! py-3! rounded-2xl bg-transparent! border border-border/40 
           text-sm outline-none placeholder:text-white
           focus:border-primary/40 focus:ring-2 focus:ring-primary/20 
           transition-all"

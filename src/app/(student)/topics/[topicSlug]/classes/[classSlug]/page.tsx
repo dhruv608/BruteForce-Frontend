@@ -101,7 +101,7 @@ export default function ClassDetailsPage() {
   };
 
 return (
-  <div className="flex flex-col mx-auto max-w-[1400px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
+  <div className="flex flex-col  mx-auto max-w-325 xl:max-w-275 2xl:max-w-325 w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
 
     <ClassBackNav
       topicSlug={topicSlug}
@@ -117,7 +117,7 @@ return (
     />
 
     {/* 🔥 FILTER BAR */}
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 p-4 rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 p-4 rounded-2xl glass bg-background/40 backdrop-blur-xl">
 
       {/* LEFT */}
       <div className="flex items-center gap-4">
@@ -137,17 +137,17 @@ return (
       </div>
 
       {/* RIGHT */}
-      <div className=" text-primary flex items-center gap-2">
+      <div className=" text-primary flex items-center gap-1">
 
-        <span className="text-s ">
+        <span className="text-xs ">
           Showing
         </span>
 
-        <span className="text-s font-medium   ">
+        <span className="text-xs font-medium   ">
           {pagination?.total || 0}
         </span>
 
-        <span className="text-s ">
+        <span className="text-xs ">
           questions
         </span>
 

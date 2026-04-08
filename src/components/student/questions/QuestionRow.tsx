@@ -72,15 +72,16 @@ export const QuestionRow = ({
 
   return (
     <div
-      className={` flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 ${
-        isSolved
+      className={` flex items-center justify-between px-4 py-2 rounded-2xl border  transition-all duration-300 ${isSolved
           ? ' bg-emerald-500/10 border-emerald-400/30 shadow-[0_0_20px_rgba(34,197,94,0.12)]'
           : 'backdrop-blur-sm border-border/60 hover:border-border hover:bg-accent/40'
-      }`}
+        }
+        ${topicName ? '':'-mb-8'} `      
+      }
     >
 
       {/* LEFT */}
-      <div className="flex flex-col gap-2">
+      <div className={`flex flex-col gap-2`}>
 
         {/* TITLE */}
         <h4 className="text-sm font-semibold text-foreground">
@@ -89,13 +90,13 @@ export const QuestionRow = ({
 
         {/* TOPIC */}
         {topicName && (
-          <p className="text-[11px] text-muted-foreground/70">
+          <p className="text-[11px]  text-muted-foreground/70">
             {topicName}
           </p>
         )}
 
         {/* META ROW */}
-        <div className="flex items-center gap-2 flex-wrap text-[11px]">
+        <div className="flex items-center -mt-5 gap-2 flex-wrap text-[11px]">
 
           {/* LEVEL */}
           <span className={`px-2 py-0.5 rounded-2xl border font-semibold ${getLevelColor(level)}`}>
@@ -104,7 +105,7 @@ export const QuestionRow = ({
 
           {/* PLATFORM (ICON + TEXT COMBINED 🔥) */}
           {platformData && (
-            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-2xl border border-border bg-muted text-muted-foreground font-medium">
+            <span className="flex font-bolder items-center gap-1.5 px-2 py-1 rounded-2xl border border-border bg-muted text-muted-foreground font-medium">
               {platformData.icon}
               {platformData.name}
             </span>
@@ -112,7 +113,7 @@ export const QuestionRow = ({
 
           {/* TYPE */}
           <span
-            className={`px-2 py-0.5 rounded-2xl border font-semibold bg-muted text-muted-foreground border-border
+            className={`px-2 py-1 rounded-2xl border font-semibold bg-muted text-muted-foreground border-border
             `}
           >
             {isHomework ? 'HOMEWORK' : 'CLASSWORK'}
@@ -126,13 +127,21 @@ export const QuestionRow = ({
         {/* BOOKMARK */}
         {questionId && (
           isBookmarked ? (
-            <span className="text-xs px-3 py-2 rounded-2xl border border-border bg-muted text-muted-foreground">
+            <span
+              className={`text-xs px-3 py-2 rounded-2xl border border-border ${isSolved
+                  ? 'bg-emerald-500/30  text-white'
+                  : 'bg-muted text-foreground'
+                }`}
+            >
               Bookmarked
             </span>
           ) : (
             <button
               onClick={handleBookmarkClick}
-              className="flex items-center justify-center px-3 py-2 rounded-2xl border border-border bg-muted text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-all"
+              className={`flex items-center justify-center px-3 py-2 rounded-2xl border border-border transition-all ${isSolved
+                  ? 'bg-emerald-500/30 text-white hover:bg-emerald-500/40'
+                  : 'bg-muted  text-foreground hover:bg-accent/50'
+                }`}
             >
               <Bookmark className="w-3.5 h-3.5" />
             </button>
@@ -145,11 +154,10 @@ export const QuestionRow = ({
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-medium transition-all ${
-              isSolved
-                ? 'bg-muted text-muted-foreground'
+            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-medium transition-all ${isSolved
+                ? 'bg-emerald-500/20 text-white'
                 : 'bg-primary text-primary-foreground hover:opacity-90'
-            }`}
+              }`}
           >
             {isSolved ? 'Solution' : 'Solve'}
             <ExternalLink className="w-3.5 h-3.5" />

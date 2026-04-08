@@ -110,7 +110,7 @@ export function PracticeResults({ loading, questions, onRefresh }: PracticeResul
 
 return (
   <>
-    <div className="flex flex-col gap-3 min-h-[400px] border border-border/40 rounded-2xl p-9 backdrop-blur-sm">
+    <div className="flex flex-col gap-3 min-h-[400px] glass rounded-2xl px-9 py-6 backdrop-blur-sm">
 
       {questions.length > 0 ? (
         questions.map((q: Question, idx) => (

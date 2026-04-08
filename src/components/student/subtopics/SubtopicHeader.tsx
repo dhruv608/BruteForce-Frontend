@@ -11,18 +11,18 @@ interface SubtopicHeaderProps {
 export function SubtopicHeader({ topic, progress }: SubtopicHeaderProps) {
   const hasImage = !!topic.photo_url;
 return (
-  <div className="mb-10 rounded-2xl border border-border/40 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl overflow-hidden">
+  <div className="mb-10  rounded-2xl glass bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl overflow-hidden">
 
     <div className="flex flex-col md:flex-row">
 
       {/* LEFT VISUAL */}
-      <div className="relative md:w-[32%] h-[180px] md:h-auto overflow-hidden">
+      <div className="relative md:w-[32%] h-[180px] border-e border-border/60 md:h-auto overflow-hidden">
         {hasImage ? (
           <>
             <img
               src={topic.photo_url}
               alt={topic.topic_name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover  "
             />
 
             {/* 🔥 overlay for better blending */}
@@ -56,7 +56,7 @@ return (
           <div className="flex items-center gap-4">
 
             {/* Classes */}
-            <div className="px-4 py-3 rounded-2xl bg-background/40 border border-border/40">
+            <div className="px-4 py-2 rounded-2xl bg-background/40 border border-border/40">
               <p className="text-[10px] uppercase text-muted-foreground mb-1 tracking-wide">
                 Classes
               </p>
@@ -66,7 +66,7 @@ return (
             </div>
 
             {/* Questions */}
-            <div className="px-4 py-3 rounded-2xl bg-background/40 border border-border/40">
+            <div className="px-4 py-2 rounded-2xl bg-background/40 border border-border/40">
               <p className="text-[10px] uppercase text-muted-foreground mb-1 tracking-wide">
                 Questions
               </p>

@@ -33,7 +33,7 @@ export function HeroSection() {
           {/* BRAND */}
           <h1 className="text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight">
             <span className="text-foreground">Brute</span>
-            <span className="text-[var(--accent-primary)] italic">Force</span>
+            <span className="text-[var(--accent-primary)] ">Force</span>
           </h1>
 
           {/* 🔥 BIG TAGLINE (FIXED WRAPPING + SPACING) */}

@@ -3,9 +3,9 @@ import React from 'react';
 
 export function ProfilePageShimmer() {
   return (
-    <div className="w-full max-w-[1200px] mx-auto pb-16 mt-3">
+    <div className="w-full max-w-325 xl:max-w-275 2xl:max-w-325 mx-auto pb-16 mt-3">
       {/* Header Shimmer */}
-      <div className="glass border-0 p-8 mb-8 rounded-2xl animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '0ms', animationFillMode: 'both' }}>
+      <div className="glass backdrop-blur-3xl border-0 p-8 mb-8 rounded-2xl animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '0ms', animationFillMode: 'both' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-6">
             {/* Profile Image Shimmer */}
@@ -35,7 +35,7 @@ export function ProfilePageShimmer() {
         {/* Left Column Shimmer */}
         <div className="lg:col-span-1 space-y-8">
           {/* Overview Stats Shimmer */}
-          <div className="glass border-0 p-6 rounded-2xl animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '50ms', animationFillMode: 'both' }}>
+          <div className="glass backdrop-blur-3xl border-0 p-6 rounded-2xl animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '50ms', animationFillMode: 'both' }}>
             <div className="h-6 w-24 bg-muted/50 rounded-lg mb-6 animate-pulse" />
             <div className="space-y-4">
               {[1, 2, 3, 4].map((i) => (
@@ -51,7 +51,7 @@ export function ProfilePageShimmer() {
           </div>
 
           {/* Profile Info Shimmer */}
-          <div className="glass border-0 p-6 rounded-2xl animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
+          <div className="glass backdrop-blur-3xl border-0 p-6 rounded-2xl animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '100ms', animationFillMode: 'both' }}>
             <div className="h-6 w-32 bg-muted/50 rounded-lg mb-6 animate-pulse" />
             <div className="space-y-4">
               {[1, 2].map((i) => (
@@ -74,7 +74,7 @@ export function ProfilePageShimmer() {
           </div>
 
           {/* Social Links Shimmer */}
-          <div className="glass border-0 p-6 rounded-2xl animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '150ms', animationFillMode: 'both' }}>
+          <div className="glass backdrop-blur-3xl border-0 p-6 rounded-2xl animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '150ms', animationFillMode: 'both' }}>
             <div className="h-6 w-28 bg-muted/50 rounded-lg mb-6 animate-pulse" />
             <div className="space-y-4">
               {[1, 2].map((i) => (
@@ -95,7 +95,7 @@ export function ProfilePageShimmer() {
         {/* Right Column Shimmer */}
         <div className="lg:col-span-3 space-y-8">
           {/* Problem Solving Stats Shimmer */}
-          <div className="glass border-0 p-8 rounded-2xl animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '200ms', animationFillMode: 'both' }}>
+          <div className="glass backdrop-blur-3xl border-0 p-8 rounded-2xl animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '200ms', animationFillMode: 'both' }}>
             <div className="flex items-end justify-between mb-8">
               <div className="space-y-2">
                 <div className="h-10 w-64 bg-muted/50 rounded-lg animate-pulse" />
@@ -120,7 +120,7 @@ export function ProfilePageShimmer() {
           </div>
 
           {/* Activity Heatmap Shimmer */}
-          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '250ms', animationFillMode: 'both' }}>
+          <div className="space-y-4 backdrop-blur-3xl glass animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '250ms', animationFillMode: 'both' }}>
             <div className="h-6 w-48 bg-muted/50 rounded-lg animate-pulse" />
             <div className="glass border-0 p-4 rounded-2xl">
               <div className="h-32 bg-muted/20 rounded-xl animate-pulse" />
@@ -128,7 +128,7 @@ export function ProfilePageShimmer() {
           </div>
 
           {/* Recent Activity Shimmer */}
-          <div className="glass border-0 p-8 rounded-2xl animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '300ms', animationFillMode: 'both' }}>
+          <div className="glass backdrop-blur-3xl border-0 p-8 rounded-2xl animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '300ms', animationFillMode: 'both' }}>
             <div className="h-6 w-32 bg-muted/50 rounded-lg mb-6 animate-pulse" />
             <div className="space-y-4">
               {[1, 2, 3, 4].map((i) => (

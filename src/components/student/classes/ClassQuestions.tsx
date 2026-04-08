@@ -76,7 +76,7 @@ export function ClassQuestions({ questions, onRefresh }: ClassQuestionsProps) {
 
  return (
   <>
-    <div className="rounded-2xl border border-border/40 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl p-5 sm:p-6 shadow-sm">
+    <div className="rounded-2xl glass  bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-3xl p-5 sm:p-6 shadow-sm">
 
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-6">

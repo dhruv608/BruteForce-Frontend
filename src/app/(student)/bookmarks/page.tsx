@@ -8,6 +8,7 @@ import { bookmarkService, Bookmark, BookmarksResponse } from '@/services/bookmar
 import { BookmarkModal } from '@/components/student/bookmarks/BookmarkModal';
 import { EditBookmarkModal } from '@/components/student/bookmarks/EditBookmarkModal';
 import { DeleteModal } from '@/components/DeleteModal';
+import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformIcons';
 import {
   Select,
   SelectContent,
@@ -40,15 +41,15 @@ export default function BookmarksPage() {
 
   const fetchBookmarks = async () => {
     const currentParams = { page: pagination.page, limit: pagination.limit, sort: sortBy, filter: filterBy };
-    
+
     // Skip if already fetching with same params
     if (isFetching.current) {
-      const sameParams = 
+      const sameParams =
         lastFetchParams.current.page === pagination.page &&
         lastFetchParams.current.limit === pagination.limit &&
         lastFetchParams.current.sort === sortBy &&
         lastFetchParams.current.filter === filterBy;
-      
+
       if (sameParams) {
         return;
       }
@@ -56,7 +57,7 @@ export default function BookmarksPage() {
 
     isFetching.current = true;
     lastFetchParams.current = currentParams;
-    
+
     try {
       setLoading(true);
       const response = await bookmarkService.getBookmarks({
@@ -86,7 +87,7 @@ export default function BookmarksPage() {
 
   const confirmDeleteBookmark = async () => {
     if (!deletingBookmark) return;
-    
+
     try {
       await bookmarkService.deleteBookmark(deletingBookmark.question.id);
       fetchBookmarks();
@@ -106,7 +107,7 @@ export default function BookmarksPage() {
 
   const handleUpdateBookmark = async (description: string) => {
     if (!editingBookmark) return;
-    
+
     try {
       setUpdatingBookmark(true);
       await bookmarkService.updateBookmark(editingBookmark.question.id, description);
@@ -136,26 +137,37 @@ export default function BookmarksPage() {
     return platform;
   };
 
+  const getPlatformIcon = (platform: string) => {
+    if (!platform) return null;
+    if (platform.toLowerCase().includes('leetcode')) {
+      return <LeetCodeIcon className="w-4 h-4 text-yellow-500" />;
+    }
+    if (platform.toLowerCase().includes('gfg')) {
+      return <GeeksforGeeksIcon className="w-4 h-4 text-green-600" />;
+    }
+    return null;
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className=" container mx-auto px-4 py-8 max-w-325 xl:max-w-275 2xl:max-w-325">
       {/* HEADER */}
-      <div className="mb-8">
+      <div className="mb-8 px-5 py-4 backdrop-blur-sm rounded-2xl glass">
         <div className="flex items-center gap-3 mb-2">
           <div className="p-2 rounded-lg bg-primary/10">
             <BookmarkIcon className="w-6 h-6 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">My Bookmarks</h1>
+          <h1 className="text-3xl font-bold text-foreground">My <span className='text-primary'>Bookmarks</span></h1>
         </div>
         <p className="text-muted-foreground ml-11">Your saved questions for practice</p>
       </div>
 
       {/* FILTERS */}
-      <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border p-6 mb-6">
+      <div className="glass backdrop-blur-sm rounded-2xl  p-6 mb-6">
         <div className="flex flex-col sm:flex-row gap-6">
           <div className="flex items-center gap-3">
-            <label className="text-sm font-medium text-foreground whitespace-nowrap">Sort By:</label>
+            <label className="text-m font-medium text-foreground whitespace-nowrap">Sort By:</label>
             <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="w-[140px] bg-transparent border border-border/40">
                 <SelectValue placeholder="Select sort" />
               </SelectTrigger>
               <SelectContent>
@@ -166,9 +178,9 @@ export default function BookmarksPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <label className="text-sm font-medium text-foreground whitespace-nowrap">Filter By:</label>
+            <label className="text-m font-medium text-foreground whitespace-nowrap">Filter By:</label>
             <Select value={filterBy} onValueChange={(value: any) => setFilterBy(value)}>
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="w-[140px]  bg-transparent border border-border/40">
                 <SelectValue placeholder="Select filter" />
               </SelectTrigger>
               <SelectContent>
@@ -198,55 +210,107 @@ export default function BookmarksPage() {
           <p className="text-muted-foreground">Start bookmarking questions to see them here</p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {bookmarks.map((bookmark) => (
-            <div
-              key={bookmark.id}
-              className="p-4 rounded-2xl border border-border bg-card hover:border-primary/30 transition-all duration-300"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-medium text-foreground">{bookmark.question.question_name}</h3>
+        <div className="space-y-3 p-5 rounded-2xl glass  backdrop-blur-md">
+
+          {bookmarks.map((bookmark) => {
+
+            const platform = bookmark.question.platform?.toLowerCase();
+
+            const getPlatformData = () => {
+              if (platform?.includes("leetcode")) {
+                return {
+                  name: "LeetCode",
+                  icon: <LeetCodeIcon className="w-3.5 h-3.5 text-orange-500" />
+                };
+              }
+              if (platform?.includes("gfg")) {
+                return {
+                  name: "GeeksForGeeks",
+                  icon: <GeeksforGeeksIcon className="w-3.5 h-3.5 text-green-500" />
+                };
+              }
+              return {
+                name: bookmark.question.platform,
+                icon: null
+              };
+            };
+
+            const platformData = getPlatformData();
+
+            return (
+              <div
+                key={bookmark.id}
+                className="flex items-center justify-between  rounded-2xl border border-border/60 px-6 py-4 hover:border-primary/30 transition-all duration-300"
+              >
+
+                {/* LEFT */}
+                <div className="flex flex-col gap-2 flex-1">
+
+                  {/* TITLE */}
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {bookmark.question.question_name}
+                    </h3>
+
                     {bookmark.isSolved && (
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                     )}
-                    <span className={`px-2 py-1 rounded border text-xs font-semibold ${getLevelColor(bookmark.question.level)}`}>
+                  </div>
+
+                  {/* META BADGES */}
+                  <div className="flex items-center gap-2 flex-wrap text-[11px]">
+
+                    {/* LEVEL */}
+                    <span className={`px-2 py-0.5 rounded-2xl border font-semibold ${getLevelColor(bookmark.question.level)}`}>
                       {bookmark.question.level}
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                      {getPlatformShort(bookmark.question.platform)}
+
+                    {/* PLATFORM (ICON + TEXT 🔥) */}
+                    <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-2xl border border-border bg-muted text-muted-foreground font-medium">
+                      {platformData.icon}
+                      {platformData.name}
                     </span>
+
                   </div>
-                  
+
+                  {/* DESCRIPTION */}
                   {bookmark.description && (
-                    <p className="text-sm text-muted-foreground mb-3">{bookmark.description}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {bookmark.description}
+                    </p>
                   )}
-                  
-                  <div className="flex items-center gap-4">
+
+                  {/* FOOTER */}
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
+
                     <a
                       href={bookmark.question.question_link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
+                      className="inline-flex items-center gap-1 text-primary hover:text-primary/80 transition-colors"
                     >
                       <ExternalLink className="w-3 h-3" />
-                      Solve Question
+                      Solve
                     </a>
-                    <span className="text-xs text-muted-foreground">
-                      Bookmarked on {new Date(bookmark.created_at).toLocaleDateString()}
+
+                    <span>
+                      Bookmarked on{" "}
+                      {new Date(bookmark.created_at).toLocaleDateString()}
                     </span>
+
                   </div>
+
                 </div>
-                
+
+                {/* RIGHT ACTIONS */}
                 <div className="flex items-center gap-2 ml-4">
+
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => handleEditBookmark(bookmark)}
                     disabled={updatingBookmark}
-                    className="p-2 h-8 w-8 rounded-lg hover:bg-accent/50 transition-colors"
-                    title="Edit bookmark"
+                    className="p-2 h-9 w-9 rounded-2xl hover:bg-accent/50"
                   >
                     {updatingBookmark ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -254,19 +318,21 @@ export default function BookmarksPage() {
                       <Edit2 className="w-4 h-4" />
                     )}
                   </Button>
+
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => handleDeleteBookmark(bookmark)}
-                    className="p-2 h-8 w-8 rounded-lg hover:bg-destructive/10 text-destructive hover:text-destructive transition-colors"
-                    title="Delete bookmark"
+                    className="p-2 h-9 w-9 rounded-2xl hover:bg-destructive/10 text-destructive"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
+
                 </div>
+
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

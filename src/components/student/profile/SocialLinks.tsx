@@ -12,7 +12,7 @@ interface SocialLinksProps {
 
 export function SocialLinks({ student, canEdit, onEditSocialLinks }: SocialLinksProps) {
   return (
-    <div className="border border-border/40 backdrop-blur-sm p-6 rounded-[var(--radius-lg)]">
+    <div className="glass backdrop-blur-sm p-6 rounded-(--radius-lg)">
       <h3 className="font-bold mb-6 flex items-center gap-2 text-[var(--text-base)] text-[var(--foreground)]">
         <LinkIcon className="w-5 h-5 text-[var(--accent-primary)]" />
         Social Links
@@ -23,7 +23,7 @@ export function SocialLinks({ student, canEdit, onEditSocialLinks }: SocialLinks
           href={student.github || '#'} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className={`flex items-center gap-4 p-4 hover-glow transition-all duration-200 ${student.github ? '' : 'opacity-60 pointer-events-none'} rounded-[var(--radius-lg)] border-border border-[var(--border)]`}
+          className={`flex items-center gap-4 p-4 hover-glow transition-all duration-200 ${student.github ? '' : 'opacity-60 pointer-events-none'} rounded-(--radius-lg) border-border border-[var(--border)]`}
           style={{
             backgroundColor: student.github ? 'var(--accent-secondary)' : 'var(--muted)'
           }}
@@ -47,7 +47,7 @@ export function SocialLinks({ student, canEdit, onEditSocialLinks }: SocialLinks
           href={student.linkedin || '#'} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className={`flex items-center gap-4 p-4 hover-glow transition-all duration-200 ${student.linkedin ? '' : 'opacity-60 pointer-events-none'} rounded-[var(--radius-lg)] border-border border-[var(--border)]`}
+          className={`flex items-center gap-4 p-4 hover-glow transition-all duration-200 ${student.linkedin ? '' : 'opacity-60 pointer-events-none'} rounded-(--radius-lg) border-border border-[var(--border)]`}
           style={{
             backgroundColor: student.linkedin ? 'var(--accent-secondary)' : 'var(--muted)'
           }}
@@ -71,7 +71,7 @@ export function SocialLinks({ student, canEdit, onEditSocialLinks }: SocialLinks
       {canEdit && (
         <Button 
           variant="outline" 
-          className="w-full mt-6 hover-glow transition-all duration-200 rounded-[var(--radius-lg)]" 
+          className="w-full mt-6 hover-glow transition-all duration-200 rounded-2xl  py-6!" 
           onClick={onEditSocialLinks}
         >
           Edit Social Links

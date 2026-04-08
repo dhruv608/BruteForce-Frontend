@@ -51,7 +51,7 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
   return (
   <div className="
     flex items-center justify-between px-6 py-4 backdrop-blur-md
-    rounded-2xl border border-border/40 
+    rounded-2xl glass 
   ">
     
     {/* LEFT INFO */}

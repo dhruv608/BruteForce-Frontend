@@ -43,7 +43,7 @@ function SegmentedGauge({
   const center = 80;
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 rounded-[var(--radius-lg)] bg-[var(--accent-secondary)]">
+    <div className="flex flex-col items-center justify-center p-6 rounded-(--radius-lg) bg-[var(--accent-secondary)]">
       <svg width="160" height="100" viewBox="0 0 160 100">
         {Array.from({ length: segments }).map((_, i) => {
           const angle = (i / (segments - 1)) * Math.PI; // semi-circle
@@ -96,7 +96,7 @@ function SegmentedGauge({
 
 export function ProblemSolvingStats({ codingStats }: ProblemSolvingStatsProps) {
   return (
-    <div className="border border-border/40 backdrop-blur-sm p-8 rounded-2xl">
+    <div className="glass backdrop-blur-sm p-6 rounded-(--radius-lg)">
       {/* Header */}
       <div className="flex items-end justify-between mb-10">
         <div>

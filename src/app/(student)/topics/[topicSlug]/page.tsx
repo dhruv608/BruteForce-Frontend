@@ -95,13 +95,13 @@ export default function TopicDetailsPage() {
   };
 
 return (
-  <div className="flex flex-col mx-auto max-w-[1400px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
+  <div className="flex flex-col  mx-auto max-w-325 xl:max-w-275 2xl:max-w-325 w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
 
     <SubtopicBackNav />
     <SubtopicHeader topic={topic} progress={progress} />
 
     {/* 🔥 CLASSES SECTION */}
-    <div className="mt-6 rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl p-5 sm:p-6">
+    <div className="mt-6 rounded-2xl border border-border/40 bg-background/40 glass backdrop-blur-xl p-5 sm:p-6">
 
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-6">

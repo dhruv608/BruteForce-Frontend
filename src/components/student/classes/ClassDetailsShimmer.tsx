@@ -5,12 +5,12 @@ import { ClassBackNav } from '@/components/student/classes/ClassBackNav';
 
 export function ClassDetailsShimmer() {
   return (
-    <div className="flex flex-col mx-auto max-w-[1400px] w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
+    <div className="flex flex-col  mx-auto max-w-325 xl:max-w-275 w-full pb-12 px-7 sm:px-10 lg:px-12 pt-8">
       {/* Back Nav Button */}
       <ClassBackNav topicSlug="" topicName="Topic" />
       
       {/* Class Header Shimmer */}
-      <div className="mb-10 rounded-2xl border border-border/40 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl p-6 sm:p-8 shadow-sm">
+      <div className="mb-6 rounded-2xl bg-gradient-to-br from-background/80 to-background/40 glass backdrop-blur-3xl sm:p-6 shadow-sm">
 
         {/* TOP META ROW */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
@@ -22,49 +22,49 @@ export function ClassDetailsShimmer() {
             {/* Date Shimmer */}
             <div className="flex items-center gap-1.5">
               <div className="w-4 h-4 bg-muted/30 rounded animate-pulse"></div>
-              <div className="w-20 h-4 bg-muted/20 rounded animate-pulse"></div>
+              <div className="w-20 h-3 bg-muted/20 rounded animate-pulse"></div>
             </div>
             
             {/* Duration Shimmer */}
             <div className="flex items-center gap-1.5">
               <div className="w-4 h-4 bg-muted/30 rounded animate-pulse"></div>
-              <div className="w-16 h-4 bg-muted/20 rounded animate-pulse"></div>
+              <div className="w-16 h-3 bg-muted/20 rounded animate-pulse"></div>
             </div>
           </div>
 
           {/* RIGHT ACTION */}
-          <div className="w-20 h-8  rounded-lg animate-pulse"></div>
+          <div className="w-20 h-8  rounded-2xl animate-pulse"></div>
         </div>
 
         {/* TITLE */}
-        <div className="h-12 w-3/4 bg-muted/50 rounded mb-3 animate-pulse"></div>
+        <div className="h-10 w-3/4 bg-muted/50 rounded mb-3 animate-pulse"></div>
+
+        {/* TITLE + INLINE PROGRESS */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-3">
+          {/* TITLE */}
+          <div className="h-10 w-3/4 bg-muted/50 rounded animate-pulse"></div>
+
+          {/* 🔥 RIGHT SIDE PROGRESS */}
+          <div className="w-full lg:w-[260px] border border-border/40 p-4 backdrop-blur-3xl rounded-2xl">
+            <div className="flex items-center justify-between mb-1">
+              <div className="w-12 h-3 bg-muted/20 rounded animate-pulse"></div>
+              <div className="w-8 h-3 bg-muted/40 rounded animate-pulse"></div>
+            </div>
+            <div className="h-2 bg-muted/30 border border-border/50 rounded-full overflow-hidden">
+              <div className="h-full bg-muted/50 animate-pulse" style={{ width: '75%' }}></div>
+            </div>
+          </div>
+        </div>
 
         {/* DESCRIPTION */}
         <div className="space-y-2 mb-6">
           <div className="h-4 w-full bg-muted/30 rounded animate-pulse"></div>
           <div className="h-4 w-5/6 bg-muted/30 rounded animate-pulse"></div>
         </div>
-
-        {/* PROGRESS CARD */}
-        <div className="rounded-2xl border border-border/40 bg-background/50 p-4 sm:p-5">
-          {/* HEADER */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="h-4 w-16 bg-muted/40 rounded animate-pulse"></div>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-4 bg-muted/20 rounded animate-pulse"></div>
-              <div className="w-8 h-4 bg-muted/40 rounded animate-pulse"></div>
-            </div>
-          </div>
-
-          {/* PROGRESS BAR */}
-          <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-            <div className="h-full rounded-full bg-muted/50 animate-pulse" style={{ width: '75%' }}></div>
-          </div>
-        </div>
       </div>
 
       {/* Filter Bar Shimmer */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 p-4 rounded-2xl border border-border/40 bg-background/40 backdrop-blur-xl">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 p-4 rounded-2xl glass bg-background/40 backdrop-blur-xl">
         {/* LEFT */}
         <div className="flex items-center gap-4">
           <div className="w-[150px] h-9 rounded-2xl bg-muted/30 animate-pulse"></div>

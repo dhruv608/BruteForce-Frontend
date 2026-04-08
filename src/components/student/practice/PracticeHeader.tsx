@@ -4,8 +4,8 @@ import React from 'react';
 
 export function PracticeHeader() {
   return (
-    <div className=" backdrop-blur-sm rounded-2xl border border-border/40 p-6 mb-8">
-      <h1 className="font-serif italic text-3xl font-bold text-foreground mb-2">
+    <div className="glass backdrop-blur-sm rounded-2xl px-5 py-3 mb-8">
+      <h1 className="font-serif  text-3xl font-bold text-foreground mb-2">
         Practice <span className="text-logo">Problems</span>
       </h1>
       <p className="text-[14px] text-muted-foreground">
