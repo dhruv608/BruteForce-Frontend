@@ -30,18 +30,26 @@ export function TopicCard({
   const isLocked = totalClasses === 0;
 
   const CardContent = () => (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl transition-all duration-300 glass  hover:shadow-primary/10">
+   <div
+  className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-xl transition-all duration-300 glass
+  ${isLocked ? 'opacity-80 cursor-not-allowed' : 'hover:shadow-primary/10'}
+`}
+>
 
-      {/* LOCK OVERLAY */}
-      {isLocked && (
-        <div className="absolute inset-0 bg-black/70 border border-border/70 backdrop-blur-sm z-10 flex items-center justify-center rounded-2xl">
-          <div className="flex flex-col items-center gap-2 text-white">
-            <Lock className="w-8 h-8 text-primary " />
-            <span className="text-sm font-medium">{topicName}</span>
-            <span className="text-xs opacity-80">Locked</span>
-          </div>
-        </div>
-      )}
+     {/* LOCK OVERLAY */}
+{isLocked && (
+  <div className="absolute inset-0 bg-background/70 backdrop-blur-md z-10 flex items-center justify-center rounded-2xl border border-border/50">
+    <div className="flex flex-col items-center gap-2 text-center">
+      <Lock className="w-7 h-7 text-primary/80" />
+      <span className="text-sm font-medium text-foreground">
+        {topicName}
+      </span>
+      <span className="text-xs text-muted-foreground">
+        Locked
+      </span>
+    </div>
+  </div>
+)}
 
       {/* IMAGE */}
       <div className="relative h-[150px] overflow-hidden border-b border-border/50">
@@ -49,7 +57,9 @@ export function TopicCard({
           <img
             src={photoUrl}
             alt={topicName}
-            className={`w-full h-full object-cover transition-transform duration-500 ${isLocked ? 'opacity-50' : 'group-hover:scale-105'}`}
+            className={`w-full h-full object-cover transition-transform duration-500 ${
+  isLocked ? 'opacity-40 scale-100' : 'group-hover:scale-105'
+}`}
           />
         ) : (
           <div className={`w-full h-full ${isLocked ? 'bg-muted/50' : 'bg-muted'}`} />
@@ -84,7 +94,8 @@ export function TopicCard({
         </div>
 
         {/* PROGRESS */}
-        <div>
+        {!isLocked && (
+  <div>
           <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-500 ease-out ${
@@ -97,7 +108,7 @@ export function TopicCard({
           <div className="mt-1 text-right text-[11px] text-muted-foreground">
             {isLocked ? '0%' : `${Math.round(progress)}%`}
           </div>
-        </div>
+        </div>)}
 
       </div>
     </div>
