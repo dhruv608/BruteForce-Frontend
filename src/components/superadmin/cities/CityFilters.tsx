@@ -44,19 +44,18 @@ export function CityFilters({
           <div className="relative flex-1 max-w-sm group">
             <Search className="
               absolute left-3 top-1/2 -translate-y-1/2 
-              w-4 h-4 text-muted-foreground
+              w-4 h-4 text-white/70
               transition group-focus-within:text-primary z-10
             " />
 
-            <Input
+            <input
               placeholder="Search cities..."
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
               className="
-                h-10 !pl-9 !pr-9
-                rounded-full
-                bg-accent/40 backdrop-blur
-                border border-border/30
+                h-10! !pl-9 !pr-9
+                rounded-2xl bg-transparent
+                  backdrop-blur
                 focus:ring-2 focus:ring-primary/30
                 focus:bg-accent/60
                 transition-all

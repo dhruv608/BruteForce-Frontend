@@ -11,6 +11,7 @@ import { AdminTable } from '@/components/superadmin/admins/AdminTable';
 import { AdminModal } from '@/components/superadmin/admins/AdminModal';
 import { AdminCard } from '@/components/superadmin/admins/AdminCard';
 import { AdminFilters } from '@/components/superadmin/admins/AdminFilters';
+import { AdminShimmer } from '@/components/superadmin/admins/AdminShimmer';
 import { handleToastError, showSuccess, showDeleteSuccess } from "@/utils/toast-system";
 import { createAdmin, deleteAdmin, getAllAdmins, updateAdmin } from '@/services/superadmin.service';
 
@@ -123,6 +124,10 @@ export default function AdminsPage() {
     return filtered.slice((currentPage - 1) * limit, currentPage * limit);
   }, [filtered, currentPage, limit]);
 
+  if (loading) {
+    return <AdminShimmer viewMode={viewMode} />;
+  }
+
   return (
     <div className="space-y-6">
       <AdminHeader totalAdmins={filtered.length} />
@@ -143,24 +148,14 @@ export default function AdminsPage() {
           <div className="p-6">
             <AdminTable
               admins={paginatedAdmins}
-              loading={loading}
+              loading={false}
               onEdit={openEdit}
               onDelete={openDelete}
             />
           </div>
         ) : (
           <div className="p-6">
-            {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[1, 2, 3, 4, 5, 6].map(i => (
-                  <div key={i} className="glass rounded-xl p-4 border border-border/20 animate-pulse">
-                    <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-muted rounded w-1/2 mb-3"></div>
-                    <div className="h-3 bg-muted rounded w-1/3"></div>
-                  </div>
-                ))}
-              </div>
-            ) : paginatedAdmins.length === 0 ? (
+            {paginatedAdmins.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 No matches found
               </div>

@@ -10,6 +10,7 @@ import { BatchFilters } from '@/components/superadmin/batches/BatchFilters';
 import { BatchTable } from '@/components/superadmin/batches/BatchTable';
 import { BatchCard } from '@/components/superadmin/batches/BatchCard';
 import { BatchModal } from '@/components/superadmin/batches/BatchModal';
+import { BatchShimmer } from '@/components/superadmin/batches/BatchShimmer';
 import { handleToastError, showSuccess, showDeleteSuccess } from "@/utils/toast-system";
 
 export default function BatchesPage() {
@@ -129,6 +130,10 @@ export default function BatchesPage() {
 
   const getCityName = (id: number) => cities.find(c => c.id === id)?.city_name || 'Unknown';
 
+  if (loading) {
+    return <BatchShimmer viewMode={viewMode} />;
+  }
+
   return (
     <div className="space-y-6">
       <BatchHeader totalBatches={filtered.length} />
@@ -152,7 +157,7 @@ export default function BatchesPage() {
           <div className="p-6">
             <BatchTable
               batches={paginatedBatches}
-              loading={loading}
+              loading={false}
               cities={cities}
               onEdit={openEdit}
               onDelete={openDelete}
@@ -160,17 +165,7 @@ export default function BatchesPage() {
           </div>
         ) : (
           <div className="p-6">
-            {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[1, 2, 3, 4, 5, 6].map(i => (
-                  <div key={i} className="glass rounded-xl p-4 border border-border/20 animate-pulse">
-                    <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-muted rounded w-1/2 mb-3"></div>
-                    <div className="h-3 bg-muted rounded w-1/3"></div>
-                  </div>
-                ))}
-              </div>
-            ) : paginatedBatches.length === 0 ? (
+            {paginatedBatches.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 No matches found
               </div>

@@ -12,7 +12,6 @@ export function CityHeader({ totalCities }: CityHeaderProps) {
     <div className="
       glass hover-glow
       rounded-2xl p-5 mb-8
-      border border-border/30
       relative overflow-hidden
       
     ">
@@ -28,22 +27,12 @@ export function CityHeader({ totalCities }: CityHeaderProps) {
         {/* 🔹 LEFT */}
         <div className="flex items-center gap-4">
 
-          {/* Icon */}
-          <div className="
-            p-3 rounded-xl
-            bg-chart-2/10
-            border border-chart-2/30
-            shadow-sm
-          ">
-            <Building2 className="h-5 w-5 text-chart-2" />
-          </div>
-
           {/* Text */}
           <div>
             <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
-              City Management
+              City <span className='text-primary' >Management</span>
             </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+            <p className="text-xs p-0 m-0 sm:text-sm text-muted-foreground mt-1">
               Manage cities and their associated batches.
             </p>
           </div>
@@ -55,8 +44,8 @@ export function CityHeader({ totalCities }: CityHeaderProps) {
             px-4 py-2
             rounded-full
             text-xs font-semibold tracking-wide
-            bg-chart-2/10 text-chart-2
-            border border-chart-2/20
+            bg-primary/10 text-primary
+            border border-primary/20
             shadow-[0_0_10px_var(--hover-glow)]
           ">
             {totalCities} cit{totalCities !== 1 ? "ies" : "y"}

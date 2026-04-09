@@ -10,6 +10,7 @@ import { CityFilters } from '@/components/superadmin/cities/CityFilters';
 import { CityTable } from '@/components/superadmin/cities/CityTable';
 import { CityCard } from '@/components/superadmin/cities/CityCard';
 import { CityModal } from '@/components/superadmin/cities/CityModal';
+import { CityShimmer } from '@/components/superadmin/cities/CityShimmer';
 import { handleToastError, showSuccess, showDeleteSuccess } from "@/utils/toast-system";
 
 export default function CitiesPage() {
@@ -104,6 +105,10 @@ export default function CitiesPage() {
     return filteredCities.slice((currentPage - 1) * limit, currentPage * limit);
   }, [filteredCities, currentPage, limit]);
 
+  if (loading) {
+    return <CityShimmer viewMode={viewMode} />;
+  }
+
   return (
     <div className="space-y-6">
       <CityHeader totalCities={filteredCities.length} />
@@ -122,24 +127,14 @@ export default function CitiesPage() {
             <CityTable
               cities={paginatedCities}
               batches={allBatches}
-              loading={loading}
+              loading={false}
               onEdit={openEdit}
               onDelete={openDelete}
             />
           </div>
         ) : (
           <div className="p-6">
-            {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[1, 2, 3, 4, 5, 6].map(i => (
-                  <div key={i} className="glass rounded-xl p-4 border border-border/20 animate-pulse">
-                    <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-muted rounded w-1/2 mb-3"></div>
-                    <div className="h-3 bg-muted rounded w-1/3"></div>
-                  </div>
-                ))}
-              </div>
-            ) : paginatedCities.length === 0 ? (
+            {paginatedCities.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 No cities found
               </div>

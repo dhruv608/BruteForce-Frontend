@@ -109,7 +109,6 @@ export function CityTable({ cities, batches, loading, onEdit, onDelete }: CityTa
                 {/* City */}
                 <TableCell className="font-semibold text-foreground">
                   <div className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-chart-2" />
                     {city.city_name}
                   </div>
                 </TableCell>
@@ -119,11 +118,9 @@ export function CityTable({ cities, batches, loading, onEdit, onDelete }: CityTa
                   <span className="
                     inline-flex items-center gap-1
                     px-3 py-1
-                    rounded-full text-[10px] font-medium
-                    bg-chart-2/20 text-chart-2
-                    border border-chart-2/30
+                    rounded-full text-xs font-medium
+                    text-muted-foreground
                   ">
-                    <Layers className="w-3 h-3" />
                     {batchesCount}
                   </span>
                 </TableCell>
@@ -133,11 +130,9 @@ export function CityTable({ cities, batches, loading, onEdit, onDelete }: CityTa
                   <span className="
                     inline-flex items-center gap-1
                     px-3 py-1
-                    rounded-full text-[10px] font-medium
-                    bg-primary/10 text-primary
-                    border border-primary/20
+                    rounded-full text-xs font-medium
+                    text-muted-foreground
                   ">
-                    <Users className="w-3 h-3" />
                     {studentsCount}
                   </span>
                 </TableCell>

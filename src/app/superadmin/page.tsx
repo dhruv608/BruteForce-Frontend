@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import { getStats } from '@/services/superadmin.service';
 import { getAllCities, City } from '@/services/city.service';
 import { getAllBatches, Batch } from '@/services/batch.service';
-import { Layers, Activity, MapPin, Users2,  ArrowUpRight, Sparkles, Globe, Target } from 'lucide-react';
-import { Skeleton } from "@/components/ui/skeleton";
-import { BarChart,Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Layers, Activity, MapPin, Users2, ArrowUpRight, Sparkles, Globe, Target, Map, LayoutGrid, UserCog, BarChart3, UserPlus, FolderPlus } from 'lucide-react';
+import { DashboardShimmer } from '@/components/superadmin/DashboardShimmer';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { handleToastError } from "@/utils/toast-system";
 
 import { motion } from "framer-motion";
@@ -110,50 +110,7 @@ export default function SuperAdminDashboard() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="space-y-8 pb-10">
-        <div className="grid gap-4 md:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-card rounded p-6">
-              <div className="flex items-center justify-between space-y-0 pb-2">
-                <Skeleton className="h-4 w-20" />
-                <Skeleton className="h-4 w-4 rounded" />
-              </div>
-              <Skeleton className="h-8 w-16" />
-            </div>
-          ))}
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 items-start">
-          <div className="lg:col-span-2 bg-card rounded p-6">
-            <div className="flex items-center justify-between pb-6">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-3 w-16" />
-            </div>
-            <div className="space-y-6">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-4 w-16" />
-                  </div>
-                  <Skeleton className="h-2 w-full" />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-card rounded p-6">
-            <Skeleton className="h-4 w-24 mb-6" />
-            <div className="flex flex-col gap-3">
-              {[1, 2, 3].map((i) => (
-                <Skeleton key={i} className="h-9 w-full" />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <DashboardShimmer />;
   }
 
   return (
@@ -162,7 +119,7 @@ export default function SuperAdminDashboard() {
       <div className="flex items-center justify-between glass  mb-5 p-5 -mt-9 backdrop-blur-2xl rounded-2xl ">
         <div>
           <h2 className="text-3xl font-bold">
-           Institutional  <span className="text-primary" >Analytics</span>
+            Institutional  <span className="text-primary" >Analytics</span>
           </h2>
           <p className="text-muted-foreground mt-1 p-0 m-0">
             Oversee and manage cities, batches, and administrators across the platform.
@@ -170,91 +127,100 @@ export default function SuperAdminDashboard() {
         </div>
       </div>
       <div className="grid gap-6 md:grid-cols-3">
-        {/* Cities */}
+
+
+        {/* Cities  */}
         <div
           onClick={() => router.push('/superadmin/cities')}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              router.push('/superadmin/cities');
-            }
-          }}
+          onKeyDown={(e) => e.key === 'Enter' && router.push('/superadmin/cities')}
           tabIndex={0}
-          className="cursor-pointer  glass  p-6 rounded-2xl   transition-all duration-300 border border-border/20  relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-chart-2/50"
+          className=" cursor-pointer glass p-4 rounded-2xl  backdrop-blur-2xl
+  transition-all duration-300 border border-border/20 
+  relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-chart-2/40"
         >
-          <div className="absolute top-0 right-0 w-20 h-20 bg-chart-2/5 rounded-full -mr-10 -mt-10  transition-transform duration-500"></div>
+          {/* subtle hover glow */}
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-chart-2/10 to-transparent" />
 
-          <div className="flex items-center justify-between pb-4 relative">
-            <h3 className="text-sm font-medium text-muted-foreground">Total Cities</h3>
-            <div className="p-2.5 rounded-xl bg-chart-2/10 border border-chart-2/20 group-hover:scale-110 transition-transform">
-              <Globe className="h-6 w-5 text-chart-2 rounded" />
+          <div className="flex items-center justify-between mb-2 relative">
+            <h3 className="text-xl font-bold text-muted-foreground">Cities</h3>
+
+            <div className="p-2 rounded bg-primary/5 border border-primary/10 
+    group-hover:scale-110 transition">
+              <Map className="h-4 w-4 text-primary" />
             </div>
           </div>
 
-          <div className="text-4xl font-bold text-foreground group-hover:text-chart-2 transition-colors duration-300 relative">
+          <div className="text-2xl font-semibold tracking-tight text-foreground 
+  group-hover:text-chart-2 transition relative">
             {stats?.totalCities || 0}
           </div>
 
-          <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground/70">
+          <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground/60">
             <MapPin className="h-3 w-3" />
             <span>Active locations</span>
           </div>
         </div>
 
+
         {/* Batches */}
         <div
           onClick={() => router.push('/superadmin/batches')}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              router.push('/superadmin/batches');
-            }
-          }}
+          onKeyDown={(e) => e.key === 'Enter' && router.push('/superadmin/batches')}
           tabIndex={0}
-          className="cursor-pointer glass  p-6 rounded-2xl  transition-all duration-300 border border-border/20 relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-chart-3/50"
+          className="backdrop-blur-2xl cursor-pointer glass p-4 rounded-2xl 
+  transition-all duration-300 border border-border/20 
+  relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-chart-3/40"
         >
-          <div className="absolute top-0 right-0 w-20 h-20 bg-chart-3/5 rounded-full -mr-10 -mt-10  transition-transform duration-500"></div>
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-chart-3/10 to-transparent" />
 
-          <div className="flex items-center justify-between pb-4 relative">
-            <h3 className="text-sm font-medium text-muted-foreground">Total Batches</h3>
-            <div className="p-2.5 rounded-xl bg-chart-3/10 border border-chart-3/20 group-hover:scale-110 transition-transform">
-              <Layers className="h-5 w-5 text-chart-3" />
+          <div className="flex items-center justify-between mb-2 relative">
+            <h3 className="text-xl font-bold text-muted-foreground">Batches</h3>
+
+            <div className="p-2 rounded bg-primary/5 border border-primary/10 
+    group-hover:scale-110 transition">
+              <LayoutGrid className="h-4 w-4 text-primary" />
             </div>
           </div>
 
-          <div className="text-4xl font-bold text-foreground group-hover:text-chart-3 transition-colors duration-300 relative">
+          <div className="text-2xl font-semibold tracking-tight text-foreground 
+  group-hover:text-chart-3 transition relative">
             {stats?.totalBatches || 0}
           </div>
 
-          <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground/70">
+          <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground/60">
             <Target className="h-3 w-3" />
             <span>Learning groups</span>
           </div>
         </div>
 
+
         {/* Admins */}
         <div
           onClick={() => router.push('/superadmin/admins')}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              router.push('/superadmin/admins');
-            }
-          }}
+          onKeyDown={(e) => e.key === 'Enter' && router.push('/superadmin/admins')}
           tabIndex={0}
-          className="cursor-pointer glass  p-6 rounded-2xl  transition-all duration-300 border border-border/20 relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-chart-5/50"
+          className="backdrop-blur-2xl cursor-pointer glass p-4 rounded-2xl 
+  transition-all duration-300 border border-border/20 
+  hover:border-white/10 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20
+  relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-chart-5/40"
         >
-          <div className="absolute top-0 right-0 w-20 h-20 bg-chart-5/5 rounded-full -mr-10 -mt-10  transition-transform duration-500"></div>
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-chart-5/10 to-transparent" />
 
-          <div className="flex items-center justify-between pb-4 relative">
-            <h3 className="text-sm font-medium text-muted-foreground">Total Admins</h3>
-            <div className="p-2.5 rounded-xl bg-chart-5/10 border border-chart-5/20 group-hover:scale-110 transition-transform">
-              <Users2 className="h-5 w-5 text-chart-5" />
+          <div className="flex items-center justify-between mb-2 relative">
+            <h3 className="text-xl font-bold text-muted-foreground">Admins</h3>
+
+            <div className="p-2 rounded bg-primary/5 border border-primary/10 
+    group-hover:scale-110 transition">
+              <UserCog className="h-4 w-4 text-primary" />
             </div>
           </div>
 
-          <div className="text-4xl font-bold text-foreground group-hover:text-chart-5 transition-colors duration-300 relative">
+          <div className="text-2xl font-semibold tracking-tight text-foreground 
+  group-hover:text-chart-5 transition relative">
             {stats?.totalAdmins || 0}
           </div>
 
-          <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground/70">
+          <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground/60">
             <Activity className="h-3 w-3" />
             <span>Team members</span>
           </div>
@@ -264,202 +230,150 @@ export default function SuperAdminDashboard() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
         {/* City Breakdown Panel */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-          className="md:col-span-2 glass  rounded-2xl p-6 border border-border/20"
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between mb-7">
-            <h3 className="text-[15px] font-medium text-foreground flex items-center gap-2.5">
-              {/* Bar chart icon */}
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                className="text-chart-3"
-              >
-                <rect x="2" y="8" width="3" height="8" rx="1" fill="currentColor" />
-                <rect x="6" y="5" width="3" height="11" rx="1" fill="currentColor" />
-                <rect x="10" y="3" width="3" height="13" rx="1" fill="currentColor" />
-                <rect x="14" y="6" width="3" height="10" rx="1" fill="currentColor" />
-              </svg>
-              City breakdown
-            </h3>
-            <span className="text-xs text-muted-foreground/50 tracking-wide">
-              Top {cityBreakdown.length} by batches
-            </span>
-          </div>
+        
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.4 }}
+  className="md:col-span-2 glass rounded-2xl backdrop-blur-2xl p-3  border border-border/20"
+>
+  {/* Header */}
+  <div className="flex items-center justify-between mb-6">
+    <h3 className="text-sm font-medium text-foreground flex items-center gap-2">
+      <BarChart3 className="h-4 w-4 text-chart-1" />
+      City Overview
+    </h3>
 
-          {/* Chart */}
-          <div className="h-[240px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={cityBreakdown}
-                margin={{ top: 20, right: 20, left: -4, bottom: 0 }}
-                barGap={8}
-                barSize={40}
-              >
-                <CartesianGrid
-                  stroke="var(--border)"
-                  strokeDasharray="4 4"
-                  vertical={false}
-                  opacity={0.3}
-                />
+    <span className="text-xs text-muted-foreground">
+      All cities data
+    </span>
+  </div>
 
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{
-                    fill: "var(--muted-foreground)",
-                    fontSize: 12,
-                  }}
-                  dy={10}
-                />
+  {/* Chart */}
+  <div className="h-[220px]">
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart
+        data={cityBreakdown} // ✅ ALL cities
+        margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+        barSize={28}
+      >
+        <CartesianGrid
+          stroke="var(--border)"
+          strokeDasharray="3 3"
+          vertical={false}
+          opacity={0.2}
+        />
 
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{
-                    fill: "var(--muted-foreground)",
-                    fontSize: 11,
-                  }}
-                  tickCount={5}
-                  width={28}
-                />
+        <XAxis
+          dataKey="name"
+          axisLine={false}
+          tickLine={false}
+          tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+        />
 
-                <Tooltip
-                  content={<CustomTooltip />}
-                  cursor={{
-                    fill: "var(--chart-3)",
-                    fillOpacity: 0.1,
-                  }}
-                />
+        <YAxis
+          axisLine={false}
+          tickLine={false}
+          tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+          width={28}
+        />
 
-                <Bar
-                  dataKey="count"
-                  radius={[8, 8, 0, 0]}
-                  animationDuration={800}
-                  animationEasing="ease-out"
-                >
-                  {cityBreakdown.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={[
-                        'var(--chart-1)', // Primary lime
-                        'var(--chart-2)', // Cyan  
-                        'var(--chart-3)', // Blue
-                        'var(--chart-5)', // Green
-                        'var(--chart-4)', // Red (for contrast)
-                      ][index % 5]}
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+        <Tooltip
+          content={<CustomTooltip />}
+          cursor={{ fill: "var(--chart-2)", fillOpacity: 0.08 }}
+        />
 
-          {/* Footer legend */}
-          <div className="flex items-center gap-5 mt-4 pt-4 border-t border-border/10">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground/50">
-              <div className="flex gap-1">
-                <div className="w-3 h-3 rounded-sm bg-chart-1"></div>
-                <div className="w-3 h-3 rounded-sm bg-chart-2"></div>
-                <div className="w-3 h-3 rounded-sm bg-chart-3"></div>
-              </div>
-              Batches per city
-            </div>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground/50">
-              <div className="w-3 h-3 rounded-sm bg-chart-3"></div>
-              City data
-            </div>
-          </div>
-        </motion.div>
+        {/* ✅ SINGLE COLOR BAR */}
+        <Bar
+          dataKey="count"
+          radius={[6, 6, 0, 0]}
+          fill="var(--chart-1)"
+          animationDuration={700}
+        />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+
+  {/* Footer */}
+  <div className="flex items-center gap-2 mt-4 pt-3 border-t border-border/10">
+    <div className="w-3 h-3 rounded-sm bg-chart-1"></div>
+    <span className="text-xs text-muted-foreground/50">
+      Batches per city
+    </span>
+  </div>
+</motion.div>
 
         {/* Quick Actions Panel */}
-        <div className="glass h-96  rounded-2xl p-6 border border-border/20 ">
+        
+<div className="glass backdrop-blur-2xl h-full rounded-2xl p-5 border border-border/20">
 
-          <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-chart-1 animate-pulse"></div>
-            <Sparkles className="h-5 w-5 text-chart-1" />
-            Quick Actions
-          </h3>
+  <h3 className="text-base font-semibold text-foreground mb-7 flex items-center gap-2">
+    <div className="w-2 h-2 rounded-full bg-chart-1 animate-pulse"></div>
+    <Sparkles className="h-4 w-4 text-chart-1" />
+    Quick Actions
+  </h3>
 
-          <div className="space-y-3  pt-3">
-            <button
-              onClick={() => router.push('/superadmin/admins')}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  router.push('/superadmin/admins');
-                }
-              }}
-              className="w-full mb-4  relative overflow-hidden rounded-xl  border border-border hover:border-foreground/50 px-4 py-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-chart-5/50"
-            >
-              <div className="relative z-10 flex items-center justify-between  ">
-                <div className="flex items-center gap-3">
-                  <div className="p-1.5 rounded-lg hover:scale-110 transition-transform">
-                    <Users2 className="h-4 w-4 " />
-                  </div>
-                  <span className="font-medium text-foreground group-hover:text-chart-5 transition-colors">
-                    Add Admin
-                  </span>
-                </div>
-                <ArrowUpRight className="h-4 w-4  opacity-60 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-chart-5/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </button>
+  <div className="space-y-3">
 
-            <button
-              onClick={() => router.push('/superadmin/cities')}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  router.push('/superadmin/cities');
-                }
-              }}
-              className="w-full mb-4  relative overflow-hidden rounded-xl  to-transparent border border-border hover:border-foreground/50 px-4 py-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-chart-2/50"
-            >
-              <div className="relative z-10 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-1.5 rounded-lg  group-hover:scale-110 transition-transform">
-                    <Globe className="h-4 w-4" />
-                  </div>
-                  <span className="font-medium text-foreground group-hover:text-chart-2 transition-colors">
-                    Add City
-                  </span>
-                </div>
-                <ArrowUpRight className="h-4 w-4  opacity-60 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-chart-2/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </button>
+    {/* Add Admin */}
+   <button
+  onClick={() => router.push('/superadmin/admins')}
+  className=" w-full flex items-center justify-between px-4 py-3 rounded-2xl 
+  border border-border hover:border-chart-5/40 transition-all"
+>
+  {/* Left */}
+  <div className="flex items-center gap-3">
+    
+    {/* Icon Box */}
+    <div className="flex items-center justify-center w-8 h-8 
+    border border-primary/20 bg-primary/5 rounded">
+      <UserPlus className="h-4 w-4 text-primary" />
+    </div>
 
-            <button
-              onClick={() => router.push('/superadmin/batches')}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  router.push('/superadmin/batches');
-                }
-              }}
-              className="w-full  relative overflow-hidden rounded-xl  to-transparent border border-border hover:border-foreground/50 px-4 py-5 text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-chart-3/50"
-            >
-              <div className="relative z-10 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-1.5 rounded-lg  group-hover:scale-110 transition-transform">
-                    <Layers className="h-4 w-4 " />
-                  </div>
-                  <span className="font-medium text-foreground group-hover:text-chart-3 transition-colors">
-                    Add Batch 
-                  </span>
-                </div>
-                <ArrowUpRight className="h-4 w-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-chart-3/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </button>
-          </div>
+    {/* Text */}
+    <span className="text-xl mt-2  font-medium text-muted-foreground">
+      Add Admin
+    </span>
+  </div>
 
+  {/* Arrow */}
+  <ArrowUpRight className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+</button>
+
+    {/* Add City */}
+    <button
+      onClick={() => router.push('/superadmin/cities')}
+      className=" w-full flex items-center justify-between px-4 py-4 rounded-2xl 
+      border border-border hover:border-chart-2/40 transition-all"
+    >
+      <div className="flex items-center gap-3">
+        <div className="flex items-center justify-center w-8 h-8 
+    border border-primary/20 bg-primary/5 rounded">
+          <MapPin className="h-4 w-4 text-primary " />
         </div>
+        <span className="text-xl text-muted-foreground mt-2">Add City</span>
+      </div>
+      <ArrowUpRight className="h-4 w-4 opacity-50 group-hover:opacity-100 transition" />
+    </button>
+
+    {/* Add Batch */}
+    <button
+      onClick={() => router.push('/superadmin/batches')}
+      className=" w-full flex items-center justify-between px-4 py-4 rounded-2xl border border-border/60
+       hover:border-chart-3/40 transition-all"
+    >
+      <div className="flex items-center gap-3">
+        <div className="flex items-center justify-center w-8 h-8 
+    border border-primary/20 bg-primary/5 rounded">
+        <FolderPlus className="h-4 w-4 text-primary " />
+        </div>
+        <span className="text-xl text-muted-foreground mt-2 ">Add Batch</span>
+      </div>
+      <ArrowUpRight className="h-4 w-4 opacity-50 group-hover:opacity-100 transition" />
+    </button>
+
+  </div>
+</div>
       </div>
 
     </div>

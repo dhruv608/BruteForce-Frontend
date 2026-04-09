@@ -10,8 +10,8 @@ return (
   <div className="
     glass hover-glow
     rounded-2xl p-5 mb-8
-    border border-border/30
-    relative overflow-hidden
+    
+    relative overflow-hidden 
     
   ">
 
@@ -21,28 +21,18 @@ return (
       <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full"></div>
     </div>
 
-    <div className="flex items-center justify-between relative z-10">
+    <div className="flex items-center justify-between relative z-10 p-2">
       
       {/* 🔹 LEFT */}
       <div className="flex items-center gap-4">
 
-        {/* Icon */}
-        <div className="
-          p-3 rounded-xl
-          bg-primary/10
-          border border-primary/30
-          shadow-sm group-hover:shadow-md
-          transition
-        ">
-          <Users className="h-5 w-5 text-primary" />
-        </div>
 
         {/* Text */}
         <div>
           <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
-            Admin Management
+            Admin <span className='text-primary'>Management</span>
           </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+          <p className="text-xs p-0 m-0 sm:text-sm text-muted-foreground mt-1">
             Create and manage administrators, assign cities and batches.
           </p>
         </div>

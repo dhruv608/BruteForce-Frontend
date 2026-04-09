@@ -18,7 +18,7 @@ export function AdminTable({ admins, loading, onEdit, onDelete }: AdminTableProp
   return (
     <div className="
        hover-glow
-      rounded-2xl
+      rounded-2xl px-3
       border border-border/30
       overflow-hidden
       relative
@@ -134,8 +134,7 @@ export function AdminTable({ admins, loading, onEdit, onDelete }: AdminTableProp
                     inline-flex items-center
                     px-3 py-1
                     rounded-full text-[10px] font-medium
-                    bg-primary/20 text-primary
-                    border border-primary/30
+                   text-muted-foreground
                   ">
                     {admin.role}
                   </span>

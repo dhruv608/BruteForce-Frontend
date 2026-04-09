@@ -115,11 +115,9 @@ export function BatchTable({ batches, loading, cities, onEdit, onDelete }: Batch
                 <span className="
                   inline-flex items-center gap-1
                   px-3 py-1
-                  rounded-full text-[10px] font-medium
-                  bg-chart-3/20 text-chart-3
-                  border border-chart-3/30
+                  rounded-full text-xs font-medium
+                  text-muted-foreground 
                 ">
-                  <Calendar className="w-3 h-3" />
                   {batch.year}
                 </span>
               </TableCell>
@@ -127,7 +125,6 @@ export function BatchTable({ batches, loading, cities, onEdit, onDelete }: Batch
               {/* City */}
               <TableCell className="text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-3.5 h-3.5" />
                   {batch.city?.city_name || getCityName(batch.city_id)}
                 </div>
               </TableCell>
@@ -135,7 +132,6 @@ export function BatchTable({ batches, loading, cities, onEdit, onDelete }: Batch
               {/* Students */}
               <TableCell className="text-center">
                 <div className="flex items-center justify-center gap-1 text-muted-foreground font-medium">
-                  <Users className="w-3.5 h-3.5" />
                   {batch._count?.students || 0}
                 </div>
               </TableCell>
