@@ -53,6 +53,8 @@ export default function StudentHomePage() {
 
       console.log("No student token found, skipping API calls");
 
+      setLoading(false);
+
       return;
 
     }
@@ -104,6 +106,7 @@ export default function StudentHomePage() {
       console.error("Error refreshing user data", e);
     } finally {
       isFetching.current = false;
+      setLoading(false);
     }
 
   };
@@ -134,10 +137,6 @@ export default function StudentHomePage() {
         // Error is handled by API client interceptor
         console.error("Dashboard data fetch error", e);
         // Auth errors are handled by API interceptor (auto-redirect on 401)
-      } finally {
-
-        setLoading(false);
-
       }
 
     };

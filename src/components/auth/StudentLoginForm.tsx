@@ -75,12 +75,10 @@ export function StudentLoginForm() {
     <div className="w-full">
       {/* HEADER */}
       <div className="text-center mb-8">
-        <h1 className="font-serif italic text-4xl sm:text-5xl font-bold bg-gradient-to-r from-white via-white to-slate-500 bg-clip-text text-foreground tracking-tighter">
+        <h1 className="font-serif  text-4xl sm:text-5xl font-bold bg-gradient-to-r from-white via-white to-slate-500 bg-clip-text text-foreground tracking-tighter">
           Brute<span className="text-primary">Force</span>
         </h1>
-        <p className="text-[13.5px] text-muted-foreground font-medium mt-2">
-          Outwork. Outsolve. Outrank.
-        </p>
+
       </div>
 
       <GoogleAuthButton />
@@ -152,7 +150,7 @@ export function StudentLoginForm() {
               className="text-[10px] font-bold text-slate-500 hover:text-[#CCFF00]"
               onClick={() => router.push('/forgot-password')}
             >
-              Forgot?
+              Forgot Password?
             </button>
           </div>
 

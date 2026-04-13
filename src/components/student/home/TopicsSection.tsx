@@ -57,7 +57,7 @@ export function TopicsSection({ topics, loading = false }: TopicsSectionProps) {
           <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mb-4">
             <BookOpen className="w-7 h-7 text-muted-foreground" />
           </div>
-          <h3 className="text-lg font-bold text-foreground mb-2 font-serif italic">No topics assigned yet</h3>
+          <h3 className="text-lg font-bold text-foreground mb-2 font-serif ">No topics assigned yet</h3>
           <p className="text-[14px] text-muted-foreground max-w-sm mb-6">
             When you join a batch and topics are assigned, they will appear right here.
           </p>

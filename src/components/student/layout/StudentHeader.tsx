@@ -254,7 +254,7 @@ export default function StudentHeader() {
                     <Button
                       asChild
                       
-                      className=" h-12! w-23!  hover-glow glass! backdrop-blur! border! border-border!  text-muted-foreground rounded-2xl!  font-medium transition-all duration-200"
+                      className=" h-11! w-23!  hover-glow bg-primary! backdrop-blur! border! border-border!  text-background font-bold!  rounded-2xl!   transition-all duration-200"
                       style={{ padding: 'var(--spacing-sm) var(--spacing-xs)', borderRadius: 'var(--radius-full)' }}
                     >
                       <Link href="/login" className="flex items-center gap-2">
