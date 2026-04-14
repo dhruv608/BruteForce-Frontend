@@ -36,7 +36,7 @@ export function PracticeResults({ loading, questions, onRefresh }: PracticeResul
 
   const handleBookmarkSubmit = async (description: string) => {
     if (bookmarkModal.question) {
-      await addBookmark(bookmarkModal.question.id, description);
+      await addBookmark(parseInt(bookmarkModal.question.id), description);
       setBookmarkModal({ isOpen: false, question: null });
       // Refresh the questions data to update bookmark status
       if (onRefresh) {
@@ -88,12 +88,12 @@ return (
             }}
           >
             <QuestionRow
-              questionName={q.question_name}
+              questionName={q.question_name || q.questionName || ''}
               platform={q.platform}
               level={q.level}
               type={q.type}
               isSolved={q.isSolved || false}
-              link={q.question_link}
+              link={q.question_link || q.questionLink}
               topicName={q.topic?.topic_name}
               questionId={parseInt(q.id)}
               isBookmarked={q.isBookmarked || false}

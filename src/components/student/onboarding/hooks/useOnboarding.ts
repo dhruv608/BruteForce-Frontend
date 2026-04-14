@@ -9,7 +9,7 @@ export function useOnboarding() {
   const [onboardingUser] = useLocalStorage<OnboardingData | null>('onboardingUser', null);
   
   const [step, setStep] = useState(1);
-  const [data, setData] = useState({ username: '', leetcode_id: '', gfg_id: '', linkedin: '', github: '', originalUsername: '' });
+  const [data, setData] = useState<OnboardingData>({ username: '', leetcode_id: '', gfg_id: '', linkedin: '', github: '', originalUsername: '' });
   const [confirmChecked, setConfirmChecked] = useState(false);
   const [loading, setLoading] = useState(false);
 

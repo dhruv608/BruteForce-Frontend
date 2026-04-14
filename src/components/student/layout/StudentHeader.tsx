@@ -347,14 +347,13 @@ export default function StudentHeader() {
               if (isAuthenticated && !profileLoading && !profile?.data) {
                 return (
                   <div className="flex items-center gap-3">
-                    <Button
+                     <Button
                       asChild
-                      size="sm"
-                      className="glass hover-glow rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200"
+                      
+                      className="h-11! w-23!  hover-glow bg-primary! backdrop-blur! border! border-border!  text-[#090A0F] font-bold!  rounded-2xl!   transition-all duration-200"
                       style={{ padding: 'var(--spacing-sm) var(--spacing-xs)', borderRadius: 'var(--radius-full)' }}
                     >
                       <Link href="/login" className="flex items-center gap-2">
-                        <Lock className="w-4 h-4" style={{ fontSize: 'var(--text-sm)' }} />
                         Login
                       </Link>
                     </Button>

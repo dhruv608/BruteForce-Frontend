@@ -4,7 +4,7 @@ import { Trophy } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Pagination } from '@/components/Pagination';
 import TableShimmer from '@/components/leaderboard/shimmers/TableShimmer';
-import { LeaderboardTableRow } from '@/components/leaderboard/components/LeaderboardTableRow';
+import { LeaderboardTableRow } from './LeaderboardTableRow';
 import { LeaderboardTableProps, LeaderboardEntry } from '@/types/student/index.types';
 
 export function LeaderboardTable({

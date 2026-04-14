@@ -89,7 +89,7 @@ export const BookmarkModal: React.FC<BookmarkModalProps> = ({
           {/* QUESTION INFO */}
           <div className="mb-6 p-4 rounded-2xl bg-accent/20 border border-border/40">
             <div className="flex items-start justify-between mb-2">
-              <h3 className="font-medium text-foreground">{question.name } </h3>
+              <h3 className="font-medium text-foreground">{question.question_name } </h3>
               <span className={`px-2 py-1 rounded border text-xs font-semibold ${getLevelColor(question.level)}`}>
                 {question.level} 
               </span>

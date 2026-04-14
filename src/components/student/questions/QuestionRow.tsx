@@ -24,8 +24,8 @@ export const QuestionRow = ({
 
     if (questionId && onBookmarkClick) {
       onBookmarkClick(questionId, {
-        id: questionId,
-        name: questionName,
+        id: questionId.toString(),
+        question_name: questionName,
         platform,
         level,
         type

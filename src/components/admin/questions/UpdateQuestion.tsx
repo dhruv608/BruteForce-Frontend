@@ -40,8 +40,7 @@ export default function UpdateQuestion({
     question_name: '',
     question_link: '',
     topic_id: '',
-    level: 'MEDIUM' as 'EASY' | 'MEDIUM' | 'HARD',
-    type: 'HOMEWORK' as 'HOMEWORK' | 'CLASSWORK'
+    level: 'MEDIUM' as 'EASY' | 'MEDIUM' | 'HARD'
   });
 
   useEffect(() => {
@@ -54,8 +53,7 @@ export default function UpdateQuestion({
         question_name: question.question_name,
         question_link: question.question_link,
         topic_id: question.topic_id.toString(),
-        level: question.level,
-        type: question.type
+        level: question.level
       });
       setError('');
     }
@@ -96,8 +94,7 @@ interface Topic {
         question_name: formData.question_name,
         question_link: formData.question_link,
         topic_id: parseInt(formData.topic_id),
-        level: formData.level,
-        type: formData.type
+        level: formData.level
       };
 
       await updateAdminQuestion(question.id, updateData);
@@ -222,23 +219,6 @@ interface Topic {
                     </button>
                   ))}
                 </div>
-              </div>
-
-              {/* TYPE */}
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">
-                  Type
-                </Label>
-                <Select
-                  value={formData.type}
-                  onChange={(value: string | number) => handleInputChange('type', value.toString())}
-                  options={[
-                    { label: 'Homework', value: 'HOMEWORK' },
-                    { label: 'Classwork', value: 'CLASSWORK' }
-                  ]}
-                  disabled={loading}
-                  className="h-11"
-                />
               </div>
 
             </div>

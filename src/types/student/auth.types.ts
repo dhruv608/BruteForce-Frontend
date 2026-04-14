@@ -28,7 +28,8 @@ export interface StudentRegisterData {
 }
 
 export interface ResetPasswordData {
-  token: string;
+  email: string;
+  otp: string;
   newPassword: string;
 }
 

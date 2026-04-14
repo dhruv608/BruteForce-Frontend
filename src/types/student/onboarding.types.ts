@@ -6,13 +6,43 @@ export interface OnboardingData {
   username: string;
   leetcode_id: string;
   gfg_id: string;
-  city_id: number;
-  batch_id: number;
+  linkedin?: string;
+  github?: string;
+  originalUsername?: string;
+  city_id?: number;
+  batch_id?: number;
 }
 
 export interface OnboardingModalProps {
   isOpen: boolean;
-  user: unknown;
+  user?: {
+    username?: string;
+    leetcode?: string;
+    gfg?: string;
+    user?: {
+      username?: string;
+      leetcode?: string;
+      gfg?: string;
+    };
+    student?: {
+      username?: string;
+      leetcode?: string;
+      gfg?: string;
+      cityId?: number;
+      city_id?: number;
+      batchId?: number;
+      batch_id?: number;
+      user?: {
+        username?: string;
+        leetcode?: string;
+        gfg?: string;
+      };
+    };
+    cityId?: number;
+    city_id?: number;
+    batchId?: number;
+    batch_id?: number;
+  };
   onClose: () => void;
 }
 
@@ -20,6 +50,7 @@ export interface OnboardingStep1Props {
   data: OnboardingData;
   setData: (data: OnboardingData | ((prev: OnboardingData) => OnboardingData)) => void;
   setStep: (step: number) => void;
+  onboardingUser?: any;
 }
 
 export interface OnboardingStep2Props {
