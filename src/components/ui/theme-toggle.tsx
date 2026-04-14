@@ -41,12 +41,12 @@ export function ThemeToggle() {
       variant="ghost" 
       size="icon" 
       onClick={toggleTheme} 
-      className="rounded-full w-9 h-9 "
+      className="rounded-full w-9 h-9 border border-border  "
     >
       {theme === 'light' ? (
         <Sun 
           className="transition-all" 
-          style={{width: 'var(--spacing-lg)', height: 'var(--spacing-lg)', color: 'var(--accent-primary)'}}
+          style={{width: 'var(--spacing-lg)', height: 'var(--spacing-lg)', color: 'var(--logo)'}}
         />
       ) : (
         <Moon 

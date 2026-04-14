@@ -67,7 +67,7 @@ export function SuperAdminLoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
               className="w-full h-12 pl-11  pr-4 border border-border rounded-xl text-sm text-logo placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-logo/5 focus:border-logo/40 transition-all"
-              placeholder="admin@bruteforce.com"
+              placeholder="superadmin@pwioi.live"
               required
             />
           </div>
@@ -84,16 +84,16 @@ export function SuperAdminLoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
-              placeholder="Enter your password"
+               placeholder="••••••••"
               required
                className="w-full h-12 pl-11 pr-4  border border-border rounded-xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-logo/40 transition-all"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/50 hover:text-white transition-colors"
             >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              {showPassword ? <EyeOff size={20}  /> : <Eye size={20} />}
             </button>
           </div>
           </div> 

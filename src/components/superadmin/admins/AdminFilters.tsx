@@ -49,12 +49,12 @@ export function AdminFilters({
           {/* Search */}
 
           <div className="relative w-full sm:max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/80 w-4 h-4 z-10" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/80 w-4 h-4 z-10" />
             <Input
               placeholder="Search admins..."
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="!pl-10 w-full h-10! rounded-2xl bg-transparent! border! border-border/50! placeholder:text-white focus-visible:ring-primary/40"
+              className="!pl-10 w-full h-10! rounded-2xl  dark:bg-transparent! border! border-border/50! placeholder:text-foreground  focus-visible:ring-primary/40"
             />
           </div>
 

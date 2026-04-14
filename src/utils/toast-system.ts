@@ -34,7 +34,7 @@ const PremiumToastRenderer = ({ toast: toastObj, title, description, icon, id }:
 
   return React.createElement('div', {
     className: `
-      bg-glass-bg
+      dark:bg-glass-bg 
       border border-border     
       rounded-2xl
       p-4
@@ -68,8 +68,8 @@ const PremiumToastRenderer = ({ toast: toastObj, title, description, icon, id }:
         rounded
         border-none
         bg-transparent
-        cursor-pointer
-        text-white/60
+        cursor-pointer 
+        text-foreground/60
         hover:text-white/90
         hover:bg-white/10
         transition-all duration-200

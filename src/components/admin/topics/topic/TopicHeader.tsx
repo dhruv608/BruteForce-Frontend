@@ -6,7 +6,7 @@ interface TopicHeaderProps {
 
 export default function TopicHeader({ totalRecords }: TopicHeaderProps) {
    return (
-      <div className="glass backdrop-blur-2xl rounded-2xl p-6 mb-5 -mt-3 flex items-center justify-between">
+      <div className="glass backdrop-blur-2xl rounded-2xl p-6 mb-5 -mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between">
 
          <div className="flex items-center gap-4">
 
@@ -20,7 +20,7 @@ export default function TopicHeader({ totalRecords }: TopicHeaderProps) {
          </div>
 
          {/* RIGHT BADGE */}
-         <div className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
+         <div className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mt-3 sm:mt-0 w-full sm:w-auto text-center sm:text-left">
             {totalRecords} Topics
          </div>
 

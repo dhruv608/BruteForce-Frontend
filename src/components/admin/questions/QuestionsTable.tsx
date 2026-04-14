@@ -100,8 +100,8 @@ export default function QuestionsTable({
 }: QuestionsTableProps) {
   return (
     <div className="glass px-4 mb-5  rounded-2xl overflow-hidden">
-      <div className="rounded-2xl  overflow-hidden">
-        <ScrollArea className="max-h-[600px]">
+      <div className="rounded-2xl overflow-x-auto">
+        
           <Table className='border-0'>
             {/* HEADER */}
             <TableHeader>
@@ -207,7 +207,7 @@ export default function QuestionsTable({
               )}
             </TableBody>
           </Table>
-        </ScrollArea>
+       
       </div>
 
       {/* PAGINATION */}

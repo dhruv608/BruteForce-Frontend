@@ -15,7 +15,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
         height: 'var(--spacing-lg)',
         borderRadius: '10px',
         border: '1px solid var(--border)',
-        backgroundColor: 'rgba(0,0,0,0.4)',
+        backgroundColor: 'rgba(0,0,0,0)',
         color: 'var(--foreground)',
         fontSize: 'var(--text-base)',
         padding: '16px 20px',

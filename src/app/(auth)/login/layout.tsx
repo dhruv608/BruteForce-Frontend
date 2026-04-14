@@ -17,7 +17,7 @@ export default function LoginLayout({ children }: { children: React.ReactNode })
   </div>
 
   {/* RIGHT SIDE - 30% */}
-  <div className="relative border-border border-s min-h-screen lg:w-[32%] px-6 sm:px-8 flex items-center justify-center">
+  <div className="relative border-border border-s min-h-screen w-full lg:w-[32%] px-6 sm:px-8 flex items-center justify-center">
 
     {/* Background Orbs */}
     <div className="absolute top-[-10%] left-[-28%] w-[500px] h-[500px] rounded-full bg-primary/7 blur-3xl pointer-events-none" />

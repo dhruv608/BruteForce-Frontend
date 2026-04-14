@@ -64,7 +64,7 @@ export function BatchFilters({
         <div className="relative flex-1 max-w-sm group">
           <Search className="
             absolute left-3 top-1/2 -translate-y-1/2 
-            w-4 h-4 text-white/70
+            w-4 h-4 text-foreground/70
             transition group-focus-within:text-primary z-10
           " />
 
@@ -75,11 +75,11 @@ export function BatchFilters({
             className="
               h-10! !pl-9 !pr-9
               rounded-2xl@
-              bg-transparent! backdrop-blur
+               backdrop-blur
               border border-border/30
               focus:ring-2 focus:ring-primary/30
               focus:bg-accent/60
-              transition-all placeholder:text-white
+              transition-all placeholder:text-foreground
             "
           />
         </div>

@@ -136,7 +136,7 @@ export function AdminModal({
       <div className="pt-6 pb-4 flex flex-col gap-5 text-center sm:text-left">
         <DialogHeader className="flex flex-col gap-1.5 space-y-0  px-5">
           <DialogTitle className="text-3xl p-0 m-0 font-bold tracking-tight">
-            <span className="text-white">
+            <span className="text-foreground">
               {mode === 'create' ? 'Create' : 'Edit'}
             </span>{' '}
             <span className="text-primary">Admin</span>

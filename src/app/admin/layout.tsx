@@ -81,9 +81,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setMounted(true);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = (showToast = true) => {
     clearStoredSelections();
-    logoutUser();
+    logoutUser(showToast);
     router.push('/admin/login');
   };
 
@@ -103,7 +103,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (!isAdminToken()) {
       console.log('No admin token found, clearing invalid tokens and redirecting to login');
       clearAuthTokens(); // Clear any invalid tokens (like student tokens)
-      handleLogout();
+      handleLogout(false);
       return;
     }
 
@@ -112,7 +112,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     if (!token && !cookieToken) {
       console.log('No admin token found, redirecting to login');
-      handleLogout();
+      handleLogout(false);
       return;
     }
 
@@ -206,7 +206,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         // Clear tokens and redirect to login after a delay
         setTimeout(() => {
-          handleLogout();
+          handleLogout(false);
         }, 3000);
       } finally {
         setIsLoadingContext(false);
@@ -319,7 +319,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           onClose={() => { }}
           user={user}
           navItems={navItems}
-          onLogout={handleLogout}
+          onLogout={() => handleLogout()}
           portalLabel="Admin Portal"
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -329,7 +329,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileMenuOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-card border border-border hover:bg-muted transition-colors"
+        className="md:hidden h-14 w-10 ms-1 mt-3 -me-2  z-50 p-2 items-center rounded-md bg-card border border-border hover:bg-muted transition-colors"
       >
         <Menu className="w-5 h-5" />
       </button>
@@ -395,7 +395,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* Mobile Menu User Section */}
           <div className="border-t border-border/20 p-4">
             <button
-              onClick={handleLogout}
+              onClick={() => handleLogout()}
               className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-[rgba(204,255,0,0.05)] transition-colors"
             >
               <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center font-bold text-sm uppercase">

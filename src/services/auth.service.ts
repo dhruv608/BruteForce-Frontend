@@ -21,10 +21,12 @@ export const loginSuperAdmin = async (data: { email: string; password: string })
   return response.data;
 };
 
-export const logoutUser = () => {
+export const logoutUser = (showToast = true) => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('accessToken');
     document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
   }
-  showSuccess('Logged out successfully.');
+  if (showToast) {
+    showSuccess('Logged out successfully.');
+  }
 };

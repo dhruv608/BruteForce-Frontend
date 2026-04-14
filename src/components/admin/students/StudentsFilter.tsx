@@ -33,7 +33,7 @@ export default function StudentsFilter({
           placeholder="Search by name or email..."
           value={sSearch}
           onChange={(e) => { setSSearch(e.target.value); setPage(1); }}
-          className="pl-9! w-full h-11! rounded-2xl! dark:bg-transparent! placeholder:text-white"
+          className="pl-9! w-full h-11! rounded-2xl!  placeholder:text-foreground"
         />
       </div>
 

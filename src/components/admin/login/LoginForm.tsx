@@ -48,7 +48,7 @@ export default function LoginForm() {
         <h1 className="font-serif  text-5xl font-bold bg-gradient-to-r from-white via-white to-slate-500 bg-clip-text text-foreground tracking-tighter">
           Brute<span className="text-primary">Force</span>
         </h1>
-        <p className="text-slate-500 text-[11px] font-black uppercase tracking-[0.3em] mt-3">Admin Operations Portal</p>
+        <p className="text-slate-500 text-[11px] font-black uppercase tracking-[0.3em] mt-3">Admin Portal</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
@@ -65,7 +65,7 @@ export default function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
               className="w-full h-12 pl-11 pr-4  border border-border rounded-xl text-sm text-foreground placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-logo/40 transition-all"
-              placeholder="admin@bruteforce.com"
+              placeholder="admin@pwioi.com"
               required
             />
           </div>
@@ -89,7 +89,7 @@ export default function LoginForm() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/50 hover:text-white transition-colors"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>

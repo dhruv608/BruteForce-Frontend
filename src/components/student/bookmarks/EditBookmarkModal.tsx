@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Bookmark } from 'lucide-react';
+import { Bookmark } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 
 interface EditBookmarkModalProps {
   isOpen: boolean;
@@ -54,8 +55,6 @@ export const EditBookmarkModal: React.FC<EditBookmarkModalProps> = ({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   const getLevelColor = (level: string) => {
     switch (level.toUpperCase()) {
       case 'EASY': return 'text-[var(--easy)] bg-[var(--easy)]/10 border-[var(--easy)]/20';
@@ -73,30 +72,16 @@ export const EditBookmarkModal: React.FC<EditBookmarkModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* BACKDROP */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={handleClose}
-      />
-
-      {/* MODAL */}
-      <div className="relative bg-background glass rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
-        {/* HEADER */}
-        <div className="flex items-center justify-between p-6 border-b border-border/40">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+      <DialogContent className="max-w-md overflow-hidden p-0">
+        <DialogHeader className="px-6 py-4 border-b border-border/40">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-2xl bg-primary/10">
               <Bookmark className="w-5 h-5 text-primary" />
             </div>
-            <h2 className="text-lg font-semibold text-foreground">Edit Bookmark</h2>
+            <DialogTitle className="text-lg font-semibold text-foreground">Edit Bookmark</DialogTitle>
           </div>
-          <button
-            onClick={handleClose}
-            className="p-2 rounded-2xl hover:bg-accent/50 transition-colors"
-          >
-            <X className="w-4 h-4 text-muted-foreground" />
-          </button>
-        </div>
+        </DialogHeader>
 
         {/* CONTENT */}
         <div className="p-6">
@@ -126,33 +111,35 @@ export const EditBookmarkModal: React.FC<EditBookmarkModalProps> = ({
                 onChange={(e) => setDescription(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Add your notes about this question..."
-                className="min-h-[100px] resize-none w-full p-3 border border-border/40 rounded-2xl  text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="min-h-[100px]  resize-none w-full p-3 border border-border/40 rounded-2xl  text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
                 disabled={loading}
               />
             </div>
 
             {/* ACTIONS */}
-            <div className="flex gap-3 pt-4">
-              <Button
-                type="button"
-
-                onClick={handleClose}
-                disabled={loading}
-                className="bg-transparent! text-white! hover:bg-muted hover:text-foreground  aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 flex-1"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={loading}
-                className="flex-1"
-              >
-                {loading ? 'Updating...' : 'Update Bookmark'}
-              </Button>
-            </div>
+            <DialogFooter className="px-6 py-4">
+              <div className="flex gap-3 w-full">
+                <Button
+                  type="button"
+                  onClick={handleClose}
+                  disabled={loading}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1"
+                >
+                  {loading ? 'Updating...' : 'Update Bookmark'}
+                </Button>
+              </div>
+            </DialogFooter>
           </form>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
