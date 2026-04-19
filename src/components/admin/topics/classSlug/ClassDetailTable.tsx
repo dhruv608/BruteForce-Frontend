@@ -20,9 +20,16 @@ function BadgeByLevel({ level }: { level: string }) {
 
 export default function ClassDetailTable({ assignedQuestions, loading, onEditType, onRemoveQuestion }: ClassDetailTableProps) {
    return (
-      <div className=" px-6 mb-5 glass backdrop-blur-2xl  shadow-sm rounded-2xl overflow-hidden">
+      <div className="px-6 mb-5 rounded-2xl glass bg-linear-to-br from-background/80 to-background/40 backdrop-blur-3xl p-5 sm:p-6 shadow-sm overflow-hidden">
 
-         <div className="overflow-x-auto ">
+         {/* HEADER */}
+         <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-sm font-mono font-medium text-muted-foreground tracking-widest uppercase">
+               Assigned Questions
+            </h2>
+         </div>
+
+         <div className="overflow-x-auto">
             <Table className="border-separate border-spacing-y-2">
 
                {/* HEADER */}

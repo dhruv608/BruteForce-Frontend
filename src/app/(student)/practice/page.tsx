@@ -91,7 +91,7 @@ export default function PracticePage() {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearch, debouncedPage, debouncedLimit, router]);
+  }, [filters.topic, filters.level, filters.platform, filters.type, filters.solved, debouncedSearch, debouncedPage, debouncedLimit, router]);
 
   useEffect(() => {
     fetchQuestions();

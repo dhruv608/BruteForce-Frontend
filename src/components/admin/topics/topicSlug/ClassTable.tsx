@@ -52,21 +52,20 @@ export default function ClassTable({ classesList, loading, search, topicSlug, on
                            </TableCell>
                            <TableCell>
                               <div className="flex items-center gap-2 text-foreground font-medium text-sm">
-                                 <CalendarDays className="w-4 h-4 text-primary" />
                                  {cls.class_date ? new Date(cls.class_date).toLocaleDateString() : 'N/A'}
                               </div>
                            </TableCell>
                            <TableCell className="text-center">
                               <div className="flex items-center justify-center gap-1">
-                                 <span className="inline-flex items-center justify-center bg-primary/10 text-primary font-medium px-2.5 py-1 rounded-md text-sm">
+                                 <span className="inline-flex items-center justify-center bg-primary/10 text-primary font-medium px-2.5 py-1 rounded-2xl text-sm">
                                     {cls.questionCount || 0}
                                  </span>
                               </div>
                            </TableCell>
                            <TableCell className="text-center">
                               {cls.pdf_url ? (
-                                 <a href={cls.pdf_url} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 transition-colors font-medium px-2.5 py-1 rounded-md text-xs gap-1.5 max-w-[120px] truncate" title={cls.pdf_url}>
-                                    <LinkIcon className="w-3 h-3 shrink-0" /> Open PDF
+                                 <a href={cls.pdf_url} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 transition-colors font-medium px-2.5 py-1 rounded-2xl text-xs gap-1.5 max-w-[120px] truncate" title={cls.pdf_url}>
+                                    <LinkIcon className="w-3 h-3 shrink-0" /> Open Notes
                                  </a>
                               ) : (
                                  <span className="text-muted-foreground text-xs italic">No Attachments</span>

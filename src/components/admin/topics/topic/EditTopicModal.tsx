@@ -106,7 +106,7 @@ export default function EditTopicModal({ isOpen, onClose, onSuccess, topic }: Ed
 
    return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
-         <DialogContent className="rounded-2xl p-0 overflow-hidden shadow-xl max-w-[520px]">
+         <DialogContent className="rounded-2xl  overflow-hidden shadow-xl max-w-[520px]">
             <DialogHeader className=" py-5 border-b border-border/40">
                <DialogTitle className="text-3xl font-semibold">
                   Edit <span className='text-primary' >Topic</span>
@@ -116,7 +116,7 @@ export default function EditTopicModal({ isOpen, onClose, onSuccess, topic }: Ed
                </DialogDescription>
             </DialogHeader>
 
-            <div className=" space-y-6">
+            <div className=" space-y-6 ">
                <form onSubmit={handleSubmit} className="space-y-6">
                   {formError && (
                      <div className="text-sm px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400">

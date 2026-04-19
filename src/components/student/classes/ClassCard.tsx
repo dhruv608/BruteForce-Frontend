@@ -68,7 +68,7 @@ return (
             className="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-2xl text-primary bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-all font-medium"
           >
             <FileText className="w-3.5 h-3.5" />
-            Notes
+            View Notes
           </button>
         ) : (
           <div className="flex items-center text-xs gap-1.5 px-2 py-1 rounded-2xl bg-muted/40 border border-border/50 text-muted-foreground">

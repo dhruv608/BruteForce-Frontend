@@ -36,8 +36,19 @@ return (
 
     {/* 🔥 FILTER BAR */}
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-background/40 glass backdrop-blur-xl">
+      {/* Left → SEARCH */}
+      <div className="relative w-full sm:w-[300px]">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground w-4 h-4" />
 
-      {/* LEFT → LABEL */}
+        <Input
+          placeholder="Search topics..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9! pr-3! h-9! rounded-2xl w-full   border-border/40! focus:ring-2 focus:ring-primary/30 placeholder:text-foreground"
+        />
+      </div>
+
+      {/* Right → LABEL */}
       <div className="flex items-center gap-3">
         
 
@@ -54,17 +65,6 @@ return (
         </Select>
       </div>
 
-      {/* RIGHT → SEARCH */}
-      <div className="relative w-full sm:w-[300px]">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground w-4 h-4" />
-
-        <Input
-          placeholder="Search topics..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9! pr-3! h-9! rounded-2xl w-full   border-border/40! focus:ring-2 focus:ring-primary/30 placeholder:text-foreground"
-        />
-      </div>
 
     </div>
 

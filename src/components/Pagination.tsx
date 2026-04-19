@@ -48,6 +48,10 @@ export function Pagination({ currentPage, totalItems, limit, onPageChange, onLim
     }
   };
 
+  if (totalItems === 0) {
+    return null;
+  }
+
   return (
   <div className="
     flex flex-col sm:flex-row sm:items-center justify-between px-3 py-3 sm:px-6 sm:py-4 backdrop-blur-md rounded-2xl glass gap-3

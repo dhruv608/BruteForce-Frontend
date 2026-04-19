@@ -166,7 +166,7 @@ export default function AdminClassDetailsPage() {
    };
 
 
-   if (isLoadingContext) {
+   if (isLoadingContext || loading) {
       return <ClassDetailShimmer />;
    }
 
