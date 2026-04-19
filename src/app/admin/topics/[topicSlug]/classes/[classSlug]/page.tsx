@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAdminStore } from '@/store/adminStore';
 import { apiClient } from '@/api';
 import {
@@ -18,7 +19,7 @@ import {
 } from 'lucide-react';
 import { Pagination } from '@/components/Pagination';
 import { DeleteModal } from '@/components/DeleteModal';
-import { ClassAssignedQuestion, ApiError } from '@/types/admin/index.types';
+import { ClassAssignedQuestion, ClassDetails, ApiError } from '@/types/admin/index.types';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 
 export default function AdminClassDetailsPage() {
@@ -31,6 +32,7 @@ export default function AdminClassDetailsPage() {
 
    // Assigned Questions Data
    const [assignedQuestions, setAssignedQuestions] = useState<ClassAssignedQuestion[]>([]);
+   const [classDetails, setClassDetails] = useState<ClassDetails | null>(null);
    const [loading, setLoading] = useState(false);
    const [search, setSearch] = useState('');
    const [assignedPage, setAssignedPage] = useState(1);
@@ -94,10 +96,11 @@ export default function AdminClassDetailsPage() {
 
          const response = await apiClient.get(`/api/admin/${selectedBatch.slug}/topics/${topicSlug}/classes/${classSlug}/questions`, { params });
          const data = response.data;
-         // Backend returns { message: "...", data: [...], pagination: {...} }
+         // Backend returns { message: "...", data: [...], pagination: {...}, classDetails: {...} }
          setAssignedQuestions(data.data || []);
          setAssignedTotalPages(data.pagination?.totalPages || 1);
          setAssignedTotalCount(data.pagination?.total || 0);
+         setClassDetails(data.classDetails || null);
       } catch (err: unknown) {
          // Error is handled by API client interceptor
          console.error("Failed to fetch assigned questions", err);
@@ -180,19 +183,30 @@ export default function AdminClassDetailsPage() {
    return (
       <div className="flex flex-col mx-auto  w-full pb-12  -mt-4  ">
 
+         {/* BACK NAVIGATION */}
+         <Link 
+            href={`/admin/topics/${topicSlug}`}
+            className="text-[13px] font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 mb-6 w-fit"
+         >
+            <span>←</span> Back to Classes
+         </Link>
+
          <ClassDetailHeader
             selectedBatch={selectedBatch}
             topicSlug={topicSlug}
             classSlug={classSlug}
+            classDetails={classDetails}
             onAssignClick={() => setIsAssignOpen(true)}
          />
 
+         {/* 🔥 FILTER BAR */}
          <ClassDetailFilter
             search={search}
             onSearchChange={(value) => { setSearch(value); }}
             assignedTotalCount={assignedTotalCount}
          />
 
+         {/* QUESTIONS TABLE */}
          <ClassDetailTable
             assignedQuestions={assignedQuestions}
             loading={loading}
@@ -200,18 +214,23 @@ export default function AdminClassDetailsPage() {
             onRemoveQuestion={handleRemoveQuestion}
          />
 
-         <Pagination
-            currentPage={assignedPage}
-            totalItems={assignedTotalCount}
-            limit={limit}
-            onPageChange={setAssignedPage}
-            onLimitChange={(newLimit: number) => {
-               setLimit(newLimit);
-               setAssignedPage(1);
-            }}
-            showLimitSelector={true}
-            loading={loading}
-         />
+         {/* PAGINATION */}
+         {assignedTotalCount > limit && (
+            <div className="mt-10">
+               <Pagination
+                  currentPage={assignedPage}
+                  totalItems={assignedTotalCount}
+                  limit={limit}
+                  onPageChange={setAssignedPage}
+                  onLimitChange={(newLimit: number) => {
+                     setLimit(newLimit);
+                     setAssignedPage(1);
+                  }}
+                  showLimitSelector={true}
+                  loading={loading}
+               />
+            </div>
+         )}
 
          <AssignQuestionsModal
          isOpen={isAssignOpen}

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ProgressBar } from "../shared/ProgressBar";
+import { HTMLRenderer } from '@/components/ui/HTMLRenderer';
 import { Topic } from '@/types/student/index.types';
 
 interface SubtopicHeaderProps {
@@ -44,9 +45,10 @@ return (
           </h1>
 
           {topic.description && (
-            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mb-5 leading-relaxed">
-              {topic.description}
-            </p>
+            <HTMLRenderer 
+              html={topic.description}
+              className="text-sm sm:text-base text-muted-foreground max-w-2xl mb-5 leading-relaxed"
+            />
           )}
         </div>
 

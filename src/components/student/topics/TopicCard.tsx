@@ -38,15 +38,10 @@ export function TopicCard({
 
      {/* LOCK OVERLAY */}
 {isLocked && (
-  <div className="absolute inset-0 bg-background/70 backdrop-blur-md z-10 flex items-center justify-center rounded-2xl border border-border/50">
+  <div className="absolute inset-0 glass   z-10 flex items-center justify-center rounded-2xl border border-border/50">
     <div className="flex flex-col items-center gap-2 text-center">
-      <Lock className="w-7 h-7 text-primary/80" />
-      <span className="text-sm font-medium text-foreground">
-        {topicName}
-      </span>
-      <span className="text-xs text-muted-foreground">
-        Locked
-      </span>
+      <Lock className="w-12 h-12 text-primary/80" />
+      
     </div>
   </div>
 )}
@@ -79,19 +74,25 @@ export function TopicCard({
         </h3>
 
         {/* STATS */}
-        <div className="flex items-center justify-between text-[12px] text-muted-foreground">
-
-          {/* CLASSES */}
-          <div className="flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5" />
-            <span>{totalClasses} classes</span>
+        {isLocked ? (
+          <div className="text-[12px] text-muted-foreground">
+            No classes added yet
           </div>
+        ) : (
+          <div className="flex items-center justify-between text-[12px] text-muted-foreground">
 
-          {/* QUESTIONS */}
-          <div className="px-2 py-0.5 rounded-2xl bg-muted/40 border border-border/50">
-            {solvedQuestions}/{totalQuestions}
+            {/* CLASSES */}
+            <div className="flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5" />
+              <span>{totalClasses} classes</span>
+            </div>
+
+            {/* QUESTIONS */}
+            <div className="px-2 py-0.5 rounded-2xl bg-muted/40 border border-border/50">
+              {solvedQuestions}/{totalQuestions}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* PROGRESS */}
         {!isLocked && (

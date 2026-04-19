@@ -59,7 +59,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full overflow-y-auto custom-scrollbar flex flex-col relative">
+      <body className="min-h-full  overflow-y-auto custom-scrollbar flex flex-col relative">
         {/* 🔥 BACKGROUND GLOW */}
         <div className="fixed inset-0 pointer-events-none -z-10">
           <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 blur-[120px]" />

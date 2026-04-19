@@ -462,8 +462,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </header>
 
         {/* Scrollable Page Wrapper */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-8 relative">
-          <div className="max-w-[1200px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex-1 overflow-y-auto custom-scrollbar py-8 relative">
+          <div className="w-[100%] sm:w-[1200px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
             {children}
           </div>
         </div>

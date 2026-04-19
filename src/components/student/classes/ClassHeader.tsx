@@ -4,6 +4,7 @@ import React from "react";
 import { Badge } from "../shared/Badge";
 import { ProgressBar } from "../shared/ProgressBar";
 import { Calendar, Clock, FileText } from "lucide-react";
+import { HTMLRenderer } from '@/components/ui/HTMLRenderer';
 import { ClassHeaderProps } from '@/types/student/index.types';
 
 export function ClassHeader({
@@ -95,9 +96,10 @@ export function ClassHeader({
 
       {/* DESCRIPTION */}
       {classData.description && (
-        <p className="text-muted-foreground text-sm  max-w-3xl mb-6 leading-relaxed">
-          {classData.description}
-        </p>
+        <HTMLRenderer 
+          html={classData.description}
+          className="text-muted-foreground text-sm max-w-3xl mb-6 leading-relaxed"
+        />
       )}
 
 

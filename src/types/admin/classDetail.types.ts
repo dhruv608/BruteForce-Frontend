@@ -14,10 +14,20 @@ export interface ClassAssignedQuestion {
   question?: Question;
 }
 
+export interface ClassDetails {
+  class_name: string;
+  description?: string;
+  pdf_url?: string | null;
+  duration_minutes?: number;
+  class_date: string;
+  topic_name: string;
+}
+
 export interface ClassDetailHeaderProps {
   selectedBatch: BatchSelection | null;
   topicSlug: string;
   classSlug: string;
+  classDetails: ClassDetails | null;
   onAssignClick: () => void;
 }
 

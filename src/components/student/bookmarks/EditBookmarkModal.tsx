@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bookmark } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { RichTextEditor } from '@/components/ui/RichTextEditor';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 
 interface EditBookmarkModalProps {
@@ -40,15 +41,6 @@ export const EditBookmarkModal: React.FC<EditBookmarkModalProps> = ({
     onSubmit(description);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!loading) {
-        onSubmit(description);
-      }
-    }
-  };
 
   const handleClose = () => {
     setDescription(bookmark.description || '');
@@ -104,13 +96,11 @@ export const EditBookmarkModal: React.FC<EditBookmarkModalProps> = ({
               <label className="block text-sm font-medium text-foreground mb-2">
                 Description
               </label>
-              <textarea
+              <RichTextEditor
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Add your notes about this question..."
-                className="min-h-[100px]  resize-none w-full p-3 border border-border/40 rounded-2xl  text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                onChange={setDescription}
                 disabled={loading}
+                placeholder="Add your notes about this question..."
               />
             </div>
 

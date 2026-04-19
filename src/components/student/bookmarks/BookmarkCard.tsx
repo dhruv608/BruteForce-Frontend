@@ -3,6 +3,7 @@
 import React from 'react';
 import { ExternalLink, Edit2, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { HTMLRenderer } from '@/components/ui/HTMLRenderer';
 import { LeetCodeIcon, GeeksforGeeksIcon } from '@/components/platform/PlatformIcons';
 import { Bookmark } from '@/types/student/index.types';
 
@@ -77,9 +78,10 @@ export function BookmarkCard({ bookmark, onEdit, onDelete, updatingBookmark }: B
 
         {/* DESCRIPTION (optional) */}
         {bookmark.description && (
-          <p className="text-xs text-muted-foreground">
-            {bookmark.description}
-          </p>
+          <HTMLRenderer 
+            html={bookmark.description}
+            className="text-xs text-muted-foreground"
+          />
         )}
       </div>
 

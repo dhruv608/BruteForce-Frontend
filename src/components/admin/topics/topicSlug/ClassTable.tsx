@@ -48,12 +48,7 @@ export default function ClassTable({ classesList, loading, search, topicSlug, on
                         >
                            <TableCell>
                               <div className="font-semibold  text-foreground text-base">{cls.class_name}</div>
-                              {cls.description && (
-                                 <p className="text-xs text-muted-foreground mt-0.5 max-w-sm">
-                                    {cls.description.split(' ').slice(0, 7).join(' ')}
-                                    {cls.description.split(' ').length > 7 && '...'}
-                                 </p>
-                              )}
+                             
                            </TableCell>
                            <TableCell>
                               <div className="flex items-center gap-2 text-foreground font-medium text-sm">

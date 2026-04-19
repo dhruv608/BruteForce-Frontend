@@ -5,6 +5,7 @@ import { apiClient } from '@/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PdfPreview } from '@/components/ui/PdfPreview';
+import { RichTextEditor } from '@/components/ui/RichTextEditor';
 import {
    Dialog,
    DialogContent,
@@ -167,13 +168,11 @@ export default function EditClassModal({ isOpen, onClose, onSuccess, batchSlug, 
 
                <div className="space-y-2">
                   <label className="text-xs sm:text-sm font-medium">Description</label>
-                  <textarea
+                  <RichTextEditor
                      value={description}
-                     onChange={(e) => setDescription(e.target.value)}
+                     onChange={setDescription}
                      disabled={submitting}
                      placeholder="Optional details about this class."
-                     className="w-full h-20 sm:h-24 px-3 py-2 rounded-2xl border border-border/40 
-          bg-muted/30 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
                   />
                </div>
 
